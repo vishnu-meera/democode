@@ -1,19 +1,36 @@
-import 'bootstrap/dist/css/bootstrap.css';
-import 'bootstrap/dist/css/bootstrap-theme.css';
-import './index.css';
-import React from 'react';
-import ReactDOM from 'react-dom';
-import { BrowserRouter } from 'react-router-dom';
-import App from './App';
-import registerServiceWorker from './registerServiceWorker';
+// Copyright(c) Microsoft Corporation. 
+// All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the solution root folder for full license information
 
-const baseUrl = document.getElementsByTagName('base')[0].getAttribute('href');
-const rootElement = document.getElementById('root');
+import React from "react";
+import ReactDOM from "react-dom";
+import { createBrowserHistory } from "history";
+import { Router, Route, Switch, Redirect } from "react-router-dom";
+//import { hot } from "react-hot-loader";
+import indexRoutes from "./routes/routes";
 
-ReactDOM.render(
-  <BrowserRouter basename={baseUrl}>
-    <App />
-  </BrowserRouter>,
-  rootElement);
 
+import registerServiceWorker from "./registerServiceWorker";
+
+const baseUrl = document.getElementsByTagName("base")[0].getAttribute("href");
+const rootElement = document.getElementById("root");
+const hist = createBrowserHistory();
+
+class App extends React.Component {
+    render() {
+        return (
+            <Router history={hist}>
+                <Switch>
+                    {indexRoutes.map((prop, key) => {
+                        return <Route path={prop.path} key={key} component={prop.component} />;
+                    })}
+                </Switch>
+            </Router>
+        );
+    }
+};
+
+//const AppWithHot = hot(module)(App);
+ReactDOM.render(<App name="WebApp" />, rootElement);
 registerServiceWorker();
+
