@@ -1,0 +1,86 @@
+/*!
+
+ =========================================================
+ * Toolkit Dashboard React - v1.0.1 based on Toolkit Bootstrap theme
+ =========================================================
+
+ * Copyright 2018 Tatoo (http://www.bing.com)
+
+ =========================================================
+
+ * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+ */
+
+
+// Overrides
+@import "toolkit-dashboard/variables-overrides";
+
+// Bootstrap 4.X SASS components  TODO: see if we could use the component in react
+@import "bootstrap4/functions";
+@import "bootstrap4/variables";
+
+
+// variables
+@import "toolkit-dashboard/variables";
+
+@import "toolkit-dashboard/mixins";
+
+// Bootstrap 4.X SASS components  TODO: see if we could use the component in react
+// Bootstrap mixins
+@import "bootstrap4/mixins";
+
+// Reset and dependencies
+@import "bootstrap4/print";
+
+// Core CSS
+@import "bootstrap4/root";
+@import "bootstrap4/reboot";
+@import "bootstrap4/type";
+@import "bootstrap4/images";
+@import "bootstrap4/code";
+@import "bootstrap4/grid";
+@import "bootstrap4/tables";
+@import "bootstrap4/forms";
+@import "bootstrap4/buttons";
+
+// Components
+@import "bootstrap4/transitions";
+@import "bootstrap4/dropdown";
+@import "bootstrap4/button-group";
+@import "bootstrap4/input-group";
+@import "bootstrap4/custom-forms";
+@import "bootstrap4/nav";
+@import "bootstrap4/navbar";
+@import "bootstrap4/card";
+@import "bootstrap4/breadcrumb";
+@import "bootstrap4/pagination";
+@import "bootstrap4/badge";
+@import "bootstrap4/jumbotron";
+@import "bootstrap4/alert";
+@import "bootstrap4/progress";
+@import "bootstrap4/media";
+@import "bootstrap4/list-group";
+@import "bootstrap4/close";
+
+// Components w/ JavaScript
+@import "bootstrap4/modal";
+@import "bootstrap4/tooltip";
+@import "bootstrap4/popover";
+@import "bootstrap4/carousel";
+
+// Utility classes
+@import "bootstrap4/utilities";
+
+
+
+// components
+@import "toolkit-dashboard/components";
+
+
+// Plugins CSS
+@import "toolkit-dashboard/plugins/plugin-animate-bootstrap-notify";
+@import "toolkit-dashboard/plugins/plugin-perfect-scrollbar";
+
+// other
+@import "toolkit-dashboard/misc";

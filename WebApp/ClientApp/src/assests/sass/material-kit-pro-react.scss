@@ -1,0 +1,25 @@
+/*!
+ =========================================================
+ * Dashboard A React - v1.0.0 based on Material Kit
+ =========================================================
+ * Product Page: https://www.bing.com
+ * Copyright 2018 TBD (http://www.bing.com)
+ * Engineering framework
+ =========================================================
+ * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+ */
+
+
+@import "material-kit-pro-react/mixins";
+@import "material-kit-pro-react/variables";
+
+// Core Components
+@import "material-kit-pro-react/fileupload";
+@import "material-kit-pro-react/misc";
+
+// @import "plugins/plugin-datetime-picker";
+@import "material-kit-pro-react/plugins/plugin-nouislider";
+@import "material-kit-pro-react/plugins/plugin-react-datetime";
+@import "material-kit-pro-react/plugins/plugin-react-image-gallery";
+@import "material-kit-pro-react/plugins/plugin-react-slick";
+@import "material-kit-pro-react/plugins/plugin-react-tagsinput";
