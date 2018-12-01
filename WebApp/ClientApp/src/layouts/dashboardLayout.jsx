@@ -15,8 +15,8 @@ class DashboardLayout extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            backgroundColor: "black",
-            activeColor: "info",
+            backgroundColor: "orange",
+            activeColor: "warning",
             sidebarMini: false
         };
     };

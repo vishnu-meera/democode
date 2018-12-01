@@ -11,9 +11,12 @@ import "assests/sass/paper-adv-dashboard.css";
 
 //    { path: "/pages", name: "Pages", component: PagesLayout }, 
 const indexRoutes = [
-    { path: "/admin", component: DashboardLayout },
-    { path: "/auth", component: PagesLayout },
-    { redirect: true, path: "/", pathTo: "/admin/dashboard", name: "Dashboard" }
+    { path: "/admin", component: DashboardLayout }
 ];
 
 export default indexRoutes;
+
+
+
+//{ path: "/auth", component: PagesLayout },
+//{ redirect: true, path: "/", pathTo: "/admin/dashboard", name: "Dashboard" }

@@ -10,8 +10,7 @@ var dashboardRoutes = [
         icon: "nc-icon nc-bank",
         component: Dashboard,
         layout: "/admin"
-    },
-    { redirect: true, path: "/", pathTo: "/admin/dashboard", name: "Dashboard" }
+    }
 ];
 
 export default dashboardRoutes;
