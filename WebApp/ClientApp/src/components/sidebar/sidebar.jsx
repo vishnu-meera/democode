@@ -1,3 +1,7 @@
+//Microsoft Corporation.
+// All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the solution root folder for full license information
+
 import React from "react";
 import { NavLink } from "react-router-dom";
 import { Nav } from "reactstrap";
@@ -32,8 +36,6 @@ class Sidebar extends React.Component {
         return this.props.location.pathname.indexOf(routeName) > -1 ? "active" : "";
     };
 
-    //
-    //
     render() {
         return (
             <div className="sidebar" data-color={this.props.bgColor} data-active-color={this.props.activeColor}>

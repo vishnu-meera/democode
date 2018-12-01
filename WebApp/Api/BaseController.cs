@@ -1,4 +1,8 @@
-﻿using MediatR;
+﻿//Microsoft Corporation.
+// All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the solution root folder for full license information
+
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 
