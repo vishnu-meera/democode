@@ -1,5 +1,5 @@
 //// views
-import Dashboard from "views/Dashboard/PaperAdvDashboard.jsx";
+import Dashboard from "views/Dashboard/dashboard.jsx";
 
 
 

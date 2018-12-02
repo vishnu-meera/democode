@@ -1,12 +1,7 @@
 ﻿import React from "react";
-// javascript plugin used to create scrollbars on windows
-import PerfectScrollbar from "perfect-scrollbar";
 import { Route, Switch } from "react-router-dom";
-
 import AdminNavbar from "components/navbars/navbar";
-import Footer from "components/footer/footer";
 import Sidebar from "components/sidebar/sidebar.jsx";
-import FixedPlugin from "components/fixedPlugin/fixedPlugin.jsx";
 import dashboardRoutes from "routes/routes-dashboard";
 
 var ps;
@@ -25,7 +20,7 @@ class DashboardLayout extends React.Component {
         if (navigator.platform.indexOf("Win") > -1) {
             document.documentElement.className += " perfect-scrollbar-on";
             document.documentElement.classList.remove("perfect-scrollbar-off");
-            ps = new PerfectScrollbar(this.refs.mainPanel);
+
         }
     };
 
@@ -65,14 +60,6 @@ class DashboardLayout extends React.Component {
         });
     };
 
-    handleActiveClick = color => {
-        this.setState({ activeColor: color });
-    };
-
-    handleBgClick = color => {
-        this.setState({ backgroundColor: color });
-    };
-
     handleMiniClick = () => {
         if (document.body.classList.contains("sidebar-mini")) {
             this.setState({ sidebarMini: false });
@@ -94,20 +81,7 @@ class DashboardLayout extends React.Component {
                 <div className="main-panel" ref="mainPanel">
                     <AdminNavbar {...this.props} handleMiniClick={this.handleMiniClick} />
                     <Switch>{this.getRoutes(dashboardRoutes)}</Switch>
-                    {// we don't want the Footer to be rendered on full screen maps page
-                        this.props.location.pathname.indexOf("full-screen-map") !==
-                            -1 ? null : (
-                                <Footer fluid />
-                            )}
                 </div>
-                <FixedPlugin
-                    bgColor={this.state.backgroundColor}
-                    activeColor={this.state.activeColor}
-                    sidebarMini={this.state.sidebarMini}
-                    handleActiveClick={this.handleActiveClick}
-                    handleBgClick={this.handleBgClick}
-                    handleMiniClick={this.handleMiniClick}
-                />
             </div>
         );
     }

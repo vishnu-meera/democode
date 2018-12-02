@@ -1,38 +1,35 @@
-import React from "react";
+//Microsoft Corporation.
+// All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the solution root folder for full license information
 
+import React from "react";
 import classnames from "classnames";
 import {
     Button,
     Collapse,
-    DropdownToggle,
-    DropdownMenu,
-    DropdownItem,
-    UncontrolledDropdown,
-    Form,
-    Input,
-    InputGroupAddon,
-    InputGroupText,
-    InputGroup,
-    NavbarBrand,
     Navbar,
-    NavItem,
-    NavLink,
+    UncontrolledDropdown,
+    DropdownToggle,
+    DropdownItem,
+    DropdownMenu,
     Nav,
     Container
 } from "reactstrap";
+
+import defaultavatar from "assests/img/defaultavatar.png"; //default picture
 
 class AdminNavbar extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             collapseOpen: false,
-            color: "navbar-transparent"
+            color: "navbar-transparent",
+            openAvatar: false,
+            userName: props.userName || "defaultName",
+            avatar: props.avatar || defaultavatar
         };
     };
 
-    componentDidMount() {
-        window.addEventListener("resize", this.updateColor);
-    };
 
     componentDidUpdate(e) {
         if (
@@ -41,19 +38,6 @@ class AdminNavbar extends React.Component {
             document.documentElement.className.indexOf("nav-open") !== -1
         ) {
             document.documentElement.classList.toggle("nav-open");
-        }
-    };
-
-    // function that adds color white/transparent to the navbar on resize (this is for the collapse)
-    updateColor = () => {
-        if (window.innerWidth < 993 && this.state.collapseOpen) {
-            this.setState({
-                color: "bg-white"
-            });
-        } else {
-            this.setState({
-                color: "navbar-transparent"
-            });
         }
     };
 
@@ -91,8 +75,7 @@ class AdminNavbar extends React.Component {
                                     className="btn-icon btn-round"
                                     color="default"
                                     id="minimizeSidebar"
-                                    onClick={this.props.handleMiniClick}
-                                >
+                                    onClick={this.props.handleMiniClick}>
                                     <i className="nc-icon nc-minimal-right text-center visible-on-sidebar-mini" />
                                     <i className="nc-icon nc-minimal-left text-center visible-on-sidebar-regular" />
                                 </Button>
@@ -112,12 +95,6 @@ class AdminNavbar extends React.Component {
                                     <span className="navbar-toggler-bar bar3" />
                                 </button>
                             </div>
-                            <NavbarBrand href="#pablo" onClick={e => e.preventDefault()}>
-                                <span className="d-none d-md-block">
-                                    Paper Dashboard PRO React
-                </span>
-                                <span className="d-block d-md-none">PD PRO React</span>
-                            </NavbarBrand>
                         </div>
                         <button
                             aria-controls="navigation-index"
@@ -133,34 +110,8 @@ class AdminNavbar extends React.Component {
                             <span className="navbar-toggler-bar navbar-kebab" />
                             <span className="navbar-toggler-bar navbar-kebab" />
                         </button>
-                        <Collapse
-                            className="justify-content-end"
-                            navbar
-                            isOpen={this.state.collapseOpen}
-                        >
-                            <Form>
-                                <InputGroup className="no-border">
-                                    <Input defaultValue="" placeholder="Search..." type="text" />
-                                    <InputGroupAddon addonType="append">
-                                        <InputGroupText>
-                                            <i className="nc-icon nc-zoom-split" />
-                                        </InputGroupText>
-                                    </InputGroupAddon>
-                                </InputGroup>
-                            </Form>
+                        <Collapse className="justify-content-end" navbar isOpen={this.state.collapseOpen}>
                             <Nav navbar>
-                                <NavItem>
-                                    <NavLink
-                                        className="btn-magnify"
-                                        href="#pablo"
-                                        onClick={e => e.preventDefault()}
-                                    >
-                                        <i className="nc-icon nc-layout-11" />
-                                        <p>
-                                            <span className="d-lg-none d-md-block">Stats</span>
-                                        </p>
-                                    </NavLink>
-                                </NavItem>
                                 <UncontrolledDropdown className="btn-rotate" nav>
                                     <DropdownToggle
                                         aria-haspopup={true}
@@ -168,46 +119,15 @@ class AdminNavbar extends React.Component {
                                         color="default"
                                         data-toggle="dropdown"
                                         id="navbarDropdownMenuLink"
-                                        nav
-                                    >
-                                        <i className="nc-icon nc-bell-55" />
-                                        <p>
-                                            <span className="d-lg-none d-md-block">Some Actions</span>
-                                        </p>
+                                        nav>
+                                        <i className="nc-icon nc-settings-gear-65" />
+                                        <p><span className="d-lg-none d-md-block">User Account</span></p>
                                     </DropdownToggle>
                                     <DropdownMenu aria-labelledby="navbarDropdownMenuLink" right>
-                                        <DropdownItem
-                                            href="#pablo"
-                                            onClick={e => e.preventDefault()}
-                                        >
-                                            Action
-                    </DropdownItem>
-                                        <DropdownItem
-                                            href="#pablo"
-                                            onClick={e => e.preventDefault()}
-                                        >
-                                            Another action
-                    </DropdownItem>
-                                        <DropdownItem
-                                            href="#pablo"
-                                            onClick={e => e.preventDefault()}
-                                        >
-                                            Something else here
-                    </DropdownItem>
+                                        <DropdownItem href="#pablo" onClick={e => e.preventDefault()}>Settings</DropdownItem>
+                                        <DropdownItem href="#pablo" onClick={e => e.preventDefault()}>Log Out</DropdownItem>
                                     </DropdownMenu>
                                 </UncontrolledDropdown>
-                                <NavItem>
-                                    <NavLink
-                                        className="btn-rotate"
-                                        href="#pablo"
-                                        onClick={e => e.preventDefault()}
-                                    >
-                                        <i className="nc-icon nc-settings-gear-65" />
-                                        <p>
-                                            <span className="d-lg-none d-md-block">Account</span>
-                                        </p>
-                                    </NavLink>
-                                </NavItem>
                             </Nav>
                         </Collapse>
                     </Container>
@@ -218,3 +138,4 @@ class AdminNavbar extends React.Component {
 }
 
 export default AdminNavbar;
+
