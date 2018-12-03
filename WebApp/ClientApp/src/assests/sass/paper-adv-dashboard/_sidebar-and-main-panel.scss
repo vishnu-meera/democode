@@ -1,11 +1,12 @@
-.wrapper{
+.wrapper {
     position: relative;
     top: 0;
-    height: 100vh;
+    height: auto !important;
+    min-height: 100%;
 
-    &.wrapper-full-page{
-        min-height: 100vh;
-        height: auto;
+    &.wrapper-full-page {
+        height: auto !important;
+        min-height: 100%;
     }
 }
 
@@ -216,7 +217,7 @@
         top: 0;
         left: 0;
         background-size: cover;
-        background-color:blueviolet;
+        background-color:#61328d;
         background-position: center center;
 
         &:after{

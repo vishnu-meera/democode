@@ -170,11 +170,21 @@ export default class Utils {
 
         let overViewObject = {};
         try {
+            let countryCode = await getCode(country);
+            let microsoft = await this.getMicrosoftObject(country);
+            let { Population, Gdp } = await this.getPopulationAndGdp(countryCode);
 
+            overViewObject["nationalView"] = { population: Population, gdp: Gdp };
+            overViewObject["Opportunity"] = {
+                "tamN": "",
+                "tamUN": "",
+            };
+            overViewObject["microsoft"] = microsoft;
         } catch (error) {
             //TODO 
             console.log("getOverViewObject==> ", error.message);
         }
+        return overViewObject;
     }
 
     handleErrors(response) {

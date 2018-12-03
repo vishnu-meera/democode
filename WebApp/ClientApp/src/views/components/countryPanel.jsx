@@ -16,7 +16,8 @@ class CountryPanel extends React.Component {
         super(props);
         this.utils = new Utils();
         this.state = {
-            country : this.props.country,
+            country: this.props.country,
+            status:this.props.status,
             horizontalTabs: "home",
             verticalTabs: "info",
             pageTabs: "homePages",
@@ -42,7 +43,7 @@ class CountryPanel extends React.Component {
         if (this.props.country !== prevProps.country) {
             let microsoft = await this.utils.getMicrosoftObject(this.props.country);
             console.log("microsoft==> ", microsoft)
-            await this.setState({ microsoft })
+            await this.setState({ microsoft, country: this.props.country, status: this.props.status });
         }
     }
 
@@ -92,11 +93,53 @@ class CountryPanel extends React.Component {
                     <p>DCX Customers: {this.state.microsoft.dcxCustomers}</p>
                 </CardBody>
             </Collapse>
-        </Card>);
+         </Card>);
+        }
     }
+
+    loadMoveStatus = () => {
+        if (this.state.loading) {
+            return null
+        } else {
+            return (
+                <Card className="card-plain">
+                    <CardHeader role="tab">
+                        <Button
+                            aria-expanded={this.state.openedCollapses.includes(
+                                "collapseFour"
+                            )}
+                            data-parent="#accordion"
+                            data-toggle="collapse"
+                            onClick={() => this.collapsesToggle("collapseFour")}>Move Status {" "}<i className="nc-icon nc-minimal-down" />
+                        </Button>
+                    </CardHeader>
+                    <Collapse
+                        role="tabpanel"
+                        isOpen={this.state.openedCollapses.includes(
+                            "collapseFour"
+                        )}>
+                        <CardBody>
+                            <span><h6>Move Status</h6></span><br />
+                            <span>SPO</span><br />
+                            <div className="progress">
+                                <div className="progress-bar progress-bar-success" role="progressbar" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div><br />
+                            <span>EXO</span><br />
+                            <div className="progress">
+                                <div className="progress-bar progress-bar-info" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div><br />
+                            <span>Teams</span><br />
+                            <div className="progress">
+
+                                <div className="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div><br />
+                        </CardBody>
+                    </Collapse>
+                </Card>);
+        }
+
     }
     render() {
-
             return (<Card>
                 <CardBody>
                     <div
@@ -151,16 +194,16 @@ class CountryPanel extends React.Component {
                             </Collapse>
                         </Card>
                         {this.loadMicrosoftObject()}
+                        {this.loadMoveStatus()}
                         <Card className="card-plain text-center">
                             <Link
                                 className="btn btn-primary text-center"
-                                to={{ pathname: '/admin/country', state: { country: this.props.country } }}
+                                to={{ pathname: '/admin/country', state: { country: this.props.country, status: this.props.status} }}
                             >See Seats Updates</Link>
                         </Card>
                     </div>
                 </CardBody>
             </Card>);
-        
     }
 }
 
