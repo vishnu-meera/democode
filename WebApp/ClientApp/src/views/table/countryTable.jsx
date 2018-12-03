@@ -2,7 +2,7 @@
 
 // react component for creating dynamic tables
 import ReactTable from "react-table";
-
+import CountryPanel from "views/components/countryPanel.jsx";
 // reactstrap components
 import {
     Button,
@@ -14,56 +14,12 @@ import {
     Col
 } from "reactstrap";
 
-const dataTable = [
-    ["Tiger Nixon", "System Architect", "Edinburgh", "61"],
-    ["Garrett Winters", "Accountant", "Tokyo", "63"],
-    ["Ashton Cox", "Junior Technical Author", "San Francisco", "66"],
-    ["Cedric Kelly", "Senior Javascript Developer", "Edinburgh", "22"],
-    ["Airi Satou", "Accountant", "Tokyo", "33"],
-    ["Brielle Williamson", "Integration Specialist", "New York", "61"],
-    ["Herrod Chandler", "Sales Assistant", "San Francisco", "59"],
-    ["Rhona Davidson", "Integration Specialist", "Tokyo", "55"],
-    ["Colleen Hurst", "Javascript Developer", "San Francisco", "39"],
-    ["Sonya Frost", "Software Engineer", "Edinburgh", "23"],
-    ["Jena Gaines", "Office Manager", "London", "30"],
-    ["Quinn Flynn", "Support Lead", "Edinburgh", "22"],
-    ["Charde Marshall", "Regional Director", "San Francisco", "36"],
-    ["Haley Kennedy", "Senior Marketing Designer", "London", "43"],
-    ["Tatyana Fitzpatrick", "Regional Director", "London", "19"],
-    ["Michael Silva", "Marketing Designer", "London", "66"],
-    ["Paul Byrd", "Chief Financial Officer (CFO)", "New York", "64"],
-    ["Gloria Little", "Systems Administrator", "New York", "59"],
-    ["Bradley Greer", "Software Engineer", "London", "41"],
-    ["Dai Rios", "Personnel Lead", "Edinburgh", "35"],
-    ["Jenette Caldwell", "Development Lead", "New York", "30"],
-    ["Yuri Berry", "Chief Marketing Officer (CMO)", "New York", "40"],
-    ["Caesar Vance", "Pre-Sales Support", "New York", "21"],
-    ["Doris Wilder", "Sales Assistant", "Sidney", "23"],
-    ["Angelica Ramos", "Chief Executive Officer (CEO)", "London", "47"],
-    ["Gavin Joyce", "Developer", "Edinburgh", "42"],
-    ["Jennifer Chang", "Regional Director", "Singapore", "28"],
-    ["Brenden Wagner", "Software Engineer", "San Francisco", "28"],
-    ["Fiona Green", "Chief Operating Officer (COO)", "San Francisco", "48"],
-    ["Shou Itou", "Regional Marketing", "Tokyo", "20"],
-    ["Michelle House", "Integration Specialist", "Sidney", "37"],
-    ["Suki Burks", "Developer", "London", "53"],
-    ["Prescott Bartlett", "Technical Author", "London", "27"],
-    ["Gavin Cortez", "Team Leader", "San Francisco", "22"],
-    ["Martena Mccray", "Post-Sales support", "Edinburgh", "46"],
-    ["Unity Butler", "Marketing Designer", "San Francisco", "47"],
-    ["Howard Hatfield", "Office Manager", "San Francisco", "51"],
-    ["Hope Fuentes", "Secretary", "San Francisco", "41"],
-    ["Vivian Harrell", "Financial Controller", "San Francisco", "62"],
-    ["Timothy Mooney", "Office Manager", "London", "37"],
-    ["Jackson Bradshaw", "Director", "New York", "65"],
-    ["Olivia Liang", "Support Engineer", "Singapore", "64"]
-];
-
 class CountryTables extends React.Component {
     constructor(props) {
         super(props);
+        this.data = this.props.data
         this.state = {
-            data: dataTable.map((prop, key) => {
+            data: this.data.map((prop, key) => {
                 return {
                     id: key,
                     country:prop[0],
@@ -72,19 +28,24 @@ class CountryTables extends React.Component {
                     status: prop[3],
                     name: prop[0]
                 };
-            })
+            }),
+            country: this.data[0][0],
+            population: this.data[0][1],
+            gdp: this.data[0][2],
+            status: this.data[0][3]
         };
         this.submitClick = this.submitClick.bind(this);
     }
 
-    submitClick = (e) => {
+    async submitClick(e){
         console.log(e.row)
-        this.showCountryCard(e.row)
+        let country = e.row.country;
+        let population = e.row.population;
+        let gdp = e.row.gdp
+        let status = e.row.status
+        await this.setState({ country, population, gdp, status });
     }
 
-    showCountryCard = (obj) => {
-
-    }
 
     render() {
         return (<div className="content">
@@ -126,18 +87,15 @@ class CountryTables extends React.Component {
                                                 Cell: row => (
                                                     <span>
                                                         <span style={{
-                                                              color : row.value === 'InProgress' ? '#ff2e00'
-                                                                    : row.value === 'Live' ? '#ffbf00'
-                                                                    : row.value === 'Potenial' ? '#ffbf00'
-                                                                    : '#57d500',
+                                                              color : row.value === 'InProgress' ? '#FF9933'
+                                                                    : row.value === 'Live' ? '#6600CC'
+                                                                    : row.value === 'Potential' ? '#00FFFF'
+                                                                    : row.value === 'Approved' ? '#00CC00' :"Black",
                                                             transition: 'all .3s ease'
                                                         }}>
                                                             &#x25cf;
                                                         </span> {
-                                                            row.value === 'InProgress' ? 'InProgress'
-                                                                : row.value === 'Live' ? 'Live'
-                                                                    : row.value === 'Potenial' ? 'Potenial'
-                                                                        : 'Approved'
+                                                            row.value
                                                         }
                                                     </span>
                                                 )
@@ -150,6 +108,9 @@ class CountryTables extends React.Component {
                                     />
                                 </CardBody>
                             </Card>
+                </Col>
+                        <Col md="4">
+                    <CountryPanel country={this.state.country} gdp={this.state.gdp} status={this.state.status} population={this.state.population} />
                         </Col>
                     </Row>
                 </div>);

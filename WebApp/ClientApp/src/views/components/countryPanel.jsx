@@ -1,0 +1,167 @@
+﻿import React from "react";
+import Utils from '../../utils/utils';
+import { Link } from "react-router-dom";
+// reactstrap components
+import {
+    Card,
+    CardHeader,
+    CardBody,
+    CardTitle,
+    Collapse,
+    Button
+} from "reactstrap";
+
+class CountryPanel extends React.Component {
+    constructor(props) {
+        super(props);
+        this.utils = new Utils();
+        this.state = {
+            country : this.props.country,
+            horizontalTabs: "home",
+            verticalTabs: "info",
+            pageTabs: "homePages",
+            loading: true,
+            openedCollapses: ["collapseOne"],
+            microsoft: {},
+            redirect:false
+        };
+    };
+
+    async componentDidMount() {
+        if (this.state.loading) {
+            let microsoft = await this.utils.getMicrosoftObject(this.state.country);
+            console.log("microsoft==> ", microsoft)
+            await this.setState({ microsoft, loading: false })
+        }
+    }
+
+    async componentDidUpdate(prevProps) {
+        // Typical usage (don't forget to compare props):
+        console.log("previous country : ==> ", prevProps.country);
+        console.log("current country : ==> ", this.props.country);
+        if (this.props.country !== prevProps.country) {
+            let microsoft = await this.utils.getMicrosoftObject(this.props.country);
+            console.log("microsoft==> ", microsoft)
+            await this.setState({ microsoft })
+        }
+    }
+
+    collapsesToggle = (collapse) => {
+        //event.preventDefault();
+        let openedCollapses = this.state.openedCollapses;
+        if (openedCollapses.includes(collapse)) {
+            this.setState({
+                openedCollapses: openedCollapses.filter(item => item !== collapse)
+            });
+        } else {
+            openedCollapses.push(collapse);
+            this.setState({
+                openedCollapses: openedCollapses
+            });
+        }
+    };
+
+
+    loadMicrosoftObject = () => {
+        if (this.state.loading) {
+            return null
+        } else {
+        return (<Card className="card-plain">
+            <CardHeader role="tab">
+                <Button
+                    aria-expanded={this.state.openedCollapses.includes(
+                        "collapseThree"
+                    )}
+                    data-parent="#accordion"
+                    data-toggle="collapse"
+                    onClick={() => this.collapsesToggle("collapseThree")}>Microsoft {" "}<i className="nc-icon nc-minimal-down" />
+                </Button>
+            </CardHeader>
+            <Collapse
+                role="tabpanel"
+                isOpen={this.state.openedCollapses.includes(
+                    "collapseThree"
+                )}>
+                <CardBody>
+                    <p>CAPEX Status: Approved (Date) {this.state.microsoft.capex}</p>
+                    <p>Public Announcement: {this.state.microsoft.publicAnnouncement}</p>
+                    <p>Azure GA:{this.state.microsoft.azureGa}</p>
+                    <p>Office GA: {this.state.microsoft.officeGa}</p>
+                    <p>Revenue Projection 3Y:{this.state.microsoft.revenue3Y}</p>
+                    <p>Revenue Projection 5Y: {this.state.microsoft.revenue5Y}</p>
+                    <p>DCX Customers: {this.state.microsoft.dcxCustomers}</p>
+                </CardBody>
+            </Collapse>
+        </Card>);
+    }
+    }
+    render() {
+
+            return (<Card>
+                <CardBody>
+                    <div
+                        aria-multiselectable={true}
+                        className="card-collapse"
+                        id="accordion"
+                        role="tablist"
+                    >
+                        <CardTitle tag="h5">{this.props.country}</CardTitle>
+                        <Card className="card-plain">
+                            <CardHeader role="tab">
+                                <Button
+                                    aria-expanded={this.state.openedCollapses.includes(
+                                        "collapseOne"
+                                    )}
+                                    data-parent="#accordion"
+                                    data-toggle="collapse"
+                                    onClick={() => this.collapsesToggle("collapseOne")}>National View {" "}<i className="nc-icon nc-minimal-down" />
+                                </Button>
+                            </CardHeader>
+                            <Collapse
+                                role="tabpanel"
+                                isOpen={this.state.openedCollapses.includes(
+                                    "collapseOne"
+                                )}>
+                                <CardBody>
+                                    <p>Population:{this.props.population}</p>
+                                    <p>GDP: {this.props.gdp}</p>
+                                </CardBody>
+                            </Collapse>
+                        </Card>
+                        <Card className="card-plain">
+                            <CardHeader role="tab">
+                                <Button
+                                    aria-expanded={this.state.openedCollapses.includes(
+                                        "collapseTwo"
+                                    )}
+                                    data-parent="#accordion"
+                                    data-toggle="collapse"
+                                    onClick={() => this.collapsesToggle("collapseTwo")}>Opportunity {" "}<i className="nc-icon nc-minimal-down" />
+                                </Button>
+                            </CardHeader>
+                            <Collapse
+                                role="tabpanel"
+                                isOpen={this.state.openedCollapses.includes(
+                                    "collapseTwo"
+                                )}>
+                                <CardBody>
+                                    <p>TAM (Restricted) :</p>
+                                    <p>TAM (UnRestricted) :</p>
+                                </CardBody>
+                            </Collapse>
+                        </Card>
+                        {this.loadMicrosoftObject()}
+                        <Card className="card-plain text-center">
+                            <Link
+                                className="btn btn-primary text-center"
+                                to={{ pathname: '/admin/country', state: { country: this.props.country } }}
+                            >See Seats Updates</Link>
+                        </Card>
+                    </div>
+                </CardBody>
+            </Card>);
+        
+    }
+}
+
+export default CountryPanel;

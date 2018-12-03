@@ -13,6 +13,7 @@ import {
     DropdownItem,
     DropdownMenu,
     Nav,
+    NavbarBrand,
     Container
 } from "reactstrap";
 
@@ -95,6 +96,12 @@ class AdminNavbar extends React.Component {
                                     <span className="navbar-toggler-bar bar3" />
                                 </button>
                             </div>
+                            <NavbarBrand>
+                                <span className="d-none d-md-block">
+                                    DashBoard
+                </span>
+                                <span className="d-block d-md-none">DashBoard</span>
+                            </NavbarBrand>
                         </div>
                         <button
                             aria-controls="navigation-index"

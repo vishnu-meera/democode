@@ -24,5 +24,13 @@ namespace WebApp.Api
             return Ok(await Mediator.Send(query));
         }
 
+        // GET: api/Country/USA ==> Country by name
+        [HttpGet("{ByCountryCode}")]
+        [ProducesResponseType(typeof(CountryModel), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> Get(string ByCountryCode)
+        {
+            return Ok(await Mediator.Send(new GetStatus { by = ByCountryCode }));
+        }
+
     }
 }

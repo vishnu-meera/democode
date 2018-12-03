@@ -107,20 +107,27 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Entities\Country.cs" />
+    <Compile Include="Entities\CountryRoadMap.cs" />
     <Compile Include="Exceptions\NotFoundException.cs" />
     <Compile Include="Infrastructure\RequestLogger.cs" />
     <Compile Include="Interfaces\IRepository.cs" />
     <Compile Include="Models\CountryListModel.cs" />
     <Compile Include="Models\CountryModel.cs" />
+    <Compile Include="Models\CountryRoadMapModel.cs" />
+    <Compile Include="Models\CountryStatus.cs" />
     <Compile Include="Models\Status.cs" />
     <Compile Include="Models\StatusList.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Queries\GetAllCountries.cs" />
     <Compile Include="Queries\GetCountry.cs" />
+    <Compile Include="Queries\GetCountryRoadMap.cs" />
+    <Compile Include="Queries\GetStatus.cs" />
     <Compile Include="Queries\GetStatusCount.cs" />
     <Compile Include="QueryHandler\GetAllCountriesHandler.cs" />
     <Compile Include="QueryHandler\GetCountryQueryHandler.cs" />
+    <Compile Include="QueryHandler\GetCountryRoadMapHandler.cs" />
     <Compile Include="QueryHandler\GetStatusCountQueryHandler.cs" />
+    <Compile Include="QueryHandler\GetStatusHandler.cs" />
     <Compile Include="Sharedkernel\BaseEntity.cs" />
     <Compile Include="Sharedkernel\EntityFactory.cs" />
   </ItemGroup>

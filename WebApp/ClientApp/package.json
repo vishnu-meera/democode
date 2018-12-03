@@ -46,6 +46,7 @@
     "chart.js": "^2.7.2",
     "chartist": "^0.10.1",
     "classnames": "^2.2.6",
+    "country-list": "^2.1.0",
     "history": "^4.7.2",
     "moment": "^2.22.2",
     "node-sass": "^4.9.3",
@@ -81,7 +82,10 @@
     "react-table": "^6.8.6",
     "react-tagsinput": "^3.19.0",
     "reactstrap": "^6.5.0",
+    "request": "^2.88.0",
+    "request-promise-native": "^1.0.5",
     "rimraf": "2.6.2",
+    "wikijs": "^4.10.0",
     "wnumb": "^1.1.0"
   },
   "eslintConfig": {

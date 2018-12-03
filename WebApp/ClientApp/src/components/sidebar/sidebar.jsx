@@ -10,24 +10,24 @@ class Sidebar extends React.Component {
     // this function creates the links and collapses that appear in the sidebar (left menu)
     createLinks = routes => {
         return routes.map((prop, key) => {
-
-            return (
-                <li className={this.activeRoute(prop.layout + prop.path)} key={key}>
-                    <NavLink to={prop.layout + prop.path} activeClassName="">
-                        {prop.icon !== undefined ? (
-                            <>
-                                <i className={prop.icon} />
-                                <p>{prop.name}</p>
-                            </>
-                        ) : (
+            if(prop.path==='/dashboard')
+                return (
+                    <li className={this.activeRoute(prop.layout + prop.path)} key={key}>
+                        <NavLink to={prop.layout + prop.path} activeClassName="">
+                            {prop.icon !== undefined ? (
                                 <>
-                                    <span className="sidebar-mini-icon">{prop.mini}</span>
-                                    <span className="sidebar-normal">{prop.name}</span>
+                                    <i className={prop.icon} />
+                                    <p>{prop.name}</p>
                                 </>
-                            )}
-                    </NavLink>
-                </li>
-            );
+                            ) : (
+                                    <>
+                                        <span className="sidebar-mini-icon">{prop.mini}</span>
+                                        <span className="sidebar-normal">{prop.name}</span>
+                                    </>
+                                )}
+                        </NavLink>
+                    </li>
+                );
         });
     };
 

@@ -27,6 +27,7 @@ namespace Infrastructure.Config
                         instance = new Dictionary<string, CloudTable>();
                         instance.Add("Country", GetOrCreateBlobTable("Country"));
                         instance.Add("CountryDataCenters", GetOrCreateBlobTable("CountryDataCenters"));
+                        instance.Add("CountryRoadMap", GetOrCreateBlobTable("CountryRoadMap"));
                     }
                     return instance;
                 }

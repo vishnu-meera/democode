@@ -2,51 +2,14 @@ import React from "react";
 import Utils from '../../utils/utils';
 import { VectorMap } from "react-jvectormap";
 import CountryTables from "views/table/countryTable.jsx";
-// reactstrap components
-import {
-    Badge,
-    Button,
-    Card,
-    CardHeader,
-    CardBody,
-    CardFooter,
-    CardTitle,
-    Label,
-    FormGroup,
-    Input,
-    Table,
-    Row,
-    Col,
-    UncontrolledTooltip
-} from "reactstrap";
+import { Card,CardBody,CardTitle,Row,Col} from "reactstrap";
 
-const cardIconCssObj = {
-    "Potential": "nc-icon nc-bulb-63", 
-    "Approved": "nc-icon nc-check-2",
-    "In-Progress": "nc-icon nc-cloud-download-93",
-    "Live":"nc-icon nc-compass-05"
-};
-const textIconCssObj = {
-    "Potential": "text-info",
-    "Approved": "text-success",
-    "In-Progress": "text-warning",
-    "Live": "text-error"
-};
 
 //sample color cording scheme for country
 //Potential==> number 4
 //Live==> 1
 //Approved==> 3
 //InProgress==2
-
-const mapData = {
-    AU: 4,
-    IN: 1,
-    CA: 4,
-    SA: 1,
-    CN: 2,
-    US: 3
-};
 
 class Dashboard extends React.Component {
 
@@ -55,16 +18,20 @@ class Dashboard extends React.Component {
         this.utils = new Utils();
         this.state = {
             loading : true,
-            cardsStatus: {}
+            cardsStatus: {},
+            mapData: {},
+            tableData: {}
         };
         this.handleClick = this.handleClick.bind(this);
     }
 
     async componentDidMount() {
         if (this.state.loading) {
-            let cardsStatus = await this.utils.getCountriesStatus();
-            console.log(cardsStatus)
-            this.setState({ cardsStatus ,loading:false})
+            let cardsStatus = await this.utils.getCardsData();
+            let { mapData, tableData } = await this.utils.getMapData();
+            console.log(tableData)
+            console.log("mapData==> ", mapData)
+            this.setState({ cardsStatus, mapData,tableData,loading:false})
         }
     }
 
@@ -77,8 +44,8 @@ class Dashboard extends React.Component {
         return (<Row>
             {
                 keys.map((key) => {
-                    let iconcss = `${cardIconCssObj[key]} ${textIconCssObj[key]}`;
-                    let textcss = `text-left ${textIconCssObj[key]}`;
+                    let iconcss = `${this.utils.cardIconCssObj[key]} ${this.utils.textIconCssObj[key]}`;
+                    let textcss = `text-left ${this.utils.textIconCssObj[key]}`;
                     return (
                         <Col lg="3" md="4" sm="4" key={key}>
                             <Card className="card-stats">
@@ -145,7 +112,7 @@ class Dashboard extends React.Component {
                                     series={{
                                         regions: [
                                             {
-                                                values: mapData,  //this is your data
+                                                values: this.state.mapData,  //this is your data
                                                 scale: ["#CC99FF", "#66CC00", "#FF9933" ,"#00FFFF"],  //your color game's here
                                                 normalizeFunction: "polynomial"
                                             }
@@ -169,7 +136,7 @@ class Dashboard extends React.Component {
                     <div className="content">
                         {this.cards()}
                         {this.worldmap()}
-                        <CountryTables />
+                        <CountryTables data={this.state.tableData} />
                     </div>
                 </>
             );

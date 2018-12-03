@@ -124,6 +124,10 @@ a.text-warning:focus, a.text-warning:hover {
 a.text-danger:focus, a.text-danger:hover {
   color: $brand-danger !important;
 }
+.text-potenial,
+a.text-potenial:focus, a.text-potenial:hover {
+    color: #993dc1 !important;
+}
 
 .text-gray,
 a.text-gray:focus, a.text-gray:hover{
