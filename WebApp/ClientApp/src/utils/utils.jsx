@@ -3,7 +3,15 @@
 *  See LICENSE in the source repository root for complete license information. 
 */
 
-const { getCode} = require('country-list');
+const { getCode,getName} = require('country-list');
+
+
+const mapColorCodes = {
+    "Live" : "#CC99FF",
+    "InProgress":"#FF9933",
+    "Approved":"#66CC00",
+    "Potential":"#00FFFF"
+};
 
 const parseMicrosoftObject = (data) => {
     let microsoft = {
@@ -20,7 +28,6 @@ const parseMicrosoftObject = (data) => {
         if (data) {
             if (data.length > 0) {
                 let roadMap = JSON.parse(data);
-                console.log("RoadMap==>", roadMap)
                 microsoft.capex = (((roadMap || {}).Infrastructure || {})["CAPEX Approved"] || {}).actualdate;
                 microsoft.publicAnnouncement = ((roadMap || {}).Infrastructure || {})["Public Announcement"];
                 microsoft.azureGa = (((roadMap || {}).Azure || {}).GA || {}).actualdate;
@@ -34,9 +41,22 @@ const parseMicrosoftObject = (data) => {
     catch (error) {
         console.log(error.message);
     }
-    console.log("parseMicrosoftObject==>", microsoft);
     return microsoft;
 }
+
+const countryStatusConverterObj = {
+    1: "Live",
+    2: "InProgress",
+    3: "Approved",
+    4: "Potential"
+};
+
+const countryStatusConverterObj2 = {
+    "Live" : 1,
+    "InProgress":2,
+    "Approved":3,
+    "Potential":4
+};
 
 export default class Utils {
     cardIconCssObj = {
@@ -54,6 +74,8 @@ export default class Utils {
     };
 
     getCode = getCode;
+    mapColorCode = Object.values(mapColorCodes);
+    mapColorCodes = mapColorCodes;
     async getCardsData() {
         try {
             let requestUrl = 'api/CountriesStatus';
@@ -69,7 +91,7 @@ export default class Utils {
         } finally {
            //TODO
         }
-    }
+    };
 
     async getMapData() {
         try {
@@ -81,52 +103,44 @@ export default class Utils {
             });
             let data = await (this.handleErrors(response)).json();
             let keys = Object.keys(data.countriesStatusList);
-            let mapData = {};
+            let mapData = {} , toolTipObject = {};
             keys.forEach(element => {
-                mapData[getCode(element)] = data.countriesStatusList[element]
+                mapData[getCode(element)] = data.countriesStatusList[element];
+                toolTipObject[getCode(element)] = {
+                    'Status':countryStatusConverterObj[data.countriesStatusList[element]],
+                    'Name' :element,
+                    'azureGa':"No Data",
+                    'officeGa':"No Data",
+                    'publicAnnouncement':"No Data"
+                };
             });
-            let tableData = await this.getTableData({ ...data.countriesStatusList });
-            return { mapData, tableData };
+            let obj = await this.getTableData({ ...data.countriesStatusList },toolTipObject);
+            let newToolTipObject = await this.getMicrosoftObject("All",obj.toolTip);
+            console.log("toolTipObject==>",newToolTipObject);
+            return { mapData, tableData:obj.tableObj , toolTipObject:newToolTipObject};
         } catch (error) {
             return null
         } finally {
             //TODO
         }
-    }
+    };
 
-    async getTableData(countryObj) {
-        console.log("countryObj==>", countryObj)
+    async getTableData(countryObj,toolTipObject) {
         let keys = Object.keys(countryObj);
-        console.log(keys)
         let tableObject = [];
         for (const key of keys) {
-            let status = "";
-            switch (countryObj[key]) {
-                case 1:
-                    status = "Live";
-                    break;
-                case 2:
-                    status = "InProgress";
-                    break;
-                case 3:
-                    status = "Approved";
-                    break;
-                case 4:
-                    status = "Potential";
-                    break;
-                default:
-                    break;
-            };
-            console.log(key);
+            let status = countryStatusConverterObj[countryObj[key]];
+            //console.log("getTableData==>",status,key);
             let countryCode = getCode(key);
             let { Population, Gdp } = await this.getPopulationAndGdp(countryCode);
+            toolTipObject[countryCode]['Population'] = Population;
+            toolTipObject[countryCode]['Gdp'] = Gdp;
             tableObject.push([key, Population, Gdp, status])
         }
-        return tableObject;
-    }
+        return {tableObj : tableObject,toolTip:toolTipObject};
+    };
 
     async getPopulationAndGdp(countryCode) {
-        console.log("getPopulationAndGdp")
         let Population = "";
         let Gdp = "";
         try {
@@ -138,33 +152,46 @@ export default class Utils {
             let data2 = JSON.parse(bodyGdp);
             Population = data1[1][0].value
             Gdp = data2[1][0].value
-            console.log("Population ", Population);
-            console.log("Gdp ", Gdp);
         } catch (error) {
             console.log("getPopulationAndGdp==>", error.message);
         }
 
         return { Population, Gdp };
-    }
+    };
     
-    async getMicrosoftObject(country) {
-        console.log("getMicrosoftObject==>country", country)
+    async getMicrosoftObject(country,toolTipObject) {
         try {
-            let requestUrl = `api/CountryRoadMap/${country}`;
+            let requestUrl = country==="All"?`api/CountryRoadMap`: `api/CountryRoadMap/${country}`;
             let response = await fetch(requestUrl, {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
                 method: "GET"//,headers: { 'authorization': 'Bearer ' + this.getWebApiToken() }
             });
             let data = await (this.handleErrors(response)).json();
-            console.log("getMicrosoftObject==>", data);
-            return parseMicrosoftObject(data.roadMapObject);
+            if(country !=="All")
+                return parseMicrosoftObject(data.roadMapObject);
+            else{
+                for (const roadmap of data.countries) {
+                    try {
+                        let code = await getCode(roadmap.countryName)
+                        let microsoft = parseMicrosoftObject(roadmap.roadMapObject);
+                        console.log("getMicrosoftObjec$$$$$==>",microsoft,toolTipObject)
+                        toolTipObject[code]["azureGa"] = microsoft.azureGa || "No Data"
+                        toolTipObject[code]["officeGa"] = microsoft.officeGa || "No Data"
+                        toolTipObject[code]["publicAnnouncement"] = microsoft.publicAnnouncement || "No Data"
+                    } catch (error) {
+                        console.log("getMicrosoftObjec$$$$$==>",error.message)
+                    }
+                }
+                console.log("getMicrosoftObject==>",toolTipObject)
+                return toolTipObject;
+            }
         } catch (error) {
             return null
         } finally {
             //TODO
         }
-    }
+    };
 
     async getOverViewObject(country) {
 
@@ -185,8 +212,31 @@ export default class Utils {
             console.log("getOverViewObject==> ", error.message);
         }
         return overViewObject;
+    };
+
+    getToolTipText(code){
+
     }
 
+    cloneObject(obj){
+        return JSON.parse(JSON.stringify(obj));
+    };
+
+    filterMapAndTableDataOnCard(key,mapObj,tableData){
+        let tableFeedData = tableData.filter(x=>x.includes(key));
+        let mapFeedData = {};
+        Object.keys(mapObj).forEach(objKy=>{
+            if(mapObj[objKy]===countryStatusConverterObj2[key])
+                mapFeedData[objKy]=countryStatusConverterObj2[key]
+            // console.log("filterMapAndTableDataOnCard==>,",mapObj[objKy],countryStatusConverterObj2[key])
+        });
+        //console.log("filterMapAndTableDataOnCard==>,",mapFeedData)
+        let mapColorCode = [];
+        let colorKey = Object.keys(mapColorCodes).filter(x=>x===key);
+        mapColorCode.push(mapColorCodes[colorKey]);
+        return {mapFeedData,tableFeedData,mapColorCode};
+
+    }
     handleErrors(response) {
         console.log("handleErrors==>", response);
         let ok = response.ok;
@@ -202,6 +252,6 @@ export default class Utils {
             throw new Error(`NetworkError: ErrorMsg ${statusText} & status code ${status}`);
         }
         return response;
-    }
+    };
 }
 

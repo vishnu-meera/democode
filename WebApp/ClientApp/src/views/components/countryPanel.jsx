@@ -1,7 +1,6 @@
 ﻿import React from "react";
 import Utils from '../../utils/utils';
 import { Link } from "react-router-dom";
-// reactstrap components
 import {
     Card,
     CardHeader,
@@ -31,24 +30,18 @@ class CountryPanel extends React.Component {
     async componentDidMount() {
         if (this.state.loading) {
             let microsoft = await this.utils.getMicrosoftObject(this.state.country);
-            console.log("microsoft==> ", microsoft)
-            await this.setState({ microsoft, loading: false })
+            await this.setState({ microsoft, loading: false });
         }
     }
 
     async componentDidUpdate(prevProps) {
-        // Typical usage (don't forget to compare props):
-        console.log("previous country : ==> ", prevProps.country);
-        console.log("current country : ==> ", this.props.country);
         if (this.props.country !== prevProps.country) {
             let microsoft = await this.utils.getMicrosoftObject(this.props.country);
-            console.log("microsoft==> ", microsoft)
             await this.setState({ microsoft, country: this.props.country, status: this.props.status });
         }
     }
 
     collapsesToggle = (collapse) => {
-        //event.preventDefault();
         let openedCollapses = this.state.openedCollapses;
         if (openedCollapses.includes(collapse)) {
             this.setState({

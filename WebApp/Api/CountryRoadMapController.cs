@@ -16,6 +16,14 @@ namespace WebApp.Api
     [ApiController]
     public class CountryRoadMapController : BaseController
     {
+        //GET : api/Country ==> ALL Countries
+        [HttpGet]
+        [ProducesResponseType(typeof(IEnumerable<CountryRoadMapListModel>), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> GetAll([FromQuery] GetAllRoadMaps query)
+        {
+            return Ok(await Mediator.Send(query));
+        }
+
         // GET: api/Country/USA ==> Country by name
         [HttpGet("{CountryName}")]
         [ProducesResponseType(typeof(CountryRoadMapModel), (int)HttpStatusCode.OK)]
