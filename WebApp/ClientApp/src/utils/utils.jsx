@@ -76,6 +76,7 @@ export default class Utils {
     getCode = getCode;
     mapColorCode = Object.values(mapColorCodes);
     mapColorCodes = mapColorCodes;
+    statusToShowDc = "Potential";
     async getCardsData() {
         try {
             let requestUrl = 'api/CountriesStatus';
@@ -214,6 +215,45 @@ export default class Utils {
         return overViewObject;
     };
 
+    async getDataCenterObject(country){
+        let dataCentersObject = [];
+        try {
+            let requestUrl = `api/Country/${country}`;
+            let response = await fetch(requestUrl, {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                method: "GET"//,headers: { 'authorization': 'Bearer ' + this.getWebApiToken() }
+            });
+            let data = await (this.handleErrors(response)).json();
+
+            dataCentersObject = JSON.parse(data.dataCenters)
+            return dataCentersObject;
+        } catch (error) {
+            return null
+        } 
+    };
+
+    async geMoveStatusObject(country){
+        let moveStatusObject = {}, moveStatusItems={}
+        try {
+            let requestUrl = 'api/MoveStatus';
+            let response = await fetch(requestUrl, {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                method: "GET"//,headers: { 'authorization': 'Bearer ' + this.getWebApiToken() }
+            });
+            let data = await (this.handleErrors(response)).json();
+
+            moveStatusObject = JSON.parse(data.moveStatusPercentageObj);
+            moveStatusItems = JSON.parse(data.moveStatusItems);
+        } catch (error) {
+            return null
+        } finally {
+           //TODO
+        }
+        return {moveStatusObject,moveStatusItems};
+    };
+
     getToolTipText(code){
 
     }
@@ -237,6 +277,7 @@ export default class Utils {
         return {mapFeedData,tableFeedData,mapColorCode};
 
     }
+
     handleErrors(response) {
         console.log("handleErrors==>", response);
         let ok = response.ok;

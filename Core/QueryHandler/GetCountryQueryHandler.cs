@@ -34,17 +34,19 @@ namespace Core.QueryHandler
 
             return new CountryModel
             {
-                CountryPartionKey = item.PartitionKey,
-                CountryRowKey = item.RowKey,
-                CountryStatus = item.Status,
-                CountryName = item.Name,
-                CountryAzureStatus = item.AzureStatus,
-                CountryCAPEX = item.CAPEX,
-                CountryColoReady = item.ColoReady,
-                CountryDCVendors = item.DCVendors,
-                CountryGolocalCountry = item.GolocalCountry,
-                CountryLeaseSigned = item.LeaseSigned,
-                CountryTelcoVendor = item.TelcoVendor
+                Status = item.Status,
+                DCX_Customers = item.DCX_Customers,
+                Name = item.Name,
+                AzureStatus = item.AzureStatus,
+                CAPEX = item.CAPEX,
+                GolocalCountry = item.GolocalCountry,
+                GDP = item.GDP,
+                Population = item.Population,
+                RevenueProjection3Y = item.RevenueProjection3Y,
+                RevenueProjection5Y = item.RevenueProjection5Y,
+                TAM_Restricted = item.TAM_Restricted,
+                TAM_UNRestricted = item.TAM_UNRestricted,
+                DataCenters = item.DataCenters
             };
 
         }

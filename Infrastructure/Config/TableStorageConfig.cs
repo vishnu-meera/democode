@@ -28,6 +28,8 @@ namespace Infrastructure.Config
                         instance.Add("Country", GetOrCreateBlobTable("Country"));
                         instance.Add("CountryDataCenters", GetOrCreateBlobTable("CountryDataCenters"));
                         instance.Add("CountryRoadMap", GetOrCreateBlobTable("CountryRoadMap"));
+                        instance.Add("DataCenterMoveStatus", GetOrCreateBlobTable("DataCenterMoveStatus"));
+                        instance.Add("CountryWorkLoad", GetOrCreateBlobTable("CountryWorkLoad"));
                     }
                     return instance;
                 }

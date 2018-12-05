@@ -6,16 +6,18 @@ namespace Core.Models
 {
     public class CountryModel
     {
-        public string CountryPartionKey { get; set; }
-        public string CountryRowKey { get; set; }
-        public string CountryStatus { get; set; }
-        public string CountryName { get; set; }
-        public string CountryAzureStatus { get; set; }
-        public string CountryCAPEX { get; set; }
-        public string CountryColoReady { get; set; }
-        public string CountryDCVendors { get; set; }
-        public string CountryGolocalCountry { get; set; }
-        public string CountryLeaseSigned { get; set; }
-        public string CountryTelcoVendor { get; set; }
+        public string Status { get; set; }
+        public string DCX_Customers { get; set; }
+        public string Name { get; set; }
+        public string AzureStatus { get; set; }
+        public string CAPEX { get; set; }
+        public string GolocalCountry { get; set; }
+        public string GDP { get; set; }
+        public string Population { get; set; }
+        public string RevenueProjection3Y { get; set; }
+        public string RevenueProjection5Y { get; set; }
+        public string TAM_Restricted { get; set; }
+        public string TAM_UNRestricted { get; set; }
+        public string DataCenters { get; set; }
     }
 }

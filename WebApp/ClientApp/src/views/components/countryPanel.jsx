@@ -7,8 +7,18 @@ import {
     CardBody,
     CardTitle,
     Collapse,
-    Button
+    Button,
+    DropdownToggle,
+    DropdownMenu,
+    DropdownItem,
+    UncontrolledDropdown,
+    FormGroup,
+    Progress,
+    Row,
+    Col
 } from "reactstrap";
+
+import ProgressBar from "views/components/progressbar.jsx"
 
 class CountryPanel extends React.Component {
     constructor(props) {
@@ -23,21 +33,24 @@ class CountryPanel extends React.Component {
             loading: true,
             openedCollapses: ["collapseOne"],
             microsoft: {},
-            redirect:false
+            redirect:false,
+            moveStatusObject:{}
         };
     };
 
     async componentDidMount() {
         if (this.state.loading) {
             let microsoft = await this.utils.getMicrosoftObject(this.state.country);
-            await this.setState({ microsoft, loading: false });
+            let { moveStatusObject} = await this.utils.geMoveStatusObject(this.props.country);
+            await this.setState({ microsoft, loading: false ,moveStatusObject});
         }
     }
 
     async componentDidUpdate(prevProps) {
         if (this.props.country !== prevProps.country) {
             let microsoft = await this.utils.getMicrosoftObject(this.props.country);
-            await this.setState({ microsoft, country: this.props.country, status: this.props.status });
+            let { moveStatusObject} = await this.utils.geMoveStatusObject(this.props.country);
+            await this.setState({ microsoft, country: this.props.country, status: this.props.status ,moveStatusObject});
         }
     }
 
@@ -91,46 +104,26 @@ class CountryPanel extends React.Component {
     }
 
     loadMoveStatus = () => {
-        if (this.state.loading) {
-            return null
-        } else {
-            return (
-                <Card className="card-plain">
-                    <CardHeader role="tab">
-                        <Button
-                            aria-expanded={this.state.openedCollapses.includes(
-                                "collapseFour"
-                            )}
-                            data-parent="#accordion"
-                            data-toggle="collapse"
-                            onClick={() => this.collapsesToggle("collapseFour")}>Move Status {" "}<i className="nc-icon nc-minimal-down" />
-                        </Button>
-                    </CardHeader>
-                    <Collapse
-                        role="tabpanel"
-                        isOpen={this.state.openedCollapses.includes(
+        return (
+            <Card className="card-plain">
+                <CardHeader role="tab">
+                    <Button
+                        aria-expanded={this.state.openedCollapses.includes(
                             "collapseFour"
-                        )}>
-                        <CardBody>
-                            <span><h6>Move Status</h6></span><br />
-                            <span>SPO</span><br />
-                            <div className="progress">
-                                <div className="progress-bar progress-bar-success" role="progressbar" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
-                            </div><br />
-                            <span>EXO</span><br />
-                            <div className="progress">
-                                <div className="progress-bar progress-bar-info" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
-                            </div><br />
-                            <span>Teams</span><br />
-                            <div className="progress">
-
-                                <div className="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100"></div>
-                            </div><br />
-                        </CardBody>
-                    </Collapse>
-                </Card>);
-        }
-
+                        )}
+                        data-parent="#accordion"
+                        data-toggle="collapse"
+                        onClick={() => this.collapsesToggle("collapseFour")}>Move Status {" "}<i className="nc-icon nc-minimal-down" />
+                    </Button>
+                </CardHeader>
+                <Collapse
+                    role="tabpanel"
+                    isOpen={this.state.openedCollapses.includes(
+                        "collapseFour"
+                    )}>
+                    {ProgressBar.call(this)}
+                </Collapse>
+            </Card>);
     }
     render() {
             return (<Card>

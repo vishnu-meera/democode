@@ -38,20 +38,22 @@ namespace Core.QueryHandler
 
             return new CountryListModel
             {
-                Countries = items.Select(c => new CountryModel
+                Countries = items.Select(item => new CountryModel
                     {
-                        CountryPartionKey = c.PartitionKey,
-                        CountryRowKey = c.RowKey,
-                        CountryStatus = c.Status,
-                        CountryName = c.Name,
-                        CountryAzureStatus = c.AzureStatus,
-                        CountryCAPEX = c.CAPEX,
-                        CountryColoReady = c.ColoReady,
-                        CountryDCVendors = c.DCVendors,
-                        CountryGolocalCountry = c.GolocalCountry,
-                        CountryLeaseSigned = c.LeaseSigned,
-                        CountryTelcoVendor = c.TelcoVendor
-                    }).ToList()
+                    Status = item.Status,
+                    DCX_Customers = item.DCX_Customers,
+                    Name = item.Name,
+                    AzureStatus = item.AzureStatus,
+                    CAPEX = item.CAPEX,
+                    GolocalCountry = item.GolocalCountry,
+                    GDP = item.GDP,
+                    Population = item.Population,
+                    RevenueProjection3Y = item.RevenueProjection3Y,
+                    RevenueProjection5Y = item.RevenueProjection5Y,
+                    TAM_Restricted = item.TAM_Restricted,
+                    TAM_UNRestricted = item.TAM_UNRestricted,
+                    DataCenters = item.DataCenters
+                }).ToList()
             };
 
         }

@@ -8,7 +8,6 @@ import Utils from '../../utils/utils';
 import { VectorMap } from "react-jvectormap";
 import CountryTables from "views/table/countryTable.jsx";
 import { Card,CardBody,CardTitle,Row,Col} from "reactstrap";
-import ReactTooltip from 'react-tooltip'
 
 class Dashboard extends React.Component {
 

@@ -14,11 +14,17 @@ import {
     Table,
     Row,
     Col,
-    UncontrolledTooltip
+    UncontrolledTooltip,
+    NavItem,
+    NavLink,
+    Nav,
+    TabContent,
+    TabPane
 } from "reactstrap";
 
-import MoveStatusTable from "views/table/moveStatus.jsx";
 
+import CountryTabPanel from "views/components/countryTabPanel.jsx"
+import DataCentersProgress from "views/components/datacenters.jsx"
 class Country extends React.Component {
 
     constructor(props) {
@@ -28,11 +34,14 @@ class Country extends React.Component {
         console.log("Country Component==> :", country)
         this.state = {
             country: country,
+            horizontalTabs:"Country",
             status:status,
             loading: true,
             countryCode: "",
             imgUri: "",
-            overViewObject:{ }
+            overViewObject:{},
+            moveStatusObject:{},
+            dataCentersObject:{}
         };
     }
 
@@ -41,7 +50,16 @@ class Country extends React.Component {
             let countryCode = await this.utils.getCode(this.state.country);
             let imgUri = `https://www.countryflags.io/${countryCode}/flat/64.png`;
             let overViewObject = await this.utils.getOverViewObject(this.state.country)
-            await this.setState({ imgUri, countryCode, loading: false, overViewObject })
+            await this.setState({ imgUri, countryCode, overViewObject })
+            if(this.utils.statusToShowDc===this.state.status){
+                let dataCentersObject  =await this.utils.getDataCenterObject(this.state.country);
+                await this.setState({ dataCentersObject,horizontalTabs:dataCentersObject[0].dcCode});
+                console.log("componentDidMount",dataCentersObject)
+            }else{
+                let  {moveStatusObject }= await this.utils.geMoveStatusObject(this.state.country);
+                await this.setState({moveStatusObject});
+            }
+            await this.setState({loading: false });
         }
     }
     
@@ -56,7 +74,7 @@ class Country extends React.Component {
                 <Row>
                     <Col sm="12">
                         <Card className="card-stats">
-                            <CardHeader>Overview</CardHeader>
+                            <CardHeader><h6>Overview</h6></CardHeader>
                                 <CardBody>
                                     <Row>
                                         <Col lg="3" md="5" sm="5">
@@ -127,20 +145,15 @@ class Country extends React.Component {
                                         <Col lg="3" md="5" sm="5">
                                             <Card className="card-stats">
                                                 <CardBody>
-                                                    <span><h6>Move Status</h6></span><br />
-                                                    <span>SPO</span><br />
-                                                    <div className="progress">
-                                                        <div className="progress-bar progress-bar-success" role="progressbar" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
-                                                    </div><br />
-                                                    <span>EXO</span><br />
-                                                    <div className="progress">
-                                                        <div className="progress-bar progress-bar-info" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
-                                                    </div><br />
-                                                    <span>Teams</span><br />
-                                                    <div className="progress">
-
-                                                        <div className="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100"></div>
-                                                    </div><br />
+                                                    <Row>
+                                                        <Col md="12" xs="12">
+                                                            <CountryTabPanel 
+                                                                country={this.state.country} 
+                                                                status={this.state.status}
+                                                                moveStatusObject={this.state.moveStatusObject}
+                                                                dataCentersObject={this.state.dataCentersObject} />
+                                                        </Col>
+                                                    </Row>
                                                 </CardBody>
                                             </Card>
                                         </Col>
@@ -149,20 +162,7 @@ class Country extends React.Component {
                         </Card>
                     </Col>
                 </Row>
-                <Row>
-                    <Col sm="12">
-                    <Card className="card-stats">
-                        <CardHeader>Move Status</CardHeader>
-                        <CardBody>
-                            <Row>
-                                <Col lg="4" md="5" sm="5"><MoveStatusTable workloadName={"SPO"}/></Col>
-                                <Col lg="4" md="5" sm="5"><MoveStatusTable workloadName={"Exo"}/></Col>
-                                <Col lg="4" md="5" sm="5"><MoveStatusTable workloadName={"Teams"}/></Col>
-                            </Row>
-                        </CardBody>
-                        </Card>
-                    </Col>
-                </Row>
+                <DataCentersProgress status={this.state.status}/>
             </div>
             </>
             );
