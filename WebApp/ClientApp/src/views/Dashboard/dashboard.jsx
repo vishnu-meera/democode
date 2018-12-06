@@ -8,7 +8,7 @@ import Utils from '../../utils/utils';
 import { VectorMap } from "react-jvectormap";
 import CountryTables from "views/table/countryTable.jsx";
 import { Card,CardBody,CardTitle,Row,Col} from "reactstrap";
-
+import Cards from "views/components/cards.jsx"
 class Dashboard extends React.Component {
 
     constructor(props) {
@@ -47,15 +47,24 @@ class Dashboard extends React.Component {
     showCustomToolTip (event,tip,code){
 		if (code in this.state.mapFeedData) {
             console.log("Tip===>",this.state.toolTipObject[code]);
-            tip.html(`<div className = 'btn btn-none'>
-            <strong className="bold">${this.state.toolTipObject[code].Name}</strong><br/><br>
-            <em>Population: ${this.state.toolTipObject[code].Population}</em><br/>
-            <em>GDP: ${this.state.toolTipObject[code].Gdp}</em><br/><em>_________________</em><br/>
-            <em>Status: ${this.state.toolTipObject[code].Status}</em><br/>
-            <em>Azure GA: ${this.state.toolTipObject[code].azureGa}</em><br/>
-            <em>Office GA: ${this.state.toolTipObject[code].officeGa}</em><br/><em>_________________</em><br/>
-            <em>Public Announcement: ${this.state.toolTipObject[code].publicAnnouncement}</em>
-        </div>`); 
+            if(this.state.toolTipObject[code].Status===this.utils.statusToShowDc){
+                tip.html(`<div className = 'btn btn-none'>
+                <strong className="bold">${this.state.toolTipObject[code].Name}</strong><br/><br>
+                <em>Population: ${this.state.toolTipObject[code].Population}</em><br/>
+                <em>GDP: ${this.state.toolTipObject[code].Gdp}</em><br/><em>_________________</em><br/>
+                <em>Status: ${this.state.toolTipObject[code].Status}</em><br/>
+                </div>`); 
+            }else{
+                tip.html(`<div className = 'btn btn-none'>
+                <strong className="bold">${this.state.toolTipObject[code].Name}</strong><br/><br>
+                <em>Population: ${this.state.toolTipObject[code].Population}</em><br/>
+                <em>GDP: ${this.state.toolTipObject[code].Gdp}</em><br/><em>_________________</em><br/>
+                <em>Status: ${this.state.toolTipObject[code].Status}</em><br/>
+                <em>Azure GA: ${this.state.toolTipObject[code].azureGa}</em><br/>
+                <em>Office GA: ${this.state.toolTipObject[code].officeGa}</em><br/><em>_________________</em><br/>
+                <em>Public Announcement: ${this.state.toolTipObject[code].publicAnnouncement}</em>
+                </div>`); 
+            }
 		} else  {
             event.preventDefault();
 		}
@@ -75,43 +84,6 @@ class Dashboard extends React.Component {
             await this.setState({mapFeedData,tableFeedData,mapColorCode});
             await this.setState({mapLoading:false})
         }
-    }
-
-    cards = () => {
-        let keys = Object.keys(this.state.cardsStatus.countriesStatusList);
-        console.log(this.state.cardsStatus.countriesStatusList)
-        return (<Row>
-            {
-                keys.map((key) => {
-                    let iconcss = `${this.utils.cardIconCssObj[key]} ${this.utils.textIconCssObj[key]}`;
-                    let textcss = `text-left ${this.utils.textIconCssObj[key]}`;
-                    let btnvcss = `card-stats btn btn-none ${this.state.cardActiveKey===key?'active':null}`;
-                    return (
-                        <Col lg="3" md="4" sm="4" key={key}>
-                            <Card 
-                                className= {btnvcss}
-                                onClick={()=>{this.onCardClick(key)}}>
-                                <CardBody>
-                                    <Row>
-                                        <Col md="4" xs="5">
-                                            <div className="icon-big text-center">
-                                                <i className={iconcss}/>
-                                            </div>
-                                        </Col>
-                                        <Col md="8" xs="7">
-                                            <div className="numbers">
-                                                <h5 className="card-category text-left">{key}</h5>
-                                                <CardTitle tag="p" className={textcss}>{this.state.cardsStatus.countriesStatusList[key]}</CardTitle>
-                                            </div>
-                                        </Col>
-                                    </Row>
-                                </CardBody>
-                            </Card>
-                        </Col>
-                    );
-                })
-            }
-        </Row>);
     }
 
     worldmap = (mapFeedData,mapColorCode) => {
@@ -178,7 +150,7 @@ class Dashboard extends React.Component {
             return (
                 <>
                     <div className="content">
-                        {this.cards()}
+                        {Cards.call(this)}
                         {this.worldmap(this.state.mapFeedData,this.state.mapColorCode)}
                         <CountryTables data={this.state.tableFeedData} tableData={this.state.tableData}/>
                     </div>

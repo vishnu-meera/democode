@@ -1,16 +1,17 @@
 
-.card-plain{
-    background: transparent;
-    box-shadow: none;
+.card-plain {
+    background-color: transparent;
+    border-color: #ccc;
+    box-shadow:inset;
 
     .card-header,
-    .card-footer{
+    .card-footer {
         margin-left: 0;
         margin-right: 0;
         background-color: transparent;
     }
 
-    &:not(.card-subcategories).card-body{
+    &:not(.card-subcategories).card-body {
         padding-left: 0;
         padding-right: 0;
     }

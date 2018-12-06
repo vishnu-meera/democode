@@ -107,11 +107,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Entities\Country.cs" />
+    <Compile Include="Entities\CountryDataCenters.cs" />
     <Compile Include="Entities\CountryRoadMap.cs" />
     <Compile Include="Entities\DataCenterMoveStatus.cs" />
     <Compile Include="Exceptions\NotFoundException.cs" />
     <Compile Include="Infrastructure\RequestLogger.cs" />
     <Compile Include="Interfaces\IRepository.cs" />
+    <Compile Include="Models\CountryDataCentersModel.cs" />
     <Compile Include="Models\CountryListModel.cs" />
     <Compile Include="Models\CountryModel.cs" />
     <Compile Include="Models\CountryRoadMapListModel.cs" />
@@ -126,6 +128,7 @@
     <Compile Include="Queries\GetAllRoadMaps.cs" />
     <Compile Include="Queries\GetCountry.cs" />
     <Compile Include="Queries\GetCountryRoadMap.cs" />
+    <Compile Include="Queries\GetDataCenter.cs" />
     <Compile Include="Queries\GetStatus.cs" />
     <Compile Include="Queries\GetStatusCount.cs" />
     <Compile Include="QueryHandler\GetAllCountriesHandler.cs" />
@@ -133,6 +136,7 @@
     <Compile Include="QueryHandler\GetAllRoadMapsHandler.cs" />
     <Compile Include="QueryHandler\GetCountryQueryHandler.cs" />
     <Compile Include="QueryHandler\GetCountryRoadMapHandler.cs" />
+    <Compile Include="QueryHandler\GetDataCenterHandler.cs" />
     <Compile Include="QueryHandler\GetStatusCountQueryHandler.cs" />
     <Compile Include="QueryHandler\GetStatusHandler.cs" />
     <Compile Include="Sharedkernel\BaseEntity.cs" />

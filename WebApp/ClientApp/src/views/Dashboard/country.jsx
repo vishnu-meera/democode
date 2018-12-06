@@ -31,17 +31,19 @@ class Country extends React.Component {
         super(props);
         this.utils = new Utils();
         const { country ,status} = props.location.state
-        console.log("Country Component==> :", country)
+        //console.log("Country Component==> :", country)
         this.state = {
             country: country,
             horizontalTabs:"Country",
             status:status,
             loading: true,
+            loadingDC: false,
             countryCode: "",
             imgUri: "",
             overViewObject:{},
             moveStatusObject:{},
-            dataCentersObject:{}
+            dataCentersObject:{},
+            dataCenterTimeLineObj:{}
         };
     }
 
@@ -53,8 +55,10 @@ class Country extends React.Component {
             await this.setState({ imgUri, countryCode, overViewObject })
             if(this.utils.statusToShowDc===this.state.status){
                 let dataCentersObject  =await this.utils.getDataCenterObject(this.state.country);
-                await this.setState({ dataCentersObject,horizontalTabs:dataCentersObject[0].dcCode});
-                console.log("componentDidMount",dataCentersObject)
+                let dataCenterTimeLineObj = await this.utils.getDataCenterObjectWithDCCode(this.state.country,dataCentersObject[0].dcCode);
+                //console.log("getDataCenterObject dataCenterTimeLineObj==>",dataCenterTimeLineObj);
+                await this.setState({ dataCentersObject,horizontalTabs:dataCentersObject[0].dcCode,dataCenterTimeLineObj});
+                //console.log("componentDidMount",dataCentersObject)
             }else{
                 let  {moveStatusObject }= await this.utils.geMoveStatusObject(this.state.country);
                 await this.setState({moveStatusObject});
@@ -63,6 +67,13 @@ class Country extends React.Component {
         }
     }
     
+    getDataCenterObject = async(dataCenterObj)=>{
+        await this.setState({loadingDC: true });
+        //console.log("getDataCenterObject dataCenterObj==>",dataCenterObj.dcCode);
+        let dataCenterTimeLineObj = await this.utils.getDataCenterObjectWithDCCode(this.state.country,dataCenterObj.dcCode);
+        await this.setState({dataCenterTimeLineObj,loadingDC: false});
+    }
+
     render() {
         if (this.state.loading) {
             return null
@@ -148,6 +159,7 @@ class Country extends React.Component {
                                                     <Row>
                                                         <Col md="12" xs="12">
                                                             <CountryTabPanel 
+                                                                getDataCenterObject = {this.getDataCenterObject}
                                                                 country={this.state.country} 
                                                                 status={this.state.status}
                                                                 moveStatusObject={this.state.moveStatusObject}
@@ -162,7 +174,15 @@ class Country extends React.Component {
                         </Card>
                     </Col>
                 </Row>
-                <DataCentersProgress status={this.state.status}/>
+                <Row>
+                    <Col sm="12">
+                        <Card className="charts">
+                        { (this.state.loadingDC)?null:
+                   (<DataCentersProgress status={this.state.status} dataCenterTimeLineObj={this.state.dataCenterTimeLineObj}/>)
+                }
+                        </Card>
+                    </Col>
+                </Row>
             </div>
             </>
             );

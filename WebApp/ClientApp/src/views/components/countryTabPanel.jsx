@@ -45,6 +45,12 @@ class CountryTabPanel extends React.Component {
         };
     }
 
+    dataCenterNavClicked = async (e,dataCenterObj)=>{
+        //console.log("dataCenterNavClicked==> ",e);
+       // console.log("dataCenterNavClicked==> ",dataCenterObj);
+        await this.props.getDataCenterObject(dataCenterObj);
+    }
+
     async componentDidUpdate(prevProps) {
         if (this.props.moveStatusObject !== prevProps.moveStatusObject || this.props.dataCentersObject !== prevProps.dataCentersObject ) {
             await this.setState({loading:true});

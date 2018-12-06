@@ -403,3 +403,14 @@ $social-behance-state-color:       lighten(#1769ff, 6%) !default;
 $input-color-placeholder: #999 !default;
 
 $zindex-select-dropdown: 1060 !default; // must be higher than a modal background (1050)
+
+
+$numDots:                           20;
+$parentWidthBase:                   0.8;
+$parentWidth:                       $parentWidthBase * 100vw;
+$parentMaxWidth:                    1000px;
+$dotWidth:                          25px;
+$dotWidthSm:                        17px;
+$active:                            #2C3E50;
+$inactive:                          #AEB6BF;
+

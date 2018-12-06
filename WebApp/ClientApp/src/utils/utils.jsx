@@ -117,7 +117,7 @@ export default class Utils {
             });
             let obj = await this.getTableData({ ...data.countriesStatusList },toolTipObject);
             let newToolTipObject = await this.getMicrosoftObject("All",obj.toolTip);
-            console.log("toolTipObject==>",newToolTipObject);
+            //console.log("toolTipObject==>",newToolTipObject);
             return { mapData, tableData:obj.tableObj , toolTipObject:newToolTipObject};
         } catch (error) {
             return null
@@ -176,15 +176,15 @@ export default class Utils {
                     try {
                         let code = await getCode(roadmap.countryName)
                         let microsoft = parseMicrosoftObject(roadmap.roadMapObject);
-                        console.log("getMicrosoftObjec$$$$$==>",microsoft,toolTipObject)
+                        //console.log("getMicrosoftObjec$$$$$==>",microsoft,toolTipObject)
                         toolTipObject[code]["azureGa"] = microsoft.azureGa || "No Data"
                         toolTipObject[code]["officeGa"] = microsoft.officeGa || "No Data"
                         toolTipObject[code]["publicAnnouncement"] = microsoft.publicAnnouncement || "No Data"
                     } catch (error) {
-                        console.log("getMicrosoftObjec$$$$$==>",error.message)
+                        //console.log("getMicrosoftObjec$$$$$==>",error.message)
                     }
                 }
-                console.log("getMicrosoftObject==>",toolTipObject)
+                //console.log("getMicrosoftObject==>",toolTipObject)
                 return toolTipObject;
             }
         } catch (error) {
@@ -230,6 +230,27 @@ export default class Utils {
             return dataCentersObject;
         } catch (error) {
             return null
+        } 
+    };
+
+    async getDataCenterObjectWithDCCode(country,dccode){
+        let dataCenterTimeLineObject ;
+        try {
+            let requestUrl = `api/CountryDataCenters/${country}/${dccode}`;
+            let response = await fetch(requestUrl, {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                method: "GET"//,headers: { 'authorization': 'Bearer ' + this.getWebApiToken() }
+            });
+
+            response = this.handleErrors(response) ; 
+            let data = await response.text();
+            dataCenterTimeLineObject = JSON.parse(data);
+            return dataCenterTimeLineObject;
+
+        } catch (error) {
+            console.log("dataCenterTimeLineObject==> error",error.message)
+            return dataCenterTimeLineObject
         } 
     };
 

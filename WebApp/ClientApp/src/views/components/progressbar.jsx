@@ -17,9 +17,9 @@ import {
 } from "reactstrap";
 
 export default function ProgressBar() {
-    console.log("ProgressBar movestatusprogress", this.state.moveStatusObject)
+    //console.log("ProgressBar movestatusprogress", this.state.moveStatusObject)
     let movestatusprogress = Object.keys(this.state.moveStatusObject).map(key=>{
-        console.log(this.state.moveStatusObject[key].toString())
+        //console.log(this.state.moveStatusObject[key].toString())
         return (<div key ={key}>
             <CardTitle tag="h6">{key}</CardTitle>
             <Progress max="100" value={this.state.moveStatusObject[key].toString()} barClassName="progress-bar-danger" />
