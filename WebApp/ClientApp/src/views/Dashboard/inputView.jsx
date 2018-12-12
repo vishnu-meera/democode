@@ -58,10 +58,10 @@ class InputView extends React.Component {
 
     //adding roadmap array
     async addRoadMap(CountryRoadMaps){
-        console.log("RoadMap==>",CountryRoadMaps)
-        // for (const CountryRoadMap of CountryRoadMaps) {
-        //     let response = await this.utils.addRoadMapObject(CountryRoadMap);
-        // }
+        //console.log("RoadMap==>",CountryRoadMaps)
+        for (const CountryRoadMap of CountryRoadMaps) {
+            let response = await this.utils.addRoadMapObject(CountryRoadMap);
+        }
         
     };
 
@@ -78,7 +78,10 @@ class InputView extends React.Component {
                 let workloadRowArr = sheet2arr(workbook.Sheets[wrkld]);
                 let workLoadsHeader = sheet2arr_2(workbook.Sheets[wrkld])[0]
                 workloadObject = this.utils.getWorkloadObject(workloadRowArr,dataCenterArray,countryOject.Name,workLoadsHeader);
-                console.log("WorkLoad ==>",workloadObject);
+                //console.log("WorkLoad ==>",workloadObject);
+                for (const obj of workloadObject) {
+                    let response = await this.utils.addWorkLoads(obj);
+                }
             }  
         }
 
@@ -86,12 +89,15 @@ class InputView extends React.Component {
             if(dataCenterArray.length>0){
                 let dataCenterRowArr = sheet2arr(workbook.Sheets[mcio]);
                 datacnterObject = this.utils.getDataCenterObject(dataCenterRowArr,dataCenterArray,countryOject.Name,TimeLine);
-                console.log("Datacenter ==>",datacnterObject);
+                //console.log("Datacenter ==>",datacnterObject);
+                for (const obj of datacnterObject) {
+                    let response = await this.utils.addDataCenter(obj);
+                }
             }
         }
 
-        console.log("Country===>",countryOject)
-        //let response = await this.utils.addCountryObject(countryOject);
+        //console.log("Country===>",countryOject)
+        let response = await this.utils.addCountryObject(countryOject);
     };
 
     handleChange2  = async (e, results) => {

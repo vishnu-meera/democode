@@ -19,7 +19,7 @@ let roadmapsummaryObjKeys = {
 };
 
 const CountryObject = {
-    "PartionKey": "Countries",
+    "PartitionKey": "Countries",
     "RowKey": "",
     "Status": "",
     "DCX_Customers": " No Data",
@@ -220,7 +220,7 @@ export default class DataCapturingUtils {
                 workLoadObject.DataCenterName = datacenter.name;
                 workLoadObject.WorkLoadStatus = statusArray[Math.floor(Math.random() * statusArray.length)];
                 workLoadObject.WorkLoadName = element[0];
-                workLoadObject.Phase = JSON.stringify(phasesObject[element[0]]);
+                workLoadObject.Phases = JSON.stringify(phasesObject[element[0]]);
                 temp.push(workLoadObject);
             }
         }
