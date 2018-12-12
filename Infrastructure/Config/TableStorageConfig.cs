@@ -41,7 +41,7 @@ namespace Infrastructure.Config
             CloudTable table = null;
             try
             {
-                var storageTableConnectionString = "";
+                var storageTableConnectionString = "DefaultEndpointsProtocol=https;AccountName=golocaldashboarddb;AccountKey=ws+3kh+5yaAK4reikf1gAygzvUprXeN06ic0hBwi5QBiCh7fWxH/6A4tIxmjmEuqrsE9rxfJOiAEWsPxCK0bsw==;EndpointSuffix=core.windows.net";
                 CloudStorageAccount storageAccount = CloudStorageAccount.Parse(storageTableConnectionString);
                 // Create the table client.
                 CloudTableClient tableClient = storageAccount.CreateCloudTableClient();
