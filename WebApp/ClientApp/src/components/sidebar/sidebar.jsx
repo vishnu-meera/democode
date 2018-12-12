@@ -9,8 +9,9 @@ import { Nav } from "reactstrap";
 class Sidebar extends React.Component {
     // this function creates the links and collapses that appear in the sidebar (left menu)
     createLinks = routes => {
+        console.log("Routes===>,",routes)
         return routes.map((prop, key) => {
-            if(prop.path==='/dashboard')
+            if(prop.path !=='country')
                 return (
                     <li className={this.activeRoute(prop.layout + prop.path)} key={key}>
                         <NavLink to={prop.layout + prop.path} activeClassName="">
@@ -40,10 +41,10 @@ class Sidebar extends React.Component {
         return (
             <div className="sidebar" data-color={this.props.bgColor} data-active-color={this.props.activeColor}>
                 <div className="logo">
-                    <a href="/admin/dashboard" className="simple-text logo-mini">
+                    <a href="/dashboard" className="simple-text logo-mini">
 
                     </a>
-                    <a href="/admin/dashboard" className="simple-text logo-normal"> GOLOCAL </a>
+                    <a href="/dashboard" className="simple-text logo-normal"> GOLOCAL </a>
                 </div>
                 <div className="sidebar-wrapper" ref="sidebar">
                     <Nav>{this.createLinks(this.props.routes)}</Nav>

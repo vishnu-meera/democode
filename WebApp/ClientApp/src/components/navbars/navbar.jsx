@@ -19,7 +19,7 @@ import {
 
 import defaultavatar from "assests/img/defaultavatar.png"; //default picture
 
-class AdminNavbar extends React.Component {
+class DashBoardNav extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -144,5 +144,5 @@ class AdminNavbar extends React.Component {
     }
 }
 
-export default AdminNavbar;
+export default DashBoardNav;
 

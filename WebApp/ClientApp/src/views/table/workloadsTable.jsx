@@ -28,6 +28,7 @@ const getTableData =(tableData)=>{
     let data =  tableData.map((obj, key) => {
         return {
             id:key,
+            category:obj["Workloads"].substr(0, obj["Workloads"].indexOf(" ")) || "No Category",
             workload:obj["Workloads"],
             tam:obj["TAM Awarded"]["Status"] || "No Data Available",
             dockdate:obj["Dock Date (MCIO)"]["Status"] || "No Data Available",
@@ -41,22 +42,50 @@ const getTableData =(tableData)=>{
     return {data};
 }
 
+const getWorkLoadData =(tableData)=>{
+    
+    let data =  tableData.map((obj, key) => {
+        return {
+            id:key,
+            Phase: obj["Phase"] || "No available data",
+            PlannedDuration: obj["Planned Duration"] || "No available data",
+            PlannedFinish: obj["Planned Finish"] || "No available data",
+            PlannedStart: obj["Planned Start"] || "No available data",
+            Remarks: obj["Remarks"] || "No available data",
+            RevisedDuration: obj["Revised Duration"] || "No available data",
+            RevisedFinish: obj["Revised Finish"] || "No available data",
+            RevisedStart:  obj["Revised Start"] || "No available data",
+            Status: obj["Status"] || "No available data"
+        };
+    });
+    console.log("getWorkLoadData==>",data)
+    return data;
+}
+
 class WorkLoadTable extends React.Component {
     constructor(props) {
         super(props);
         this.utils = new Utils();
         this.state = {
             ...getTableData(this.props.tableData),
-            modalOpen:false
+            modalOpen:false,
+            modelData:[],
+            modelKey : ""
         };
         this.onCellClick = this.onCellClick.bind(this);
     }
 
-    async onCellClick(row){
-        console.log("onCellClick==>",row);
-        this.setState({
-            modalOpen: !this.state.modalOpen
-        });
+    async onCellClick(e){
+        let modelKey  =  e.row.category;
+        let workloadObj = this.props.workloadobject.countryWorkLoads;
+        console.log("onCellCLick==>", workloadObj)
+        let phases  = workloadObj.filter(x=>x.workLoadName===modelKey);
+        if(phases.length>0){
+            console.log("onCellCLick==>", getWorkLoadData(JSON.parse(phases[0].phases)))
+            let modelData = getWorkLoadData(JSON.parse(phases[0].phases))
+            await this.setState({modelData,modelKey});
+            await this.setState({            modalOpen: !this.state.modalOpen,})
+        }
     }
 
     async componentDidUpdate(prevProps) {
@@ -77,7 +106,7 @@ class WorkLoadTable extends React.Component {
     _renderWorkLoadModal(){
         return(
 
-                <Modal isOpen={this.state.modalOpen} toggle={this.toggleModal}>
+                <Modal isOpen={this.state.modalOpen} toggle={this.toggleModal} size={"lg"}>
                     <div className="modal-header">
                         <button
                             aria-hidden={true}
@@ -86,60 +115,64 @@ class WorkLoadTable extends React.Component {
                             type="button"
                             onClick={this.toggleModal}><i className="nc-icon nc-simple-remove" />
                         </button>
-                        <h5 className="modal-title text-left" id="myModalLabel">EXO</h5>
+                        <h5 className="modal-title text-left" id="myModalLabel">{this.state.modelKey}</h5>
                     </div>
                     <div className="modal-body">
-
                                     <ReactTable
-                                        data={this.state.data}
+                                        data={this.state.modelData}
                                         filterable
                                         columns={[
                                             {
-                                                Header: "Workloads",
-                                                accessor: "workload", 
-                                                filterable:false,
-                                                sortable:false,
-                                                Cell: row => (
-                                                    <span
-                                                        style={{cursor:"pointer"}}
-                                                        onClick={() => this.onCellClick(row)}>
-                                                        {row.value}
-                                                    </span>
-                                                )
-                                            },
-                                            {
-                                                Header: "TAM Awarded",
-                                                accessor: "tam",
-                                                filterable:false,
-                                                sortable:false
-                                            },
-                                            {
-                                                Header: "Dock Date (MCIO)",
-                                                accessor: "dockdate",
+                                                Header: "Phase",
+                                                accessor: "Phase", 
                                                 filterable:false,
                                                 sortable:false,
                                             },
                                             {
-                                                Header: "RTEG Date (MCIO)",
-                                                accessor: "rtegdate",
+                                                Header: "Planned Duration",
+                                                accessor: "PlannedDuration",
+                                                filterable:false,
+                                                sortable:false
+                                            },
+                                            {
+                                                Header: "Planned Finish",
+                                                accessor: "PlannedFinish",
                                                 filterable:false,
                                                 sortable:false,
                                             },
                                             {
-                                                Header: 'Notes',
-                                                accessor: 'notes',
+                                                Header: "Planned Start",
+                                                accessor: "PlannedStart",
+                                                filterable:false,
+                                                sortable:false,
+                                            },
+                                            {
+                                                Header: 'Remarks',
+                                                accessor: 'Remarks',
                                                 filterable:false,
                                                 sortable:false
                                             },
                                             {
-                                                Header: 'Calender Months/Days to Deploy (in Months)',
-                                                accessor: 'calender',
+                                                Header: 'Revised Duration',
+                                                accessor: 'RevisedDuration',
                                                 filterable:false,
                                                 sortable:false
                                             },
                                             {
-                                                Header: 'Engineering readiness',
-                                                accessor: 'engineering',
+                                                Header: 'Revised Finish',
+                                                accessor: 'RevisedFinish',
+                                                filterable:false,
+                                                sortable:false
+                                            },
+                                            {
+                                                Header: 'Revised Start',
+                                                accessor: 'RevisedStart',
+                                                filterable:false,
+                                                sortable:false
+                                            },
+                                            {
+                                                Header: 'Status',
+                                                accessor: 'Status',
                                                 filterable:false,
                                                 sortable:false
                                             }
@@ -167,8 +200,8 @@ class WorkLoadTable extends React.Component {
                                         filterable
                                         columns={[
                                             {
-                                                Header: "Workloads",
-                                                accessor: "workload", 
+                                                Header: "Worload Category",
+                                                accessor: "category", 
                                                 filterable:false,
                                                 sortable:false,
                                                 Cell: row => (
@@ -178,6 +211,12 @@ class WorkLoadTable extends React.Component {
                                                         {row.value}
                                                     </span>
                                                 )
+                                            },
+                                            {
+                                                Header: "Workloads",
+                                                accessor: "workload", 
+                                                filterable:false,
+                                                sortable:false
                                             },
                                             {
                                                 Header: "TAM Awarded",

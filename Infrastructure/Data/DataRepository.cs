@@ -21,6 +21,17 @@ namespace Infrastructure.Data
             tableList = TableStorageConfig.Instance;
         }
 
+        public async Task<string> Add<T>(T entity, string tableName) where T : BaseEntity, new()
+        {
+            // Create the InsertOrReplace TableOperation.
+            TableOperation insertOrReplaceOperation = TableOperation.InsertOrReplace(entity);
+
+            // Execute the insert operation.
+            var temp = await tableList[tableName].ExecuteAsync(insertOrReplaceOperation);
+
+            return entity.RowKey;
+        }
+
         public async Task<T> Get<T>(string tableName, string partionkey, string rowkey) where T: BaseEntity, new()
         {
             // Create a retrieve operation that takes a customer entity.
@@ -51,6 +62,11 @@ namespace Infrastructure.Data
             } while (token != null);
 
             return range;
+        }
+
+        public Task<string> Update<T>(T entity, string tableName) where T : BaseEntity, new()
+        {
+            throw new NotImplementedException();
         }
     }
 }

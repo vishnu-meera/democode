@@ -46,7 +46,8 @@ class CountryTables extends React.Component {
         this.utils = new Utils();
         this.data = this.props.data;
         this.state = {
-            ...getTableData(this.data)
+            ...getTableData(this.data),
+            loading:true
         };
         this.submitClick = this.submitClick.bind(this);
     }
@@ -66,6 +67,12 @@ class CountryTables extends React.Component {
         }
     }
 
+    async componentDidMount() {
+        if (this.state.loading) {
+            await this.setState({loading: false})
+        }
+    }
+
     async onClickDropDown(status){
         console.log("onClickDropDown==>",status);
         if(status==="All") await this.setState({ ...getTableData(this.data)});
@@ -78,6 +85,9 @@ class CountryTables extends React.Component {
         let dropdownItems = keys.map(status => {
             return (<DropdownItem key={status} onClick={()=>{this.onClickDropDown(status)}}>{status}</DropdownItem>);
         });
+        if(this.state.loading)
+            return null;
+        else{
         return (<div className="content">
                     <Row>
                         <Col md="8">
@@ -164,10 +174,16 @@ class CountryTables extends React.Component {
                             </Card>
                         </Col>
                         <Col md="4">
-                            <CountryPanel country={this.state.country} gdp={this.state.gdp} status={this.state.status} population={this.state.population} />
+                            <CountryPanel 
+                                country={this.state.country} 
+                                gdp={this.state.gdp} 
+                                status={this.state.status} 
+                                population={this.state.population} 
+                                />
                         </Col>
                     </Row>
                 </div>);
+        }
     }
 }
 

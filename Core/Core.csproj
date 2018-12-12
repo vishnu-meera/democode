@@ -106,9 +106,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CommandHandler\AddCountryHandler.cs" />
+    <Compile Include="CommandHandler\AddRoadMapHandler.cs" />
+    <Compile Include="Commands\AddCountry.cs" />
+    <Compile Include="Commands\AddRoadMap.cs" />
     <Compile Include="Entities\Country.cs" />
     <Compile Include="Entities\CountryDataCenters.cs" />
     <Compile Include="Entities\CountryRoadMap.cs" />
+    <Compile Include="Entities\CountryWorkLoad.cs" />
     <Compile Include="Entities\DataCenterMoveStatus.cs" />
     <Compile Include="Exceptions\NotFoundException.cs" />
     <Compile Include="Infrastructure\RequestLogger.cs" />
@@ -119,6 +124,8 @@
     <Compile Include="Models\CountryRoadMapListModel.cs" />
     <Compile Include="Models\CountryRoadMapModel.cs" />
     <Compile Include="Models\CountryStatus.cs" />
+    <Compile Include="Models\CountryWorkLoadListModel.cs" />
+    <Compile Include="Models\CountryWorkLoadModel.cs" />
     <Compile Include="Models\DataCenterMoveStatusModel.cs" />
     <Compile Include="Models\Status.cs" />
     <Compile Include="Models\StatusList.cs" />
@@ -131,9 +138,11 @@
     <Compile Include="Queries\GetDataCenter.cs" />
     <Compile Include="Queries\GetStatus.cs" />
     <Compile Include="Queries\GetStatusCount.cs" />
+    <Compile Include="Queries\GetAllWorkLoads.cs" />
     <Compile Include="QueryHandler\GetAllCountriesHandler.cs" />
     <Compile Include="QueryHandler\GetAllMoveStatusHandler.cs" />
     <Compile Include="QueryHandler\GetAllRoadMapsHandler.cs" />
+    <Compile Include="QueryHandler\GetAllWorkLoadsHandler.cs" />
     <Compile Include="QueryHandler\GetCountryQueryHandler.cs" />
     <Compile Include="QueryHandler\GetCountryRoadMapHandler.cs" />
     <Compile Include="QueryHandler\GetDataCenterHandler.cs" />
@@ -145,9 +154,6 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="CommandHandler\" />
-    <Folder Include="Commands\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

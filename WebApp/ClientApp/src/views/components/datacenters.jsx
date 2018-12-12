@@ -34,7 +34,8 @@ export default class DataCentersProgress extends React.Component {
             value : 0,
             previous: 0,
             dataCenterTimeLineObj:this.props.dataCenterTimeLineObj,
-            hoverObject : this.checkEmptyObject(this.props.dataCenterTimeLineObj)?{}: JSON.parse(this.props.dataCenterTimeLineObj.timeLine)[0]
+            hoverObject : this.checkEmptyObject(this.props.dataCenterTimeLineObj)?{}: JSON.parse(this.props.dataCenterTimeLineObj.timeLine)[0],
+            workloadobject:{}
         };
     }
 
@@ -48,6 +49,9 @@ export default class DataCentersProgress extends React.Component {
             let dataCenterTimeLineObj = this.props.dataCenterTimeLineObj;
             let hoverObject = JSON.parse(this.props.dataCenterTimeLineObj.timeLine)[0];
             await this.setState({status,dataCenterTimeLineObj,hoverObject});
+        }
+        if (this.props.workloadobject !== prevProps.workloadobject) {
+            await this.setState({workloadobject:this.props.workloadobject});
         }
     }
 
@@ -115,7 +119,7 @@ export default class DataCentersProgress extends React.Component {
             <>
                 <CardHeader>{this.state.dataCenterTimeLineObj.dataCenterName}</CardHeader>
                 {this._renderDC()}
-                <WorkLoadTable tableData = {JSON.parse(this.props.dataCenterTimeLineObj.workLoads)}/>
+                <WorkLoadTable tableData = {JSON.parse(this.props.dataCenterTimeLineObj.workLoads) }workloadobject = {this.props.workloadobject}/>
             </>
         ):
         (<Row>

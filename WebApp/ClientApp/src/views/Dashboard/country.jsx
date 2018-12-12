@@ -43,7 +43,8 @@ class Country extends React.Component {
             overViewObject:{},
             moveStatusObject:{},
             dataCentersObject:{},
-            dataCenterTimeLineObj:{}
+            dataCenterTimeLineObj:{},
+            workloadobject:{}
         };
     }
 
@@ -56,8 +57,9 @@ class Country extends React.Component {
             if(this.utils.statusToShowDc===this.state.status){
                 let dataCentersObject  =await this.utils.getDataCenterObject(this.state.country);
                 let dataCenterTimeLineObj = await this.utils.getDataCenterObjectWithDCCode(this.state.country,dataCentersObject[0].dcCode);
+                let workloadobject = await this.utils.geAlltWorkloadObjects(this.state.country,dataCentersObject[0].dcCode)
                 //console.log("getDataCenterObject dataCenterTimeLineObj==>",dataCenterTimeLineObj);
-                await this.setState({ dataCentersObject,horizontalTabs:dataCentersObject[0].dcCode,dataCenterTimeLineObj});
+                await this.setState({ dataCentersObject,horizontalTabs:dataCentersObject[0].dcCode,dataCenterTimeLineObj,workloadobject});
                 //console.log("componentDidMount",dataCentersObject)
             }else{
                 let  {moveStatusObject }= await this.utils.geMoveStatusObject(this.state.country);
@@ -163,7 +165,8 @@ class Country extends React.Component {
                                                                 country={this.state.country} 
                                                                 status={this.state.status}
                                                                 moveStatusObject={this.state.moveStatusObject}
-                                                                dataCentersObject={this.state.dataCentersObject} />
+                                                                dataCentersObject={this.state.dataCentersObject}
+                                                                 />
                                                         </Col>
                                                     </Row>
                                                 </CardBody>
@@ -178,7 +181,7 @@ class Country extends React.Component {
                     <Col sm="12">
                         <Card className="charts">
                         { (this.state.loadingDC)?null:
-                   (<DataCentersProgress status={this.state.status} dataCenterTimeLineObj={this.state.dataCenterTimeLineObj}/>)
+                   (<DataCentersProgress status={this.state.status} dataCenterTimeLineObj={this.state.dataCenterTimeLineObj} workloadobject = {this.state.workloadobject}/>)
                 }
                         </Card>
                     </Col>

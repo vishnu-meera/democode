@@ -126,6 +126,28 @@ export default class Utils {
         }
     };
 
+    async geAlltWorkloadObjects(country,dccode){
+        let workloadObject ;
+        try {
+            let requestUrl = `api/CountryWorkLoad/${country.replace(/\s/g, '')}_${dccode}`;
+            let response = await fetch(requestUrl, {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                method: "GET"//,headers: { 'authorization': 'Bearer ' + this.getWebApiToken() }
+            });
+
+            response = this.handleErrors(response) ; 
+            let data = await response.text();
+            workloadObject = JSON.parse(data);
+            console.log("geAlltWorkloadObjects==>", workloadObject);
+            return workloadObject;
+
+        } catch (error) {
+            console.log("geAlltWorkloadObjects==> error",error.message)
+            return workloadObject
+        } 
+    }
+
     async getTableData(countryObj,toolTipObject) {
         let keys = Object.keys(countryObj);
         let tableObject = [];
@@ -159,6 +181,10 @@ export default class Utils {
 
         return { Population, Gdp };
     };
+
+    async getPopulationAndGdpByName(country){
+        return await this.getPopulationAndGdp(getCode(country))
+    }
     
     async getMicrosoftObject(country,toolTipObject) {
         try {

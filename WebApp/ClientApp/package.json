@@ -1,38 +1,7 @@
 {
-  "name": "WebApp",
-  "version": "0.1.1",
-  "description": "Golocal",
+  "name": "golocal",
+  "version": "0.1.0",
   "private": true,
-  "main": "index.js",
-  "scripts": {
-    "build-css": "node-sass-chokidar --include-path ./src --include-path ./node_modules src/ -o src/",
-    "watch-css": "npm run build-css && node-sass-chokidar --include-path ./src --include-path ./node_modules src/ -o src/ --watch  --recursive",
-    "start-js": "react-scripts start",
-    "start": "npm-run-all -p watch-css start-js",
-    "build": "npm run build-css && react-scripts build",
-    "clean": "rm dist/bundle.js",
-    "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject",
-    "lint:check": "eslint . --ext=js,jsx;  exit 0",
-    "lint:fix": "eslint . --ext=js,jsx --fix;  exit 0",
-    "install:clean": "rm -rf node_modules/ && rm -rf package-lock.json && npm install && npm start"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/terawe/engineering.git"
-  },
-  "keywords": [
-    "admin",
-    "reactjs",
-    "bootstrap",
-    "bootstrap4"
-  ],
-  "author": "Terawe Corp <support@terawe.com> (https://www.terawe.com)",
-  "license": "Custom",
-  "bugs": {
-    "url": "https://github.com/terawe/engineering/issues"
-  },
-  "homepage": "https://github.com/cterawe/engineering#readme",
   "dependencies": {
     "@material-ui/core": "^3.2.1",
     "@material-ui/icons": "^3.0.1",
@@ -47,6 +16,7 @@
     "chartist": "^0.10.1",
     "classnames": "^2.2.6",
     "country-list": "^2.1.0",
+    "exceljs": "^1.6.3",
     "history": "^4.7.2",
     "moment": "^2.22.2",
     "node-sass": "^4.9.3",
@@ -64,8 +34,11 @@
     "react-bootstrap-wizard": "0.0.5",
     "react-chartist": "^0.13.1",
     "react-chartjs-2": "^2.7.4",
+    "react-data-grid": "^5.0.5",
     "react-datetime": "2.16.2",
     "react-dom": "16.6.3",
+    "react-file-reader": "^1.1.4",
+    "react-file-reader-input": "^2.0.0",
     "react-google-maps": "^9.4.5",
     "react-horizontal-timeline": "^1.5.3",
     "react-hot-loader": "^4.3.12",
@@ -84,36 +57,26 @@
     "react-tagsinput": "^3.19.0",
     "react-tooltip": "^3.9.0",
     "reactstrap": "^6.5.0",
+    "read-excel-file": "^2.0.6",
     "request": "^2.88.0",
     "request-promise-native": "^1.0.5",
     "rimraf": "2.6.2",
     "wikijs": "^4.10.0",
-    "wnumb": "^1.1.0"
+    "wnumb": "^1.1.0",
+    "xlsx": "^0.14.1",
+    "xlsx-style": "^0.8.13"
   },
-  "eslintConfig": {
-    "extends": "react-app"
+  "scripts": {
+    "build-css": "node-sass-chokidar --include-path ./src --include-path ./node_modules src/ -o src/",
+    "watch-css": "npm run build-css && node-sass-chokidar --include-path ./src --include-path ./node_modules src/ -o src/ --watch  --recursive",
+    "start-js": "react-scripts start",
+    "start": "npm-run-all -p watch-css start-js",
+    "build": "npm run build-css && react-scripts build"
   },
   "browserslist": [
     ">0.2%",
     "not dead",
     "not ie <= 11",
     "not op_mini all"
-  ],
-  "optionalDependencies": {
-    "@types/googlemaps": "^3.30.14",
-    "@types/markerclustererplus": "2.1.33",
-    "ajv": "6.5.4",
-    "jquery": "^3.3.1"
-  },
-  "devDependencies": {
-    "@babel/core": "^7.1.6",
-    "@babel/preset-env": "^7.1.6",
-    "@babel/preset-react": "^7.0.0",
-    "babel-loader": "^8.0.4",
-    "css-loader": "^1.0.1",
-    "eslint": "5.6.0",
-    "eslint-config-prettier": "^3.1.0",
-    "eslint-plugin-prettier": "^3.0.0",
-    "eslint-plugin-react": "7.11.1"
-  }
+  ]
 }

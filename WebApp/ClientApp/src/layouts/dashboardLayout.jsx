@@ -1,6 +1,6 @@
 ﻿import React from "react";
 import { Route, Switch } from "react-router-dom";
-import AdminNavbar from "components/navbars/navbar";
+import DashBoardNav from "components/navbars/navbar";
 import Sidebar from "components/sidebar/sidebar.jsx";
 import dashboardRoutes from "routes/routes-dashboard";
 
@@ -46,7 +46,7 @@ class DashboardLayout extends React.Component {
                 return this.getRoutes(prop.views);
             }
 
-            if (prop.layout === "/admin") {
+            if (prop.layout === "/") {
                 return (
                     <Route
                         path={prop.layout + prop.path}
@@ -79,7 +79,7 @@ class DashboardLayout extends React.Component {
                     activeColor={this.state.activeColor}
                 />
                 <div className="main-panel" ref="mainPanel">
-                    <AdminNavbar {...this.props} handleMiniClick={this.handleMiniClick} />
+                    <DashBoardNav  {...this.props} handleMiniClick={this.handleMiniClick} />
                     <Switch>{this.getRoutes(dashboardRoutes)}</Switch>
                 </div>
             </div>

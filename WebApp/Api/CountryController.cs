@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Core.Models;
 using Core.Queries;
+using Core.Commands;
 
 namespace WebApp.Api
 {
@@ -30,6 +31,16 @@ namespace WebApp.Api
         public async Task<IActionResult> Get(string name)
         {
             return Ok(await Mediator.Send(new GetCountry { Name = name }));
+        }
+
+        // POST: api/RoadMap
+        [HttpPost]
+        [ProducesResponseType(typeof(CountryModel), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> Add([FromBody] AddCountry command)
+        {
+            var CountryName = await Mediator.Send(command);
+
+            return CreatedAtAction("Get", new { CounryName = CountryName });
         }
     }
 }

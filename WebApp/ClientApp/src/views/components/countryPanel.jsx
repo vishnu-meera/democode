@@ -19,11 +19,13 @@ import {
 } from "reactstrap";
 
 import ProgressBar from "views/components/progressbar.jsx"
+import DataCenterNavBars from "views/components/navtabs.jsx"
 
 class CountryPanel extends React.Component {
     constructor(props) {
         super(props);
         this.utils = new Utils();
+        console.log("datacentersobject==>", this.props.dataCentersObject)
         this.state = {
             country: this.props.country,
             status:this.props.status,
@@ -34,23 +36,59 @@ class CountryPanel extends React.Component {
             openedCollapses: ["collapseOne"],
             microsoft: {},
             redirect:false,
-            moveStatusObject:{}
+            moveStatusObject:{},
+            dataCentersObject:{}
+            
         };
     };
 
+    dataCenterNavClicked = async (e,dataCenterObj)=>{
+        //console.log("dataCenterNavClicked==> ",e);
+       console.log("dataCenterNavClicked==> ",dataCenterObj);
+    }
+
     async componentDidMount() {
         if (this.state.loading) {
+            console.log("DATA CENTER OBJECT.....$$$",this.props.status,this.utils.statusToShowDc);
             let microsoft = await this.utils.getMicrosoftObject(this.state.country);
-            let { moveStatusObject} = await this.utils.geMoveStatusObject(this.props.country);
-            await this.setState({ microsoft, loading: false ,moveStatusObject});
+            console.log("componentDidMount===>",this.props.status)
+            if(this.utils.statusToShowDc!==this.props.status){
+                let { moveStatusObject} = await this.utils.geMoveStatusObject(this.props.country);
+                await this.setState({moveStatusObject});
+            }else{
+                console.log("DATA CENTER OBJECT.....$$$");
+                let dataCentersObject  =await this.utils.getDataCenterObject(this.props.country);
+                console.log("DATA CENTER OBJECT....$$$.", dataCentersObject);
+                await this.setState({dataCentersObject,horizontalTabs:dataCentersObject[0].dcCode});
+            }
+
+            await this.setState({ microsoft,loading: false});
         }
     }
 
     async componentDidUpdate(prevProps) {
+        
         if (this.props.country !== prevProps.country) {
+            await this.setState({ loading: true});
+            console.log("DATA CENTER OBJECT.....$$$##",this.props.status,this.utils.statusToShowDc);
             let microsoft = await this.utils.getMicrosoftObject(this.props.country);
-            let { moveStatusObject} = await this.utils.geMoveStatusObject(this.props.country);
-            await this.setState({ microsoft, country: this.props.country, status: this.props.status ,moveStatusObject});
+
+            if(this.utils.statusToShowDc!==this.props.status){
+                let { moveStatusObject} = await this.utils.geMoveStatusObject(this.props.country);
+                await this.setState({moveStatusObject});
+            }else{
+                console.log("DATA CENTER OBJECT.....$$$##");
+                let dataCentersObject  =await this.utils.getDataCenterObject(this.props.country);
+                console.log("DATA CENTER OBJECT.....$$$##", dataCentersObject);
+                await this.setState({dataCentersObject,horizontalTabs:dataCentersObject[0].dcCode});
+            }
+
+            await this.setState({ 
+                microsoft, 
+                country: this.props.country, 
+                status: this.props.status ,
+                loading:false
+            });
         }
     }
 
@@ -103,8 +141,33 @@ class CountryPanel extends React.Component {
         }
     }
 
+    loadDataCenters = () =>{
+        return (this.state.status!==this.utils.statusToShowDc)?null :
+         (
+            <Card className="card-plain">
+                <CardHeader role="tab">
+                    <Button
+                        aria-expanded={this.state.openedCollapses.includes(
+                            "collapseFour"
+                        )}
+                        data-parent="#accordion"
+                        data-toggle="collapse"
+                        onClick={() => this.collapsesToggle("collapseFour")}>Data Centers{" "}<i className="nc-icon nc-minimal-down" />
+                    </Button>
+                </CardHeader>
+                <Collapse
+                    role="tabpanel"
+                    isOpen={this.state.openedCollapses.includes(
+                        "collapseFour"
+                    )}>
+                    {DataCenterNavBars.call(this)}
+                </Collapse>
+            </Card>);
+    };
+
     loadMoveStatus = () => {
-        return (
+        return (this.state.status===this.utils.statusToShowDc)?null :
+         (
             <Card className="card-plain">
                 <CardHeader role="tab">
                     <Button
@@ -125,7 +188,13 @@ class CountryPanel extends React.Component {
                 </Collapse>
             </Card>);
     }
+    
+
     render() {
+        console.log("CountryPanel render===>",this.props.status);
+        if(this.state.loading){
+            return null
+        }else{
             return (<Card>
                 <CardBody>
                     <div
@@ -181,15 +250,17 @@ class CountryPanel extends React.Component {
                         </Card>
                         {this.loadMicrosoftObject()}
                         {this.loadMoveStatus()}
+                        {this.loadDataCenters()}
                         <Card className="card-plain text-center">
                             <Link
                                 className="btn btn-primary text-center"
-                                to={{ pathname: '/admin/country', state: { country: this.props.country, status: this.props.status} }}
+                                to={{ pathname: '/country', state: { country: this.props.country, status: this.props.status} }}
                             >See Seats Updates</Link>
                         </Card>
                     </div>
                 </CardBody>
             </Card>);
+        }
     }
 }
 
