@@ -107,9 +107,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CommandHandler\AddCountryHandler.cs" />
+    <Compile Include="CommandHandler\AddDataCenterHandler.cs" />
     <Compile Include="CommandHandler\AddRoadMapHandler.cs" />
+    <Compile Include="CommandHandler\AddWorkLoadHandler.cs" />
     <Compile Include="Commands\AddCountry.cs" />
+    <Compile Include="Commands\AddDataCenter.cs" />
     <Compile Include="Commands\AddRoadMap.cs" />
+    <Compile Include="Commands\AddWorkLoad.cs" />
     <Compile Include="Entities\Country.cs" />
     <Compile Include="Entities\CountryDataCenters.cs" />
     <Compile Include="Entities\CountryRoadMap.cs" />

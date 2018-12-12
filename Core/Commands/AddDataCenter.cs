@@ -2,9 +2,12 @@
 // All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the solution root folder for full license information
 
-namespace Core.Models
+using MediatR;
+
+
+namespace Core.Commands
 {
-    public class CountryDataCentersModel
+    public class AddDataCenter: IRequest<string>
     {
         public string PartionKey { get; set; }
         public string RowKey { get; set; }

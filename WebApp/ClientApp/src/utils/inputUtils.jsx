@@ -19,7 +19,7 @@ let roadmapsummaryObjKeys = {
 };
 
 const CountryObject = {
-    "PartitionKey": "Countries",
+    "PartionKey": "Countries",
     "RowKey": "",
     "Status": "",
     "DCX_Customers": " No Data",
@@ -46,7 +46,7 @@ const DataCenterObject = {
     "coloready":"",
     "coloName":"",
     "telcoVendors":[]
-}
+};
 
 const WorkLoadObject = {
     "Key": "",
@@ -55,19 +55,16 @@ const WorkLoadObject = {
     "DataCenterName": "",
     "Phases": "",
     "WorkLoadStatus": ""
-}
+};
 
-const PhaseObject = {
-    "Phase":"N/A",
-    "Planned Start":"N/A",
-    "Planned Finish":"N/A",
-    "Planned Duration":"N/A",
-    "Revised Start":"N/A",
-    "Revised Finish":"N/A",
-    "Revised Duration":"N/A",
-    "Status":"N/A",
-    "Remarks":"N/A"
-}
+const DataCenterDetailsObject = {
+    "PartionKey":"",
+    "RowKey":"",
+    "DataCenterName":"",
+    "DataCenterStatus":"",
+    "TimeLine":"",
+    "WorkLoads": ""
+};
 
 //temp for getting status...this will defently change
 const statusArray = ['Approved', 'Live', 'InProgress','Potential'];   
@@ -86,6 +83,21 @@ const getRMCellObject = (roadMapCell,flag="")=>{
     return temp;
 };
 
+
+const getTimeLineCellObject = (name,roadMapCell)=>{
+    let values = roadMapCell[0].split("\n");
+
+    let temp = {
+        "Name":name,
+		"Actual Date":values.length>1?values[1]:values[0].replace(/[\r\n]/g, ""),
+		"Planned Date":values[0].replace(/[\r\n]/g, ""),
+		"Risk Level":20,//based on color we will chnage this
+		"Notes":{"note1":"Notes not aviable now"}
+    };
+    let style = roadMapCell[1]
+    //console.log("sheet2Arr==>",temp,style)
+    return temp;
+};
 export default class DataCapturingUtils {
 
     utils = new Utils();
@@ -93,7 +105,8 @@ export default class DataCapturingUtils {
     getRoadMapObject(roapMapExcelRows){
         const roadmapsummarykeys = ['Infrastructure','Azure','Office'];
         let RoadMapSummary = {"Infrastructure":{},"Azure":{},"Office":{}};
-        let temp = [];
+        let key ,TimeLine ={};
+        let CountryRoadMaps = [];
         //first three arrays should have , 2,4,14 otherwise throw error
         //Headers
         roapMapExcelRows[2].forEach((element,key)=>{
@@ -104,6 +117,9 @@ export default class DataCapturingUtils {
 
         for (let index = 3; index < roapMapExcelRows.length; index++) {
             const countryRow = roapMapExcelRows[index];
+
+            if(!(countryRow[0][0] in TimeLine)) TimeLine[countryRow[0][0]]=[];
+
             for (let index = 1; index < countryRow.length; index++) {
                 
                 let objIndex = (index>=1 && index<8) ? 0 : (index>=8 && index<13) ? 1 : 2;
@@ -111,10 +127,13 @@ export default class DataCapturingUtils {
                 if(roadmapsummaryObjKeys[index]==="Preview" || roadmapsummaryObjKeys[index]==="Public Announcement")
                     RoadMapSummary[key][roadmapsummaryObjKeys[index]] = getRMCellObject(countryRow[index],"YES")
                 else    
-                    RoadMapSummary[key][roadmapsummaryObjKeys[index]] = getRMCellObject(countryRow[index]);    
+                    RoadMapSummary[key][roadmapsummaryObjKeys[index]] = getRMCellObject(countryRow[index]);   
+                    
+                if(roadmapsummaryObjKeys[index]!=="CAPEX Approved" || roadmapsummaryObjKeys[index]!=="Public Announcement")  
+                    TimeLine[countryRow[0][0]].push(getTimeLineCellObject(roadmapsummaryObjKeys[index],countryRow[index]))
             }
 
-            temp.push({
+            CountryRoadMaps.push({
                 "PartitionKey": "Countries",
                 "RowKey": countryRow[0][0],
                 "Status":"Live",
@@ -122,8 +141,8 @@ export default class DataCapturingUtils {
             });
         }
 
-        //console.log("RoadMapSummary==>",roapMapExcelRows,RoadMapSummary);
-        return temp;
+        //console.log("RoadMapSummary==>",CountryRoadMaps,TimeLine);
+        return {CountryRoadMaps,TimeLine};
     };
 
     async getCountryObject(cntryArray){
@@ -167,6 +186,7 @@ export default class DataCapturingUtils {
             const elementArray = workloadarray[index];
 
             let length = elementArray.length;
+            //the value of 10 will change according to schema change
             key = (length===10) ? elementArray[0][0] :key;
             if (!(key in phasesObject)) phasesObject[key] = [];
 
@@ -209,8 +229,56 @@ export default class DataCapturingUtils {
         return temp;
     };
 
+
+    getDCWorkLoads(dataCenterRowArr){
+        let workloads = {}, key ,count=0;
+        //console.log("getDCWorkLoads dataCenterRowArr==>",dataCenterRowArr);
+        for (let index = 0; index < dataCenterRowArr.length; index++) {
+            const elementArray = dataCenterRowArr[index];
+
+            let length = elementArray.length;
+            key = (length===1) ? elementArray[0][0].match(/\((.*)\)/)[1].replace(/\s/g, '') :key;
+            if (!(key in workloads)) {
+                workloads[key] = [];
+                count = 0;
+            }
+
+            if(count>1 && length>1){
+                workloads[key].push({
+                    "Workloads":elementArray[0][0],
+                    "TAM Awarded":elementArray[1][0],
+                    "Dock Date (MCIO)":elementArray[2][0],
+                    "RTEG Date (MCIO)":elementArray[3][0],
+                    "Notes":elementArray[4][0],
+                    "Calendar Months/Days to Deploy":elementArray[5][0],
+                    "Engineering Readiness":elementArray[6][0]
+                });  
+            }
+            count++
+        }
+        //console.log("getDCWorkLoads key==>",workloads);
+        return {workloads};
+    };
+
+    getDataCenterObject(dataCenterRowArr,dataCenterArray,countryName,TimeLine){
+        let temp = [];
+        let {workloads} = this.getDCWorkLoads(dataCenterRowArr);
+        //console.log("TimeLine==>",TimeLine)
+        for (const arr of dataCenterArray) {
+            let dObj = JSON.parse(JSON.stringify(DataCenterDetailsObject));
+            dObj.PartionKey = countryName;
+            dObj.RowKey = arr.dcCode;
+            dObj.DataCenterName = arr.name
+            dObj.DataCenterStatus = statusArray[Math.floor(Math.random() * statusArray.length)];
+            dObj.TimeLine = JSON.stringify(TimeLine[countryName]);
+            dObj.WorkLoads = JSON.stringify(workloads[arr.dcCode]);
+            temp.push(dObj);
+        }
+        //console.log("getDataCenterObject 2==>",temp);
+        return temp;
+    }
     async addRoadMapObject(body){
-        console.log("addRoadMapObject==>",JSON.stringify(body))
+        //console.log("addRoadMapObject==>",JSON.stringify(body))
         try {
             let requestUrl = `api/CountryRoadMap`;
             let response = await fetch(requestUrl, {
@@ -225,9 +293,39 @@ export default class DataCapturingUtils {
     };
 
     async addCountryObject(body){
-        console.log("addCountryObject==>",JSON.stringify(body))
+        //console.log("addCountryObject==>",JSON.stringify(body))
         try {
             let requestUrl = `api/Country`;
+            let response = await fetch(requestUrl, {
+                "headers":{"Content-Type":"application/json"},
+                "method": "POST",
+                "body":JSON.stringify(body)
+            });
+            console.log("response===>",response)
+        } catch (error) {
+            return null
+        } 
+    };
+
+    async addDataCenter(body){
+        //console.log("addCountryObject==>",JSON.stringify(body))
+        try {
+            let requestUrl = `api/CountryDataCenters`;
+            let response = await fetch(requestUrl, {
+                "headers":{"Content-Type":"application/json"},
+                "method": "POST",
+                "body":JSON.stringify(body)
+            });
+            console.log("response===>",response)
+        } catch (error) {
+            return null
+        } 
+    };
+
+    async addWorkLoads(body){
+        //console.log("addCountryObject==>",JSON.stringify(body))
+        try {
+            let requestUrl = `api/CountryWorkLoad`;
             let response = await fetch(requestUrl, {
                 "headers":{"Content-Type":"application/json"},
                 "method": "POST",

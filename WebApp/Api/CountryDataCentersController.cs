@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Core.Models;
 using Core.Queries;
+using Core.Commands;
 
 namespace WebApp.Api
 {
@@ -23,5 +24,14 @@ namespace WebApp.Api
             return Ok(await Mediator.Send(new GetDataCenter { DcCode = datacentercode, Country = country }));
         }
 
+        // POST: api/RoadMap
+        [HttpPost]
+        [ProducesResponseType(typeof(CountryDataCentersModel), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> Add([FromBody] AddDataCenter command)
+        {
+            var CountryName = await Mediator.Send(command);
+
+            return CreatedAtAction("Get", new { CounryName = CountryName });
+        }
     }
 }

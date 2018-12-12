@@ -35,6 +35,8 @@ namespace Core.QueryHandler
 
             return new CountryDataCentersModel
             {
+                PartionKey = item.PartitionKey,
+                RowKey = item.RowKey,
                 DataCenterName = item.DataCenterName,
                 DataCenterStatus = item.DataCenterStatus,
                 TimeLine = item.TImeLine,

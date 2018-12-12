@@ -58,14 +58,14 @@ class InputView extends React.Component {
 
     //adding roadmap array
     async addRoadMap(CountryRoadMaps){
-        //console.log("RoadMap==>",CountryRoadMaps)
+        console.log("RoadMap==>",CountryRoadMaps)
         // for (const CountryRoadMap of CountryRoadMaps) {
         //     let response = await this.utils.addRoadMapObject(CountryRoadMap);
         // }
         
     };
 
-    async doCountrySpecificSheets(workbook,countrySheetArr){
+    async doCountrySpecificSheets(workbook,countrySheetArr,TimeLine){
         let countryOject,workloadObject,datacnterObject,dataCenterArray
         let specific = countrySheetArr.find(x=>x.includes("Specific"));
         let mcio = countrySheetArr.find(x=>x.includes("MCIO"));
@@ -78,20 +78,19 @@ class InputView extends React.Component {
                 let workloadRowArr = sheet2arr(workbook.Sheets[wrkld]);
                 let workLoadsHeader = sheet2arr_2(workbook.Sheets[wrkld])[0]
                 workloadObject = this.utils.getWorkloadObject(workloadRowArr,dataCenterArray,countryOject.Name,workLoadsHeader);
-                //console.log("WorkLoad ==>",workloadObject);
+                console.log("WorkLoad ==>",workloadObject);
             }  
         }
 
-        if(mcio && dataCenterArray){
+        if(mcio && dataCenterArray && TimeLine){
             if(dataCenterArray.length>0){
                 let dataCenterRowArr = sheet2arr(workbook.Sheets[mcio]);
-                let dataCenterColArr = sheet2arr_2(workbook.Sheets[mcio])
-                console.log("dataCenterRowArr ==>",dataCenterRowArr);
-                console.log("dataCenterColArr ==>",dataCenterColArr);
+                datacnterObject = this.utils.getDataCenterObject(dataCenterRowArr,dataCenterArray,countryOject.Name,TimeLine);
+                console.log("Datacenter ==>",datacnterObject);
             }
         }
 
-        //console.log("Country===>",countryOject)
+        console.log("Country===>",countryOject)
         //let response = await this.utils.addCountryObject(countryOject);
     };
 
@@ -106,7 +105,7 @@ class InputView extends React.Component {
 
             let roadmapSheet = workbook.Sheets['Roadmap']
             let roadMapArr = sheet2arr(roadmapSheet);
-            let CountryRoadMaps = this.utils.getRoadMapObject(roadMapArr);
+            let {CountryRoadMaps,TimeLine} = this.utils.getRoadMapObject(roadMapArr);
             this.addRoadMap(CountryRoadMaps);
 
             let sheetMap = {};
@@ -122,7 +121,7 @@ class InputView extends React.Component {
 
             Object.keys(sheetMap).forEach(key=>{
                 //console.log("sheetMap[key]==>",sheetMap[key])
-                self.doCountrySpecificSheets(workbook,sheetMap[key]);
+                self.doCountrySpecificSheets(workbook,sheetMap[key],TimeLine);
             });
         });
     }
