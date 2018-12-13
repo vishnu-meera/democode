@@ -1,16 +1,13 @@
-﻿import React from "react";
+﻿/* 
+*  Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license. 
+*  See LICENSE in the source repository root for complete license information. 
+*/
 
-// react component for creating dynamic tables
+import React from "react";
 import ReactTable from "react-table";
-// reactstrap components
 import {
-    Button,
     Card,
-    CardHeader,
-    CardBody,
-    CardTitle,
-    Row,
-    Col
+    CardBody
 } from "reactstrap";
 
 

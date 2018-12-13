@@ -41,9 +41,7 @@ class Sidebar extends React.Component {
         return (
             <div className="sidebar" data-color={this.props.bgColor} data-active-color={this.props.activeColor}>
                 <div className="logo">
-                    <a href="/dashboard" className="simple-text logo-mini">
-
-                    </a>
+                    <a href="/dashboard" className="simple-text logo-mini">GL</a>
                     <a href="/dashboard" className="simple-text logo-normal"> GOLOCAL </a>
                 </div>
                 <div className="sidebar-wrapper" ref="sidebar">

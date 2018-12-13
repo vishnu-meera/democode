@@ -14,7 +14,7 @@ export default function Cards(){
         let textcss = `text-left ${this.utils.textIconCssObj[key]}`;
         let btnvcss = `card-stats btn btn-none ${this.state.cardActiveKey===key?'active':null}`;
         return (
-            <Col lg="3" md="4" sm="4" key={key}>
+            <div className="col-sm"key={key}>
                 <Card 
                     className= {btnvcss}
                     onClick={()=>{this.onCardClick(key)}}>
@@ -34,16 +34,14 @@ export default function Cards(){
                         </Row>
                     </CardBody>
                 </Card>
-            </Col>
+            </div>
         );
     });
 
-    console.log("Cards===>",cardwithData);
-
-    return (<Row>
+    return (<div className="row">
         {cardwithData.filter(x=>x.key==="Live")} 
         {cardwithData.filter(x=>x.key==="InProgress")} 
         {cardwithData.filter(x=>x.key==="Approved")} 
         {cardwithData.filter(x=>x.key==="Potential")} 
-    </Row>);
+    </div>);
 }

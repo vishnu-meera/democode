@@ -4,22 +4,14 @@
 */
 
 import React from "react";
-import Utils from '../../utils/utils';
+import Utils from 'utils/utils';
 import ReactTable from "react-table";
-import CountryPanel from "views/components/countryPanel.jsx";
-import {
-    Button,
-    Card,
-    CardHeader,
-    CardBody,
-    CardTitle,
-    Row,
-    Col,
-    DropdownToggle,
-    DropdownMenu,
-    DropdownItem,
-    UncontrolledDropdown
+import CountryPanel from "components/dashboardView/panel";
+import { 
+    Card, CardHeader, CardBody, CardTitle, Row, Col, DropdownToggle, DropdownMenu,
+    DropdownItem, UncontrolledDropdown 
 } from "reactstrap";
+import Spinner from "components/spinner/spin";
 
 const getTableData =(tableData)=>{
     let data =  tableData.map((prop, key) => {
@@ -74,7 +66,6 @@ class CountryTables extends React.Component {
     }
 
     async onClickDropDown(status){
-        console.log("onClickDropDown==>",status);
         if(status==="All") await this.setState({ ...getTableData(this.data)});
         else await this.setState({ ...getTableData(this.data.filter(x=>x.includes(status))) });
     }
@@ -86,7 +77,11 @@ class CountryTables extends React.Component {
             return (<DropdownItem key={status} onClick={()=>{this.onClickDropDown(status)}}>{status}</DropdownItem>);
         });
         if(this.state.loading)
-            return null;
+            return (
+                <div className="content">
+                    {Spinner.call(this)}
+                </div>
+            )
         else{
         return (<div className="content">
                     <Row>
@@ -179,6 +174,9 @@ class CountryTables extends React.Component {
                                 gdp={this.state.gdp} 
                                 status={this.state.status} 
                                 population={this.state.population} 
+                                CountriesObject = {this.props.CountriesObject}
+                                toolTipObject = {this.props.toolTipObject}
+                                countryCode={this.utils.getCode(this.state.country)} 
                                 />
                         </Col>
                     </Row>

@@ -4,22 +4,16 @@
 */
 
 import React from "react";
-import Utils from '../../utils/utils';
+import Utils from 'utils/utils';
 import ReactTable from "react-table";
-import CountryPanel from "views/components/countryPanel.jsx";
+
 import {
-    Button,
     Card,
     CardHeader,
     CardBody,
-    CardTitle,
     Row,
     Col,
-    Modal,
-    DropdownToggle,
-    DropdownMenu,
-    DropdownItem,
-    UncontrolledDropdown
+    Modal
 } from "reactstrap";
 
 
@@ -28,7 +22,7 @@ const getTableData =(tableData)=>{
     let data =  tableData.map((obj, key) => {
         return {
             id:key,
-            category:obj["Workloads"].substr(0, obj["Workloads"].indexOf(" ")) || "No Category",
+            category:obj["Workloads"].split(" ")[0] || "No Category",
             workload:obj["Workloads"],
             tam:obj["TAM Awarded"]["Status"] || "No Data Available",
             dockdate:obj["Dock Date (MCIO)"]["Status"] || "No Data Available",

@@ -1,10 +1,14 @@
-﻿import React from "react";
+﻿// Copyright(c) Microsoft Corporation. 
+// All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the solution root folder for full license information
+
+import React from "react";
 import { Route, Switch } from "react-router-dom";
 import DashBoardNav from "components/navbars/navbar";
 import Sidebar from "components/sidebar/sidebar.jsx";
 import dashboardRoutes from "routes/routes-dashboard";
 
-var ps;
+let ps;
 
 class DashboardLayout extends React.Component {
     constructor(props) {
@@ -14,30 +18,6 @@ class DashboardLayout extends React.Component {
             activeColor: "info",
             sidebarMini: false
         };
-    };
-
-    componentDidMount() {
-        if (navigator.platform.indexOf("Win") > -1) {
-            document.documentElement.className += " perfect-scrollbar-on";
-            document.documentElement.classList.remove("perfect-scrollbar-off");
-
-        }
-    };
-
-    componentWillUnmount() {
-        if (navigator.platform.indexOf("Win") > -1) {
-            ps.destroy();
-            document.documentElement.className += " perfect-scrollbar-off";
-            document.documentElement.classList.remove("perfect-scrollbar-on");
-        }
-    };
-
-    componentDidUpdate(e) {
-        if (e.history.action === "PUSH") {
-            document.documentElement.scrollTop = 0;
-            document.scrollingElement.scrollTop = 0;
-            this.refs.mainPanel.scrollTop = 0;
-        }
     };
 
     getRoutes = dashboardRoutes => {

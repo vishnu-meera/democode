@@ -1,29 +1,26 @@
+/* 
+*  Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license. 
+*  See LICENSE in the source repository root for complete license information. 
+*/
+
 import React from "react";
-import Utils from '../../utils/utils';
+import Utils from 'utils/utils';
 
 import {
     Card,
-    Badge,
     CardHeader,
     CardBody,
     CardTitle,
-    DropdownToggle,
-    DropdownMenu,
-    DropdownItem,
-    UncontrolledDropdown,
-    FormGroup,
-    Progress,
     TabContent,
     TabPane,
     Row,
     Col
 } from "reactstrap";
 
-import MoveStatusTable from "views/table/moveStatus.jsx";
-import WorkLoadTable from "views/table/workloadsTable.jsx";
+import MoveStatusTable from "components/countryView/moveStatusTable";
+import WorkLoadTable from "components/countryView/workloadsTable";
 
-
-export default class DataCentersProgress extends React.Component {
+export default class DataCenterView extends React.Component {
 
     constructor(props){
         super(props);
@@ -60,28 +57,33 @@ export default class DataCentersProgress extends React.Component {
         await this.setState({hoverObject})
     }
 
+    timeline = ()=>{
+        const timeLine = JSON.parse(this.state.dataCenterTimeLineObj.timeLine);
+        const timeLineArray = timeLine.map((obj,key)=>{
+            console.log(obj.Name,"====",key)
+            if(obj.Name.trim() !=="Public Announcement"  && obj.Name.trim() !== "CAPEX Approved"){
+                let css = `step col-sm-1 ${(key<3?"green":"none")}`
+                let num = key +1
+                    return (<li 
+                                key ={key}data-date={num.toString()} 
+                                onMouseOver= {(e)=>{this.onHoverThroughTime(e,obj)}}
+                                className={css}>
+                                <div>{obj.Name}</div>
+                            </li>)
+            }
+        });
+        return timeLineArray;
+    }
     _renderDC(){
         //console.log("HoverObject==>",this.state.hoverObject)
-        const timeLine = JSON.parse(this.state.dataCenterTimeLineObj.timeLine);
-        const statusColor = "";
+        
         return(<Row>
             <Col sm="12">
                 <Card className="stats">
                     <CardHeader>TimeLine</CardHeader>
                     <CardBody>
                         <div className='htimeline'>
-                            {
-                                timeLine.map((obj,key)=>{
-                                    let css = `step col-sm-1 ${(key<3?"green":"none")}`
-                                    let num = key +1
-                                    return (<li 
-                                                key ={key}data-date={num.toString()} 
-                                                onMouseOver= {(e)=>{this.onHoverThroughTime(e,obj)}}
-                                                className={css}>
-                                                <div>{obj.Name}</div>
-                                            </li>)
-                                })
-                            }
+                            { this.timeline() }
                         </div>
                     </CardBody>
                     <CardBody className="card-stats border border-secondary rounded">
@@ -114,27 +116,32 @@ export default class DataCentersProgress extends React.Component {
 
     render(){
 
-        return (this.state.status===this.utils.statusToShowDc)?
-        (
-            <>
+        if(this.state.status === "Live"){
+            return(<div>
                 <CardHeader>{this.state.dataCenterTimeLineObj.dataCenterName}</CardHeader>
                 {this._renderDC()}
                 <WorkLoadTable tableData = {JSON.parse(this.props.dataCenterTimeLineObj.workLoads) }workloadobject = {this.props.workloadobject}/>
-            </>
-        ):
-        (<Row>
-            <Col sm="12">
-                <Card>
-                    <CardHeader>Move Status</CardHeader>
-                    <CardBody>
-                        <Row>
-                            <Col lg="4" md="5" sm="5"><MoveStatusTable workloadName={"SPO"}/></Col>
-                            <Col lg="4" md="5" sm="5"><MoveStatusTable workloadName={"Exo"}/></Col>
-                            <Col lg="4" md="5" sm="5"><MoveStatusTable workloadName={"Teams"}/></Col>
-                        </Row>
-                    </CardBody>
-                </Card>
-             </Col>
-        </Row>);
+                <Row>
+                    <Col sm="12">
+                        <Card>
+                            <CardHeader>Move Status</CardHeader>
+                            <CardBody>
+                                <Row>
+                                    <Col lg="4" md="5" sm="5"><MoveStatusTable workloadName={"SPO"}/></Col>
+                                    <Col lg="4" md="5" sm="5"><MoveStatusTable workloadName={"Exo"}/></Col>
+                                    <Col lg="4" md="5" sm="5"><MoveStatusTable workloadName={"Teams"}/></Col>
+                                </Row>
+                            </CardBody>
+                        </Card>
+                    </Col>
+                </Row>
+            </div>);
+            }else if(this.props.status === "InProgress"){
+                return(<>
+                    <CardHeader>{this.state.dataCenterTimeLineObj.dataCenterName}</CardHeader>
+                    {this._renderDC()}
+                    <WorkLoadTable tableData = {JSON.parse(this.props.dataCenterTimeLineObj.workLoads) }workloadobject = {this.props.workloadobject}/>
+                </>);
+            }else return null;
     }
 };

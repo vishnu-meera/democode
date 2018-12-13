@@ -4,34 +4,11 @@
 */
 
 import React from "react";
-import Utils from '../../utils/utils';
-import ReactTable from "react-table";
+import Utils from 'utils/utils';
+import ProgressBar from "components/progressbar/progressbar";
+import DataCenterCard from "components/navtab/navtabs";
 
-import {
-    Badge,
-    Button,
-    Card,
-    CardHeader,
-    CardBody,
-    CardFooter,
-    CardTitle,
-    Label,
-    FormGroup,
-    Input,
-    Table,
-    Row,
-    Col,
-    NavItem,
-    NavLink,
-    Nav,
-    TabContent,
-    TabPane,
-    UncontrolledTooltip
-} from "reactstrap";
-
-import ProgressBar from "views/components/progressbar.jsx"
-import DataCenterNavBars from "views/components/navtabs.jsx"
-class CountryTabPanel extends React.Component {
+class MovestatusDatacenter extends React.Component {
     constructor(props) {
         super(props);
         this.utils = new Utils();
@@ -46,10 +23,17 @@ class CountryTabPanel extends React.Component {
     }
 
     dataCenterNavClicked = async (e,dataCenterObj)=>{
-        //console.log("dataCenterNavClicked==> ",e);
-       // console.log("dataCenterNavClicked==> ",dataCenterObj);
         await this.props.getDataCenterObject(dataCenterObj);
     }
+
+    toggleDC(dcCode){
+        let horizontalTabs ="";
+        if(this.state.horizontalTabs !== dcCode){
+            horizontalTabs = dcCode
+        }
+        this.setState({ horizontalTabs})
+    }
+    
 
     async componentDidUpdate(prevProps) {
         if (this.props.moveStatusObject !== prevProps.moveStatusObject || this.props.dataCentersObject !== prevProps.dataCentersObject ) {
@@ -60,7 +44,7 @@ class CountryTabPanel extends React.Component {
         }
     }
     _renderDCCard(){
-        return(<>{DataCenterNavBars.call(this)}</>);
+        return(<>{DataCenterCard.call(this)}</>);
     };
 
     _renderMoveStatus(){
@@ -71,9 +55,19 @@ class CountryTabPanel extends React.Component {
     };
 
     render(){
-        return (this.state.loading)?null:((this.state.status===this.utils.statusToShowDc)? this._renderDCCard() : this._renderMoveStatus());
+        if(this.props.status === "Live"){
+        return(<div>
+            {this._renderMoveStatus()}
+            <br /><br />
+            {this._renderDCCard()}
+        </div>);
+        }else if(this.props.status === "InProgress"){
+            return(<div>
+                {this._renderDCCard()}
+            </div>);
+        }else return null;
     }
 
 }
 
-export default CountryTabPanel;
+export default MovestatusDatacenter;

@@ -104,6 +104,7 @@ export default class Utils {
             });
             let data = await (this.handleErrors(response)).json();
             let keys = Object.keys(data.countriesStatusList);
+            let {CountriesObject} = await this.getCountriesObject();
             let mapData = {} , toolTipObject = {};
             keys.forEach(element => {
                 mapData[getCode(element)] = data.countriesStatusList[element];
@@ -115,12 +116,31 @@ export default class Utils {
                     'publicAnnouncement':"No Data"
                 };
             });
-            let obj = await this.getTableData({ ...data.countriesStatusList },toolTipObject);
-            let newToolTipObject = await this.getMicrosoftObject("All",obj.toolTip);
+            let obj = await this.getTableData({ ...data.countriesStatusList },toolTipObject,CountriesObject);
+            let newToolTipObject = await this.getMicrosoftObject("All",obj.toolTip,CountriesObject);
             //console.log("toolTipObject==>",newToolTipObject);
-            return { mapData, tableData:obj.tableObj , toolTipObject:newToolTipObject};
+            return { mapData, tableData:obj.tableObj , toolTipObject:newToolTipObject,CountriesObject};
         } catch (error) {
             return null
+        } finally {
+            //TODO
+        }
+    };
+
+    async getCountriesObject() {
+        try {
+            let requestUrl = 'api/Country';
+            let response = await fetch(requestUrl, {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                method: "GET"//,headers: { 'authorization': 'Bearer ' + this.getWebApiToken() }
+            });
+            let data = await (this.handleErrors(response)).json();
+            let CountriesObject = ("countries" in data) ? data.countries : {};
+            //console.log("getCountriesObject==>",CountriesObject);
+            return {CountriesObject};
+        } catch (error) {
+            return {};
         } finally {
             //TODO
         }
@@ -148,14 +168,14 @@ export default class Utils {
         } 
     }
 
-    async getTableData(countryObj,toolTipObject) {
+    async getTableData(countryObj,toolTipObject,CountriesObject) {
         let keys = Object.keys(countryObj);
         let tableObject = [];
         for (const key of keys) {
             let status = countryStatusConverterObj[countryObj[key]];
-            //console.log("getTableData==>",status,key);
             let countryCode = getCode(key);
-            let { Population, Gdp } = await this.getPopulationAndGdp(countryCode);
+            let  Population = CountriesObject.filter(x=>x.name===key)[0]["population"];
+            let  Gdp = CountriesObject.filter(x=>x.name===key)[0]["gdp"];
             toolTipObject[countryCode]['Population'] = Population;
             toolTipObject[countryCode]['Gdp'] = Gdp;
             tableObject.push([key, Population, Gdp, status])
@@ -186,7 +206,7 @@ export default class Utils {
         return await this.getPopulationAndGdp(getCode(country))
     }
     
-    async getMicrosoftObject(country,toolTipObject) {
+    async getMicrosoftObject(country,toolTipObject,CountriesObject) {
         try {
             let requestUrl = country==="All"?`api/CountryRoadMap`: `api/CountryRoadMap/${country}`;
             let response = await fetch(requestUrl, {

@@ -1,7 +1,11 @@
-//// views
-import Dashboard from "views/Dashboard/dashboard";
-import Country from "views/Dashboard/country";
-import InputView from "views/Dashboard/inputView";
+/* 
+*  Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license. 
+*  See LICENSE in the source repository root for complete license information. 
+*/
+
+import Dashboard from "views/dashboard";
+import Country from "views/country";
+import DataCapture from "views/datacapture";
 
 var dashboardRoutes = [
     {
@@ -20,9 +24,9 @@ var dashboardRoutes = [
     },
     {
         path: "enterdata",
-        name: "InputData",
+        name: "DataCapture",
         icon: "nc-icon nc-chart-bar-32",
-        component: InputView,
+        component: DataCapture,
         layout: "/"
     }
 ];

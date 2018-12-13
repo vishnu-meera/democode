@@ -1,30 +1,19 @@
+/* 
+*  Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license. 
+*  See LICENSE in the source repository root for complete license information. 
+*/
+
 import React from "react";
-
-
 import {
-    Badge,
-    Button,
-    Card,
-    CardHeader,
-    CardBody,
-    CardFooter,
-    CardTitle,
-    Label,
-    FormGroup,
-    Input,
-    Table,
-    Row,
-    Col,
     NavItem,
     NavLink,
     Nav,
     TabContent,
     TabPane,
-    UncontrolledTooltip
 } from "reactstrap";
 
-export default function DataCenterNavBars() {
-    //console.log("ProgressBar movestatusprogress", this.state.dataCentersObject)
+export default function DataCenterCard() {
+    console.log("DataCenterNavBars movestatusprogress", this.state.dataCentersObject)
     let datacenters = this.state.dataCentersObject.map((datacenter,index)=>{
         return (<div key ={index}>
                     <div className="nav-tabs-navigation">
@@ -41,9 +30,7 @@ export default function DataCenterNavBars() {
                                                 ? "active"
                                                 : ""
                                         }
-                                        onClick={() =>
-                                            this.setState({ horizontalTabs: datacenter.dcCode })
-                                        }
+                                        onClick={() =>{this.toggleDC(datacenter.dcCode)}}
                                     > {datacenter.name} </NavLink>
                                 </NavItem>
                             </Nav>

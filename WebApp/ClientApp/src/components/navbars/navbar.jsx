@@ -31,7 +31,6 @@ class DashBoardNav extends React.Component {
         };
     };
 
-
     componentDidUpdate(e) {
         if (
             window.outerWidth < 993 &&
@@ -42,14 +41,10 @@ class DashBoardNav extends React.Component {
         }
     };
 
-    // this function opens and closes the sidebar on small devices
     toggleSidebar = () => {
         document.documentElement.classList.toggle("nav-open");
     };
 
-    // this function opens and closes the collapse on small devices
-    // it also adds navbar-transparent class to the navbar when closed
-    // ad bg-white when opened
     toggleCollapse = () => {
         let newState = {
             collapseOpen: !this.state.collapseOpen
