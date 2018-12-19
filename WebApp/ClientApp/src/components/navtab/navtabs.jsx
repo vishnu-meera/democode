@@ -31,15 +31,15 @@ export default function DataCenterCard() {
                                                 : ""
                                         }
                                         onClick={() =>{this.toggleDC(datacenter.dcCode)}}
-                                    > {datacenter.name} </NavLink>
+                                    > <span className=" text-bold text-left">{datacenter.name}</span></NavLink>
                                 </NavItem>
                             </Nav>
                         </div>
                     </div>
-                        <TabContent className="text-center" id="my-tab-content" activeTab={this.state.horizontalTabs}>
+                        <TabContent className="text-left" id="my-tab-content" activeTab={this.state.horizontalTabs}>
                             <TabPane 
                                 tabId={datacenter.dcCode} role="tabpanel" 
-                                className="card-stats btn btn-none"
+                                className="card-stats"
                                 onClick={(e)=>{this.dataCenterNavClicked(e,datacenter)}}>
                                 <span>Lease Signed: {datacenter.leaseSigned}</span><br />
                                 <span>RTEG: {datacenter.rteg}</span><br /><br />
@@ -49,9 +49,8 @@ export default function DataCenterCard() {
                         </TabContent>
                 </div>);
     });
-
+    // btn btn-none ==>set it on another page
     return(<div>
-        <span><h6>Data Centers</h6></span>
         {datacenters}
     </div>);
 };

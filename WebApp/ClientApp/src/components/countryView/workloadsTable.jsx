@@ -12,10 +12,12 @@ import {
     CardHeader,
     CardBody,
     Row,
-    Col,
-    Modal
+    Col
 } from "reactstrap";
 
+import Modal from 'react-modal';
+import SlidingPane from 'react-sliding-pane';
+import 'react-sliding-pane/dist/react-sliding-pane.css';
 
 const getTableData =(tableData)=>{
     console.log("getTableData==>",tableData)
@@ -64,9 +66,15 @@ class WorkLoadTable extends React.Component {
             ...getTableData(this.props.tableData),
             modalOpen:false,
             modelData:[],
-            modelKey : ""
+            modelKey : "",
+            isPaneOpen: false,
+            isPaneOpenLeft: false
         };
         this.onCellClick = this.onCellClick.bind(this);
+    }
+
+    componentDidMount() {
+        Modal.setAppElement(this.el);
     }
 
     async onCellClick(e){
@@ -78,7 +86,7 @@ class WorkLoadTable extends React.Component {
             console.log("onCellCLick==>", getWorkLoadData(JSON.parse(phases[0].phases)))
             let modelData = getWorkLoadData(JSON.parse(phases[0].phases))
             await this.setState({modelData,modelKey});
-            await this.setState({            modalOpen: !this.state.modalOpen,})
+            await this.setState({isPaneOpen: !this.state.isPaneOpen})
         }
     }
 
@@ -90,105 +98,20 @@ class WorkLoadTable extends React.Component {
     async onClickDropDown(status){
 
     }
-
+    
     toggleModal = () => {
         this.setState({
             modalOpen: !this.state.modalOpen
         });
     };
 
-    _renderWorkLoadModal(){
-        return(
-
-                <Modal isOpen={this.state.modalOpen} toggle={this.toggleModal} size={"lg"}>
-                    <div className="modal-header">
-                        <button
-                            aria-hidden={true}
-                            className="close"
-                            data-dismiss="modal"
-                            type="button"
-                            onClick={this.toggleModal}><i className="nc-icon nc-simple-remove" />
-                        </button>
-                        <h5 className="modal-title text-left" id="myModalLabel">{this.state.modelKey}</h5>
-                    </div>
-                    <div className="modal-body">
-                                    <ReactTable
-                                        data={this.state.modelData}
-                                        filterable
-                                        columns={[
-                                            {
-                                                Header: "Phase",
-                                                accessor: "Phase", 
-                                                filterable:false,
-                                                sortable:false,
-                                            },
-                                            {
-                                                Header: "Planned Duration",
-                                                accessor: "PlannedDuration",
-                                                filterable:false,
-                                                sortable:false
-                                            },
-                                            {
-                                                Header: "Planned Finish",
-                                                accessor: "PlannedFinish",
-                                                filterable:false,
-                                                sortable:false,
-                                            },
-                                            {
-                                                Header: "Planned Start",
-                                                accessor: "PlannedStart",
-                                                filterable:false,
-                                                sortable:false,
-                                            },
-                                            {
-                                                Header: 'Remarks',
-                                                accessor: 'Remarks',
-                                                filterable:false,
-                                                sortable:false
-                                            },
-                                            {
-                                                Header: 'Revised Duration',
-                                                accessor: 'RevisedDuration',
-                                                filterable:false,
-                                                sortable:false
-                                            },
-                                            {
-                                                Header: 'Revised Finish',
-                                                accessor: 'RevisedFinish',
-                                                filterable:false,
-                                                sortable:false
-                                            },
-                                            {
-                                                Header: 'Revised Start',
-                                                accessor: 'RevisedStart',
-                                                filterable:false,
-                                                sortable:false
-                                            },
-                                            {
-                                                Header: 'Status',
-                                                accessor: 'Status',
-                                                filterable:false,
-                                                sortable:false
-                                            }
-                                            ]}
-                                        showPageSizeOptions = {false}
-                                        defaultPageSize={5}
-                                        showPaginationBottom
-                                        className="-striped -highlight"
-                                    />
-
-                    </div>
-                </Modal>)
-    }
-
     render() {
-
+        let css_1 = {"height":"100px"}
         return (<div className="content">
-                    <Row>
-                        <Col md="12">
+                    <div className="row">
+                        <div className="col-sm-12">
                             <Card>
-                                <CardHeader>WorkLoads</CardHeader>
-                                <CardBody>
+                                 <span className="text-muted font-weight-bold ml-2 mt-2">WorkLoads</span>
                                     <ReactTable
                                         data={this.state.data}
                                         filterable
@@ -254,11 +177,90 @@ class WorkLoadTable extends React.Component {
                                         showPaginationBottom
                                         className="-striped -highlight"
                                     />
-                                </CardBody>
+                                    
                             </Card>
-                        </Col>
-                    </Row>
-                    {this._renderWorkLoadModal()}
+                        </div>
+                    </div>
+                    <div ref={ref => this.el = ref} className="mt-5">
+                        <SlidingPane
+                            style = {css_1}
+                            className='mt-5'
+                            isOpen={ this.state.isPaneOpen }
+                            title={this.state.modelKey}
+                            width='60%'
+                            onRequestClose={ () => {
+                                // triggered on "<" on left top click or on outside click
+                                this.setState({ isPaneOpen: false });
+                            } }>
+
+                            <ReactTable
+                                        data={this.state.modelData}
+                                        filterable
+                                        columns={[
+                                            {
+                                                Header: "Phase",
+                                                accessor: "Phase", 
+                                                filterable:false,
+                                                sortable:false,
+                                            },
+                                            {
+                                                Header: "Planned Duration",
+                                                accessor: "PlannedDuration",
+                                                filterable:false,
+                                                sortable:false
+                                            },
+                                            {
+                                                Header: "Planned Finish",
+                                                accessor: "PlannedFinish",
+                                                filterable:false,
+                                                sortable:false,
+                                            },
+                                            {
+                                                Header: "Planned Start",
+                                                accessor: "PlannedStart",
+                                                filterable:false,
+                                                sortable:false,
+                                            },
+                                            {
+                                                Header: 'Remarks',
+                                                accessor: 'Remarks',
+                                                filterable:false,
+                                                sortable:false
+                                            },
+                                            {
+                                                Header: 'Revised Duration',
+                                                accessor: 'RevisedDuration',
+                                                filterable:false,
+                                                sortable:false
+                                            },
+                                            {
+                                                Header: 'Revised Finish',
+                                                accessor: 'RevisedFinish',
+                                                filterable:false,
+                                                sortable:false
+                                            },
+                                            {
+                                                Header: 'Revised Start',
+                                                accessor: 'RevisedStart',
+                                                filterable:false,
+                                                sortable:false
+                                            },
+                                            {
+                                                Header: 'Status',
+                                                accessor: 'Status',
+                                                filterable:false,
+                                                sortable:false
+                                            }
+                                            ]}
+                                        showPageSizeOptions = {false}
+                                        defaultPageSize={10}
+                                        showPaginationBottom
+                                        className="-striped -highlight"
+                                    />
+
+
+                    </SlidingPane>
+                    </div>
                 </div>);
     }
 }

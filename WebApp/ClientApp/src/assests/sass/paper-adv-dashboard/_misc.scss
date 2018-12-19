@@ -148,3 +148,25 @@ a[data-toggle="collapse"][aria-expanded="true"] .caret,
     }
   }
 }
+
+/* display this row with flex and use wrap (= respect columns' widths) */
+
+.row-flex {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+
+/* vertical spacing between columns */
+
+[class*="col-xs"] {
+  margin-bottom: 30px;
+}
+
+.content-row {
+  height: 100%;
+  padding: 20px 20px 10px;
+  color: #fff;
+}
+
+

@@ -5,20 +5,19 @@
 
 import React from "react";
 import { Card,CardBody,CardTitle,Row,Col} from "reactstrap";
-
+//    font-size: 20px;
 export default function Cards(){
     let keys = Object.keys(this.state.cardsStatus.countriesStatusList);
-    
     let cardwithData = keys.map((key) => {
         let iconcss = `${this.utils.cardIconCssObj[key]} ${this.utils.textIconCssObj[key]}`;
-        let textcss = `text-left ${this.utils.textIconCssObj[key]}`;
+        let textcss = `text-left ${this.utils.textIconCssObj[key]} numbers`;
         let btnvcss = `card-stats btn btn-none ${this.state.cardActiveKey===key?'active':null}`;
         return (
-            <div className="col-sm"key={key}>
+            <div className="col-sm"key={key} >
                 <Card 
                     className= {btnvcss}
                     onClick={()=>{this.onCardClick(key)}}>
-                    <CardBody>
+
                         <Row>
                             <Col md="4" xs="5">
                                 <div className="icon-big text-center">
@@ -26,13 +25,11 @@ export default function Cards(){
                                 </div>
                             </Col>
                             <Col md="8" xs="7">
-                                <div className="numbers">
-                                    <h5 className="card-category text-left">{key}</h5>
-                                    <CardTitle tag="p" className={textcss}>{this.state.cardsStatus.countriesStatusList[key]}</CardTitle>
-                                </div>
+                                <h6 className="text-left text-muted">{key}</h6>
+                                <h6 className={textcss}>{this.state.cardsStatus.countriesStatusList[key]}</h6>
                             </Col>
                         </Row>
-                    </CardBody>
+
                 </Card>
             </div>
         );

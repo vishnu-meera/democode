@@ -5,23 +5,23 @@
 
 import React from 'react';
 import { css } from 'react-emotion';
-import { HashLoader } from 'react-spinners';
+import { HashLoader,PropagateLoader } from 'react-spinners';
 
 const override = css`
     display: block;
-    margin: 0 auto;
-    border-color: red;
+    margin: auto;
+    width: 80%;
+    padding: 30px;
 `;
 
 export default function Spinner(){
  
 
     return (
-        <div className='sweet-loading text-center'>
-        <HashLoader
-          className={override}
+        <div className={override}>
+        <PropagateLoader
           sizeUnit={"px"}
-          size={125}
+          size={20}
           color={'#45ddc0'}
           loading={this.state.loading}
         />

@@ -1,27 +1,17 @@
 .progress {
-    background-color: $medium-gray;
+    background: rgb(255, 0, 0);
+    background: -moz-linear-gradient(left, rgba(255, 0, 0, 1) 0%, rgba(0, 255, 0, 1) 100%);
+    background: -webkit-gradient(linear, left top, right top, color-stop(0%, rgba(255, 0, 0, 1)), color-stop(100%, rgba(0, 255, 0, 1)));
+    background: -webkit-linear-gradient(left, rgba(255, 0, 0, 1) 0%, rgba(0, 255, 0, 1) 100%);
+    background: -o-linear-gradient(left, rgba(255, 0, 0, 1) 0%, rgba(0, 255, 0, 1) 100%);
+    background: -ms-linear-gradient(left, rgba(255, 0, 0, 1) 0%, rgba(0, 255, 0, 1) 100%);
+    background: linear-gradient(to right, rgba(255, 0, 0, 1) 0%, rgba(0, 255, 0, 1) 100%);
+
     border-radius: $border-radius-small;
     box-shadow: none;
     height: 8px;
+    width: 0%;
 }
 .progress-thin{
     height: 4px;
-}
-.progress-bar{
-    background-color: $primary-color;
-}
-.progress-bar-primary{
-    background-color: $primary-color;
-}
-.progress-bar-info{
-    background-color: $info-color;
-}
-.progress-bar-success{
-    background-color: $success-color;
-}
-.progress-bar-warning{
-    background-color: $warning-color;
-}
-.progress-bar-danger{
-    background-color: $danger-color;
 }

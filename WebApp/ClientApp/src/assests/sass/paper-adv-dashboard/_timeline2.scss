@@ -1,4 +1,4 @@
-.htimeline { list-style: none; padding: 10px; margin: 10px 0 0; }
+.htimeline { list-style: none; padding: 8px; margin: 10px 0 0; }
 
 .htimeline .step { 
         float: left; 
@@ -10,7 +10,7 @@
         text-align: center; 
         padding: 1px 0 10px 0px; 
         background-color: white; 
-        color: #000000; 
+        color: #aaa4a4; 
         height: 60px; 
         vertical-align: middle; 
         border-right: solid 1px white; 
@@ -19,7 +19,8 @@
 }
 .htimeline .step:nth-child(odd) { background-color:  white; }
 .htimeline .step:first-child { border-left: solid 1px white; }
-.htimeline .step:hover { background-color: #ccc; border-bottom-width: 6px; }
+.htimeline .step:hover { background-color: #ccc; border-bottom-width: 6px; cursor: pointer;}
+
 
 .htimeline .step div { margin: 0 5px; font-size: 14px; vertical-align: top; padding: 0;}
 
@@ -39,9 +40,6 @@
         border-width: 3px; 
         transition: all 0.5s ease;}
 .htimeline .step:hover::before { width: 18px; height: 18px; bottom: -12px; }
-.htimeline .step.green::before {border-color: #348F50;}
-.htimeline .step.orange::before {border-color: #F09819;}
-.htimeline .step.red::before {border-color: #C04848;}
-.htimeline .step.blue::before {border-color: #49a09d;}
+.htimeline .step.green::before {border-color: #348F50; background-color: #348F50; color: #ffffff }
 
-.htimeline .step::after { content: attr(data-date); position: absolute; bottom: -8px; left: 7px; font-size: 11px; font-style: italic; color: #000000}
+.htimeline .step::after { content: attr(data-date); position: absolute; bottom: -8px; left: 7px; font-size: 11px; font-style: bold; color: #aaa4a4}

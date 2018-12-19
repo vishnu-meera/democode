@@ -9,19 +9,21 @@ import Utils from 'utils/utils';
 import { Link } from "react-router-dom";
 import { Card,CardBody,CardTitle} from "reactstrap";
 
-import MCIO from "components/generalView/mcioCard";
-import NATIONAL from "components/generalView/nationalCard";
-import Opportunity from "components/generalView/opportunityCard";
-import MoveStatus from "components/generalView/movestatusCard";
-import DataCenter from "components/generalView/datacenterCard";
+import MCIO from "components/dashboardView/panelcards/mcioCard";
+import NATIONAL from "components/dashboardView/panelcards/nationalCard";
+import Opportunity from "components/dashboardView/panelcards/opportunityCard";
+import MoveStatus from "components/dashboardView/panelcards/movestatusCard";
+import DataCenter from "components/dashboardView/panelcards/datacenterCard";
+import Spinner from "components/spinner/spin";
 
 const componentStatusObject = {
-    "Live":[NATIONAL,Opportunity,MCIO,MoveStatus,DataCenter],
+    "Live":[NATIONAL,Opportunity,MCIO,MoveStatus],
     "InProgress":[NATIONAL,Opportunity,MCIO,DataCenter],
     "Approved":[NATIONAL,Opportunity,MCIO],
     "Potential":[NATIONAL,Opportunity,MCIO],
 };
 
+const countryButtonEnable = ["Live","InProgress"];
 const getDCObject =(data,country)=>{
     let mcio = data.filter(x=>x.name === country)[0]
     let dataCentersObject = JSON.parse(mcio.dataCenters);
@@ -50,6 +52,15 @@ class CountryPanel extends React.Component {
     dataCenterNavClicked = async (e,dataCenterObj)=>{
        //console.log("dataCenterNavClicked==> ",dataCenterObj);
     }
+
+    toggleDC(dcCode){
+        let horizontalTabs ="";
+        if(this.state.horizontalTabs !== dcCode){
+            horizontalTabs = dcCode
+        }
+        this.setState({ horizontalTabs})
+    }
+    
 
     async componentDidMount() {
         if (this.state.loading) {
@@ -95,37 +106,43 @@ class CountryPanel extends React.Component {
     };
 
     render() {
-        console.log("CountryPanel render===>",this.props.CountriesObject);
+
         let panelComponents = componentStatusObject[this.props.status].map((x,k)=>{
             return (<div key={k}>{x.call(this)}</div>);
         });
 
-        const disable = (this.props.status === "Live" || this.props.status==="InProgress")?false:true;
+        let linkCss = {
+            borderRadius: "20px",
+        };
+
+
         if(this.state.loading){
-            return null
-        }else{
-            return (<Card>
+            return(
+                <Card>
                 <CardBody>
+                {Spinner.call(this)}
+                </CardBody>
+            </Card>
+            )
+        }else{
+            return (
                     <div
                         aria-multiselectable={true}
-                        className="card-collapse"
+                        className="card"
                         id="accordion"
                         role="tablist">
 
-                        <CardTitle tag="h5">{this.props.country}</CardTitle>
+                        <span className="text-left ml-3 mt-2"><h6>{this.props.country}</h6></span>
                         {panelComponents}
-                        <Card className="card-plain text-center">
-                            <Link
-                                disabled={disable}
-                                className="btn btn-primary text-center"
-                                to={{ pathname: '/country', 
-                                state: { country: this.props.country, status: this.props.status, countriesObject:this.props.CountriesObject ,toolTipObject:this.props.toolTipObject,dataCentersObject:this.state.dataCentersObject} }}
-                            >See Seats Updates</Link>
-                        </Card>
 
-                    </div>
-                </CardBody>
-            </Card>);
+                        <Link
+                            style = {linkCss}
+                            disabled={!countryButtonEnable.includes(this.props.status)}
+                            className="btn btn-none ml-5 mr-5 pt-1 pb-1 pr-4 pl-4" 
+                            to={{ pathname: '/country', 
+                            state: { country: this.props.country, status: this.props.status, countriesObject:this.props.CountriesObject ,toolTipObject:this.props.toolTipObject,dataCentersObject:this.state.dataCentersObject} }}
+                        ><span className="text-center">See Seats Updates</span></Link>
+                    </div>);
         }
     }
 }

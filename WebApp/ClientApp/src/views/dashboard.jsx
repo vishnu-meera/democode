@@ -9,6 +9,8 @@ import CountryTables from "components/dashboardView/table";
 import Cards from "components/dashboardView/cards";
 import WorldMap from "components/dashboardView/worldmap";
 import Spinner from "components/spinner/spin";
+import GreenRoundedTooltip from "components/tooltip/tool-tip";
+import { Tooltip } from "react-lightweight-tooltip";
 
 class Dashboard extends React.Component {
 
@@ -26,9 +28,15 @@ class Dashboard extends React.Component {
             mapLoading:false,
             cardActiveKey:"",
             toolTipObject: {},
-            CountriesObject:{}
+            CountriesObject:{},
+            toolTipShow:false,
+            clientX:0,
+            clientY:0,
         };
         this.handleClick = this.handleClick.bind(this);
+        this.onMapRegionOver = this.onMapRegionOver.bind(this);
+        this.onMapRegionout = this.onMapRegionout.bind(this);
+        this._onMapMouseOver = this._onMapMouseOver.bind(this)
     }
 
     async componentDidMount() {
@@ -43,14 +51,14 @@ class Dashboard extends React.Component {
         }
     }
 
-    handleClick =(event,code)=>{
+    handleClick =(event,code,tip)=>{
         event.preventDefault();
     };
 
     //TODO: Will move this code to funcational component
-    showCustomToolTip (event,tip,code){
+    async showCustomToolTip (event,tip,code){
+
 		if (code in this.state.mapFeedData) {
-            console.log("Tip===>",this.state.toolTipObject[code]);
             if(this.state.toolTipObject[code].Status===this.utils.statusToShowDc){
                 tip.html(`<div className = 'btn btn-none'>
                 <strong className="bold">${this.state.toolTipObject[code].Name}</strong><br/><br>
@@ -75,6 +83,28 @@ class Dashboard extends React.Component {
     }
     //TODO: Will move this code to funcational component
     
+    onMapRegionOver =(event,code)=>{
+        //console.log("onMapRegionOver===>",event.screenY,code,event);
+        //event.preventDefault();
+    };
+
+    onMapRegionout =(event,code)=>{
+        //console.log("onMapRegionOut===>",event.screenX,code);
+        //event.preventDefault();
+    };
+
+     _onMapMouseOver = async (event)=>{
+        let attributes = event.target.getAttributeNames();
+        if(attributes.includes("data-code")){
+            let code  = event.target.getAttribute("data-code");
+            if (code in this.state.mapFeedData){
+                await this.setState({clientX:event.clientX,clientY:event.clientY});
+            }
+        }
+        //event.preventDefault();
+    };
+
+
     async onCardClick(key){
         if(key!==this.state.cardActiveKey){
             await this.setState({mapLoading:true,cardActiveKey:key});
@@ -92,6 +122,8 @@ class Dashboard extends React.Component {
     }
 
     render() {
+        let css_2= {"backgroundColor":"#F9F9FB"};
+
         if (this.state.loading) {
             return (
                 <div className="content">
@@ -101,13 +133,20 @@ class Dashboard extends React.Component {
         } else {
             return (
                 <div className="content">
-                    {Cards.call(this)}
-                    {WorldMap.call(this,this.state.mapFeedData,this.state.mapColorCode)}
-                    <CountryTables 
-                        data={this.state.tableFeedData} 
-                        tableData={this.state.tableData} 
-                        CountriesObject={this.state.CountriesObject}
-                        toolTipObject = {this.state.toolTipObject}/>
+                    <div className="pt-2 pb-2 ml-5 mr-5">
+                        <div style={css_2}>
+                            {Cards.call(this)}
+                            {WorldMap.call(this,this.state.mapFeedData,this.state.mapColorCode)}
+                        </div>
+
+                        <div style={css_2}>
+                            <CountryTables 
+                                data={this.state.tableFeedData} 
+                                tableData={this.state.tableData} 
+                                CountriesObject={this.state.CountriesObject}
+                                toolTipObject = {this.state.toolTipObject}/>
+                        </div>
+                    </div>
                 </div>
             );
         }

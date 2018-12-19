@@ -18,52 +18,53 @@ export default function WorldMap(mapFeedData,mapColorCode){
         );
     } else {
         return (
-            <div className="row">
+            <Row>
             <Col md="12">
                 <Card>
-                    <CardBody>
-                        <Row>
-                            <Col className="ml-auto mr-auto" md="12">
-                                <VectorMap
-                                    map={"world_mill"}
-                                    backgroundColor="transparent" //change it to blue !!!
-                                    zoomOnScroll={false}
-                                    containerStyle={{
-                                        width: "100%",
-                                        height: "300px"
-                                    }}
-                                    onRegionClick={(e,code)=>{this.handleClick(e,code)}} 
-                                    onRegionTipShow = {(e,tip,code)=>{this.showCustomToolTip(e,tip,code)}}
-                                    containerClassName="map"
-                                    regionStyle={{
-                                        initial: {
-                                            fill: "#e4e4e4",
-                                            "fill-opacity": 0.9,
-                                            stroke: "none",
-                                            "stroke-width": 0,
-                                            "stroke-opacity": 0
-                                        },
-                                        hover: {
-                                            "fill-opacity": 0.8,
-                                            cursor: 'pointer'
-                                        }
-                                    }}
-                                    regionsSelectable={true}
-                                    series={{
-                                        regions: [
-                                            {
-                                                values: mapFeedData,  //this is your data
-                                                scale: mapColorCode,  //your color game's here
-                                                normalizeFunction: "polynomial"
-                                            }
-                                        ]
-                                    }}
-                                />
-                            </Col>
-                        </Row>
-                    </CardBody>
+                    <Row onMouseOver = {(e)=>{this._onMapMouseOver(e)}}>
+                    <VectorMap
+                        map={"world_mill"}
+                        backgroundColor="transparent" //change it to blue !!!
+                        zoomOnScroll={false}
+                        containerStyle={{
+                            width: "100%",
+                            height: "290px"
+                        }}
+                        onRegionClick={(e,tip,code)=>{this.handleClick(e,tip,code)}} 
+                        onRegionTipShow = {(e,tip,code)=>{this.showCustomToolTip(e,tip,code)}}
+                        onRegionOver = {(e,code)=>{this.onMapRegionOver(e,code)}}
+                        onRegionOut	= {(e,code)=>{this.onMapRegionout(e,code)}}
+                        zoomAnimate ={true}
+                        containerClassName="map"
+                        setValues={(e,tip,code)=>{this.setValues(e,tip,code)}} 
+                        regionStyle={{
+                            initial: {
+                                fill: "#e4e4e4",
+                                "fill-opacity": 0.9,
+                                stroke: "none",
+                                "stroke-width": 0,
+                                "stroke-opacity": 0
+                            },
+                            hover: {
+                                "fill-opacity": 0.4,
+                                cursor: 'pointer'
+                            }
+                        }}
+                        regionsSelectable={true}
+                        series={{
+                            
+                            regions: [
+                                {
+                                    values: mapFeedData,  //this is your data
+                                    scale: mapColorCode  //your color game's here
+                                }
+                            ]
+                        }}
+                    />
+
+                    </Row>
                 </Card>
             </Col>
-        </div>);
+        </Row>);
     }
 }
