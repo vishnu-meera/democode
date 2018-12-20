@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Core.Models;
 using Core.Queries;
 using Core.Commands;
+using Core.MigrationQueries;
 
 namespace WebApp.Api
 {
@@ -41,6 +42,13 @@ namespace WebApp.Api
             var CountryName = await Mediator.Send(command);
 
             return CreatedAtAction("Get", new { CounryName = CountryName });
+        }
+
+        [Route("[action]")]
+        [HttpGet]
+        public async Task<IActionResult> Migrate()
+        {
+            return Ok(await Mediator.Send(new MigrateCountry { Name="Country" }));
         }
     }
 }

@@ -123,6 +123,16 @@
     <Compile Include="Exceptions\NotFoundException.cs" />
     <Compile Include="Infrastructure\RequestLogger.cs" />
     <Compile Include="Interfaces\IRepository.cs" />
+    <Compile Include="MigrationQueries\MigrateCountry.cs" />
+    <Compile Include="MigrationQueries\MigrateCountryDataCenters.cs" />
+    <Compile Include="MigrationQueries\MigrateCountryDataCentersHandler.cs" />
+    <Compile Include="MigrationQueries\MigrateCountryHandler.cs" />
+    <Compile Include="MigrationQueries\MigrateRoadMap.cs" />
+    <Compile Include="MigrationQueries\MigrateRoadMapHandler.cs" />
+    <Compile Include="MigrationQueries\MigrateRuleTable.cs" />
+    <Compile Include="MigrationQueries\MigrateRuleTableHandler.cs" />
+    <Compile Include="MigrationQueries\MigrateWorkLoad.cs" />
+    <Compile Include="MigrationQueries\MigrateWorkLoadHandler.cs" />
     <Compile Include="Models\CountryDataCentersModel.cs" />
     <Compile Include="Models\CountryListModel.cs" />
     <Compile Include="Models\CountryModel.cs" />

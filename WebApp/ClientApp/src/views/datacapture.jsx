@@ -49,11 +49,22 @@ const sheet2arr_2 = function(sheet){
     return result;
 };
 
+const MigrateTableAPIs =    ["api/RuleTable/Migrate",
+                            "api/Country/Migrate",
+                            "api/CountryDataCenters/Migrate",
+                            "api/CountryRoadMap/Migrate",
+                            "api/CountryWorkLoad/Migrate"];
+
+                            
 class InputView extends React.Component {
     constructor(props) {
         super(props);
         this.utils = new Utils();
         this.handleChange2 = this.handleChange2.bind(this);
+        this.takeSnapShot = this.takeSnapShot.bind(this);
+        this.state = {
+            readyToview : false
+        };
     }
 
     //adding roadmap array
@@ -61,7 +72,7 @@ class InputView extends React.Component {
         //console.log("RoadMap==>",CountryRoadMaps)
         for (const CountryRoadMap of CountryRoadMaps) {
             //Adding RoadMap to azure table
-            let response = await this.utils.addRoadMapObject(CountryRoadMap);
+            //let response = await this.utils.addRoadMapObject(CountryRoadMap);
         }
         
     };
@@ -82,7 +93,7 @@ class InputView extends React.Component {
                 //console.log("WorkLoad ==>",workloadObject);
                 for (const obj of workloadObject) {
                     //Adding Workload to azure table
-                    let response = await this.utils.addWorkLoads(obj);
+                    //let response = await this.utils.addWorkLoads(obj);
                 }
             }  
         }
@@ -94,7 +105,7 @@ class InputView extends React.Component {
                 //console.log("Datacenter ==>",datacnterObject);
                 for (const obj of datacnterObject) {
                     //Adding Datacenter to azure table
-                    let response = await this.utils.addDataCenter(obj);
+                    //let response = await this.utils.addDataCenter(obj);
                 }
             }
         }
@@ -102,7 +113,7 @@ class InputView extends React.Component {
         //console.log("Country===>",countryOject)
         //Adding Country to azure table
         if(countryOject){
-            let response = await this.utils.addCountryObject(countryOject);
+            //let response = await this.utils.addCountryObject(countryOject);
         }
             
     };
@@ -147,19 +158,43 @@ class InputView extends React.Component {
                 self.doCountrySpecificSheets(workbook,sheetMap[key],TimeLine,CountriesExcelObj);
             });
         });
-    }
+    };
       
-    render() {
-        return (
 
-            <div className="content">
-                <label htmlFor="my-file-input">Select the excel</label>
-                <FileReaderInput as="binary" id="my-file-input"
-                                onChange={this.handleChange2} accept=".xlsx">
-                <button>Select</button>
-                </FileReaderInput>
-          </div>
-        );
+    takeSnapShot = async()=>{
+        await this.setState({readyToview:true});
+
+        for (const url of MigrateTableAPIs) {
+            let response = await this.utils.migrateTables(url);
+            console.log("takeSnapShot==>",response);
+        }
+        console.log("takeSnapShot==>finished");
+        await this.setState({readyToview:false});
+    };
+    
+    render() {
+        return (<div className="content">
+
+                <div className="pt-4 pl-5 pr-5">
+                    <div className="custom-file">
+                        <label className="custom-file-label" htmlFor="my-file-input">Choose Excel file</label>
+                        <FileReaderInput 
+                            as="binary" 
+                            id="my-file-input" onChange={this.handleChange2} 
+                            disabled={this.state.readyToview}
+                        accept=".xlsx"> </FileReaderInput>
+                    </div>
+                
+                    <button 
+                        type="button" 
+                        className="btn btn-secondary btn-md btn-block"
+                        onClick = {this.takeSnapShot}
+                        disabled={this.state.readyToview}>
+                        Take SnapShot of Table Storage
+                    </button>
+                </div>
+
+            </div>);
     }
 }
 

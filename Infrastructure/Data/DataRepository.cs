@@ -15,10 +15,12 @@ namespace Infrastructure.Data
 {
     public class DataRepository : IRepository
     {
-        private readonly Dictionary<string,CloudTable> tableList;
+        private readonly Dictionary<string, CloudTable> tableList;
+        private readonly Dictionary<string, CloudTable> backUpTableList;
         public DataRepository()
         {
             tableList = TableStorageConfig.Instance;
+            backUpTableList = BackUpTableStorageConfig.Instance;
         }
 
         public async Task<string> Add<T>(T entity, string tableName) where T : BaseEntity, new()
@@ -32,7 +34,22 @@ namespace Infrastructure.Data
             return entity.RowKey;
         }
 
-        public async Task<T> Get<T>(string tableName, string partionkey, string rowkey) where T: BaseEntity, new()
+
+        public async Task<int> AddAll<T>(IEnumerable<T> entityList, string tableName) where T : BaseEntity, new()
+        {
+            // Create the InsertOrReplace TableOperation.
+            TableBatchOperation batchOperation = new TableBatchOperation();
+            foreach (var entity in entityList)
+            {
+                batchOperation.InsertOrReplace(entity);
+            }
+            // Execute the batch operation.
+            var temp = await backUpTableList[tableName].ExecuteBatchAsync(batchOperation);
+
+            return temp.Count;
+        }
+
+        public async Task<T> Get<T>(string tableName, string partionkey, string rowkey) where T : BaseEntity, new()
         {
             // Create a retrieve operation that takes a customer entity.
             TableOperation retrieveOperation = TableOperation.Retrieve<T>(partionkey, rowkey);
@@ -42,6 +59,27 @@ namespace Infrastructure.Data
 
             return (T)retrievedResult.Result;
 
+        }
+
+        public async Task<IEnumerable<T>> GetAllQithoutPartition<T>(string tableName) where T : BaseEntity, new()
+        {
+            var range = new List<T>();
+            TableQuery<T> tableQuery = new TableQuery<T>();
+            TableContinuationToken continuationToken = null;
+
+            do
+            {
+                TableQuerySegment<T> tableQueryResult = await tableList[tableName].ExecuteQuerySegmentedAsync(tableQuery, continuationToken);
+                continuationToken = tableQueryResult.ContinuationToken;
+
+                foreach (var t in tableQueryResult.Results)
+                {
+                    range.Add(t);
+                }
+                
+            } while (continuationToken != null);
+
+            return range;
         }
 
         public async Task<IEnumerable<T>> GetAll<T>(string tableName, string partionkey) where T : BaseEntity, new()

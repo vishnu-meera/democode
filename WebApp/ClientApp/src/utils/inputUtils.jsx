@@ -384,4 +384,35 @@ export default class DataCapturingUtils {
             return null
         } 
     };
+
+    async migrateTables(url){
+        try {
+            let response = await fetch(url, {
+                "headers":{"Accept":"application/json","Content-Type":"application/json"},
+                "method": "GET"
+            });
+            console.log("response===>",response)
+            let data = await (this.handleErrors(response)).json();
+            return data;
+        } catch (error) {
+            return error.message
+        } 
+    };
+
+    handleErrors(response) {
+        console.log("handleErrors==>", response);
+        let ok = response.ok;
+        if (!ok) {
+            let status = response.status;
+            let statusText = response.statusText;
+            if (status >= 500) {
+                throw new Error(`ServerError: ErrorMsg ${statusText} & status code ${status}`);
+            }
+            if (status <= 501) {
+                throw new Error(`ApplicationError: ErrorMsg ${statusText} & status code ${status}`);
+            }
+            throw new Error(`NetworkError: ErrorMsg ${statusText} & status code ${status}`);
+        }
+        return response;
+    };
 };

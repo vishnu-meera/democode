@@ -166,6 +166,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Config\BackUpTableStorageConfig.cs" />
     <Compile Include="Config\TableStorageConfig.cs" />
     <Compile Include="Data\DataRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

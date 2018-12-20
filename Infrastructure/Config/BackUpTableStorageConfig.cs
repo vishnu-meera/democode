@@ -9,13 +9,11 @@ using Microsoft.WindowsAzure.Storage.Table;
 
 namespace Infrastructure.Config
 {
-    public sealed class TableStorageConfig
+    public sealed class BackUpTableStorageConfig
     {
         static Dictionary<string, CloudTable> instance = null;
         static readonly object padlock = new object();
-
-        TableStorageConfig(){}
-
+        BackUpTableStorageConfig() { }
         public static Dictionary<string, CloudTable> Instance
         {
             get
@@ -25,24 +23,24 @@ namespace Infrastructure.Config
                     if (instance == null)
                     {
                         instance = new Dictionary<string, CloudTable>();
-                        instance.Add("Country", GetOrCreateBlobTable("Country"));
-                        instance.Add("CountryDataCenters", GetOrCreateBlobTable("CountryDataCenters"));
-                        instance.Add("CountryRoadMap", GetOrCreateBlobTable("CountryRoadMap"));
-                        instance.Add("DataCenterMoveStatus", GetOrCreateBlobTable("DataCenterMoveStatus"));
-                        instance.Add("CountryWorkLoad", GetOrCreateBlobTable("CountryWorkLoad"));
-                        instance.Add("RuleTable", GetOrCreateBlobTable("RuleTable"));
+                        instance.Add("Country", GetOrCreateBlobTableBackUp("Country"));
+                        instance.Add("CountryDataCenters", GetOrCreateBlobTableBackUp("CountryDataCenters"));
+                        instance.Add("CountryRoadMap", GetOrCreateBlobTableBackUp("CountryRoadMap"));
+                        instance.Add("DataCenterMoveStatus", GetOrCreateBlobTableBackUp("DataCenterMoveStatus"));
+                        instance.Add("CountryWorkLoad", GetOrCreateBlobTableBackUp("CountryWorkLoad"));
+                        instance.Add("RuleTable", GetOrCreateBlobTableBackUp("RuleTable"));
                     }
                     return instance;
                 }
             }
         }
 
-        private static CloudTable GetOrCreateBlobTable(string tableName)
+        private static CloudTable GetOrCreateBlobTableBackUp(string tableName)
         {
             CloudTable table = null;
             try
             {
-                var storageTableConnectionString = "DefaultEndpointsProtocol=https;AccountName=golocaldashboarddb;AccountKey=ws+3kh+5yaAK4reikf1gAygzvUprXeN06ic0hBwi5QBiCh7fWxH/6A4tIxmjmEuqrsE9rxfJOiAEWsPxCK0bsw==;EndpointSuffix=core.windows.net";
+                var storageTableConnectionString = "DefaultEndpointsProtocol=https;AccountName=golocaldashboarddbbakup;AccountKey=7W0r1vSED0K1fu/bKk4XxSvtu1jWaQB76vwo2z3N0Wqd9l1/uCEARyWlbbKD47O23IiAwcqoPN2VPDh7H2W0Pw==;EndpointSuffix=core.windows.net";
                 CloudStorageAccount storageAccount = CloudStorageAccount.Parse(storageTableConnectionString);
                 // Create the table client.
                 CloudTableClient tableClient = storageAccount.CreateCloudTableClient();

@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Core.Models;
 using Core.Queries;
 using Core.Commands;
+using Core.MigrationQueries;
 
 namespace WebApp.Api
 {
@@ -33,5 +34,12 @@ namespace WebApp.Api
 
             return CreatedAtAction("Get", new { CounryName = CountryName });
         }
+        [Route("[action]")]
+        [HttpGet]
+        public async Task<IActionResult> Migrate()
+        {
+            return Ok(await Mediator.Send(new MigrateCountryDataCenters { Name = "Country" }));
+        }
+
     }
 }

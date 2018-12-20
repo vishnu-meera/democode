@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Core.Models;
 using Core.Queries;
 using Core.Commands;
+using Core.MigrationQueries;
 
 namespace WebApp.Api
 {
@@ -22,6 +23,13 @@ namespace WebApp.Api
         public async Task<IActionResult> GetAll([FromQuery] GetRuleTable query)
         {
             return Ok(await Mediator.Send(query));
+        }
+
+        [Route("[action]")]
+        [HttpGet]
+        public async Task<IActionResult> Migrate()
+        {
+            return Ok(await Mediator.Send(new MigrateRuleTable { Name = "Rules" }));
         }
 
     }
