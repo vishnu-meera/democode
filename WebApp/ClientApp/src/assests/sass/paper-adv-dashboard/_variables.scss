@@ -359,7 +359,7 @@ $social-linkedin-state-color:        darken(#0077B5, 5%) !default;
 
 // Sidebar variables
 $sidebar-width:              calc(100% - 260px) !default;
-$sidebar-mini-width:         calc(100% - 80px) !default;
+$sidebar-mini-width:         calc(100% - 60px) !default;
 
 
 // Social icons color
@@ -428,3 +428,6 @@ $spacers: map-merge(
   ),
   $spacers
 );
+
+$timeline-bulb-color: #fffdd0;
+$timeline-bulb-bgColor: #fffdd0;

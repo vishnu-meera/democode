@@ -1,5 +1,6 @@
 
 import Utils from './utils';
+const convert = require('color-convert');
 
 let roadmapsummaryObjKeys = {    
     1:"Public Announcement",
@@ -85,14 +86,25 @@ const getRMCellObject = (roadMapCell,flag="")=>{
 
 
 const getTimeLineCellObject = (name,roadMapCell)=>{
-    let values = roadMapCell[0].split("\n");
 
+    let values = roadMapCell[0].split("\n");
+    let rgb = "none";
+    let riskLevel = 0;
+
+    if("fgColor" in roadMapCell[1]){
+        if("rgb" in roadMapCell[1]["fgColor"]){
+            rgb = roadMapCell[1]["fgColor"]["rgb"];
+            rgb = convert.hex.keyword(rgb)
+        }
+    }
+   
     let temp = {
         "Name":name,
 		"Actual Date":values.length>1?values[1]:values[0].replace(/[\r\n]/g, ""),
 		"Planned Date":values[0].replace(/[\r\n]/g, ""),
 		"Risk Level":20,//based on color we will chnage this
-		"Notes":{"note1":"Notes not aviable now"}
+        "Notes":{"note1":"Notes not aviable now"},
+        "rgb":rgb
     };
     let style = roadMapCell[1]
     //console.log("sheet2Arr==>",temp,style)
@@ -104,6 +116,7 @@ export default class DataCapturingUtils {
 
     getRoadMapObject(roapMapExcelRows){
         const roadmapsummarykeys = ['Infrastructure','Azure','Office'];
+        const keysNotInTimeLine = ["RTEG","Public Announcement","Preview"]
         let RoadMapSummary = {"Infrastructure":{},"Azure":{},"Office":{}};
         let key ,TimeLine ={};
         let CountryRoadMaps = [];
@@ -129,9 +142,19 @@ export default class DataCapturingUtils {
                 else    
                     RoadMapSummary[key][roadmapsummaryObjKeys[index]] = getRMCellObject(countryRow[index]);   
                     
-                if(roadmapsummaryObjKeys[index]!=="CAPEX Approved" || roadmapsummaryObjKeys[index]!=="Public Announcement")  
-                    TimeLine[countryRow[0][0]].push(getTimeLineCellObject(roadmapsummaryObjKeys[index],countryRow[index]))
+                if(!keysNotInTimeLine.includes(roadmapsummaryObjKeys[index]))  {
+                    let timeLineIndex = roadmapsummaryObjKeys[index];
+                    if(timeLineIndex==="GA"){
+                        timeLineIndex = key + " " + timeLineIndex;
+                        //console.log("TimeLine===>key",timeLineIndex);
+                    }
+                    if("O365 Services"===timeLineIndex)timeLineIndex="O365 Services Deployment";
+                    if("Engineering Readiness"===timeLineIndex)timeLineIndex="O365 Services Readiness";
+                    TimeLine[countryRow[0][0]].push(getTimeLineCellObject(timeLineIndex,countryRow[index]));
+                }
             }
+            
+            [TimeLine[countryRow[0][0]][7], TimeLine[countryRow[0][0]][8]] = [TimeLine[countryRow[0][0]][8], TimeLine[countryRow[0][0]][7]];
 
             CountryRoadMaps.push({
                 "PartitionKey": "Countries",
@@ -141,16 +164,41 @@ export default class DataCapturingUtils {
             });
         }
 
-        //console.log("RoadMapSummary==>",CountryRoadMaps,TimeLine);
+        console.log("TimeLine==>",TimeLine);
         return {CountryRoadMaps,TimeLine};
     };
 
-    async getCountryObject(cntryArray){
-        //console.log("cntryArray===>",cntryArray)
+    getCountriesExcelObj(cntryArray){
+        let CountriesExcelObj = {};
+        for (let index = 1; index < cntryArray.length; index++) {
+            const element = cntryArray[index];
+            // console.log("element==>",element);
+            CountriesExcelObj[element[0][0]] =  {
+                "Status" : element[1][0],
+                "Revenue Projection 3Y" : element[2][0],
+                "Revenue Projection 5Y" : element[3][0],
+                "TAM Restricted" : element[4][0],
+                "TAM Unrestricted" : element[5][0]
+            };
+        }
+        //console.log("CountriesExcelObj==>",CountriesExcelObj);
+        return {CountriesExcelObj};
+    };
+
+    async getCountryObject(cntryArray,countryExcelObject){
+        //console.log("cntryArray===>",countryExcelObject)
         let countryObject = JSON.parse(JSON.stringify(CountryObject));
         countryObject.Name = cntryArray[0][0][0];
         countryObject.RowKey = cntryArray[0][0][0];
-        countryObject.Status = statusArray[Math.floor(Math.random() * statusArray.length)];
+
+        if(countryObject.Name in countryExcelObject){
+            countryObject.Status =  countryExcelObject[countryObject.Name]["Status"];
+            countryObject.RevenueProjection3Y =  countryExcelObject[countryObject.Name]["Revenue Projection 3Y"];
+            countryObject.RevenueProjection5Y =  countryExcelObject[countryObject.Name]["Revenue Projection 5Y"];
+            countryObject.TAM_Restricted =  countryExcelObject[countryObject.Name]["TAM Restricted"];
+            countryObject.TAM_UNRestricted =  countryExcelObject[countryObject.Name]["TAM Unrestricted"];
+        }
+
         countryObject.AzureStatus = cntryArray[2].filter(y=>y[2]==="Azure Status")[0][0];
         countryObject.CAPEX = cntryArray[2].filter(y=>y[2]==="CAPEX")[0][0];
 
@@ -175,7 +223,7 @@ export default class DataCapturingUtils {
             dataCenterArray.push(dataCenterObject);
         }
         countryObject.DataCenters = JSON.stringify(dataCenterArray);
-        //console.log("countryObject==>",countryObject);
+        console.log("countryObject==>",countryObject);
         return [countryObject,dataCenterArray];
     };
 

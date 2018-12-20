@@ -42,7 +42,8 @@ class Country extends React.Component {
             moveStatusObject:{},
             dataCentersObject:dataCentersObject,
             dataCenterTimeLineObj:{},
-            workloadobject:{}
+            workloadobject:{},
+            ruleTable:[]
         };
     }
 
@@ -50,7 +51,9 @@ class Country extends React.Component {
         if (this.state.loading) {
             let countryCode = await this.utils.getCode(this.state.country);
             let imgUri = `https://www.countryflags.io/${countryCode}/shiny/64.png`;
-            await this.setState({ imgUri, countryCode })
+            let ruleTable = await this.utils.getRuleTable();
+            
+            await this.setState({ imgUri, countryCode,ruleTable })
             if("InProgress"===this.state.status){
                 let dataCenterTimeLineObj = await this.utils.getDataCenterObjectWithDCCode(this.state.country,this.state.dataCentersObject[0].dcCode);
                 let workloadobject = await this.utils.geAlltWorkloadObjects(this.state.country,this.state.dataCentersObject[0].dcCode)
@@ -121,7 +124,8 @@ class Country extends React.Component {
                             <DataCenterView 
                             status={this.state.status} 
                             dataCenterTimeLineObj={this.state.dataCenterTimeLineObj} 
-                            workloadobject = {this.state.workloadobject}/>
+                            workloadobject = {this.state.workloadobject}
+                            ruleTable= {this.state.ruleTable}/>
                         }
                     </div>
                 </div>

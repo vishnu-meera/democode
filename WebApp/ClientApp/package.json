@@ -15,6 +15,7 @@
     "chart.js": "^2.7.2",
     "chartist": "^0.10.1",
     "classnames": "^2.2.6",
+    "color-convert": "^1.9.3",
     "country-list": "^2.1.0",
     "exceljs": "^1.6.3",
     "history": "^4.7.2",

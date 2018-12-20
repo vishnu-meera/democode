@@ -321,6 +321,27 @@ export default class Utils {
         return {moveStatusObject,moveStatusItems};
     };
 
+    async getRuleTable(){
+        let ruleTable ;
+        try {
+            let requestUrl = 'api/RuleTable';
+            let response = await fetch(requestUrl, {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                method: "GET"//,headers: { 'authorization': 'Bearer ' + this.getWebApiToken() }
+            });
+            
+            let data = await (this.handleErrors(response)).json();
+            ruleTable = data.rules
+
+        } catch (error) {
+            return [];
+        } finally {
+           //TODO
+        }
+        return {ruleTable};
+    };
+
     getToolTipText(code){
 
     }

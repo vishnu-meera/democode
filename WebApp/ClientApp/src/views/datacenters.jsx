@@ -49,14 +49,13 @@ export default class DataCenterView extends React.Component {
     }
 
     timeline = ()=>{
+        let rules = this.props.ruleTable.ruleTable;
+        //console.log("rules==>",rules);
         const timeLine = JSON.parse(this.state.dataCenterTimeLineObj.timeLine);
         const timeLineArray = timeLine.map((obj,key)=>{
-            if(obj.Name.trim() !=="Public Announcement"  && obj.Name.trim() !== "CAPEX Approved"){
-                let css = `step col-sm-1 ${(key<3?"green":"none")}`; //TODO ..the logic is with respect to
-                key = key -2;
-                let num = key +1;
-                    return (<PopoverItem key={key} id={key} keyprop={key} num={num} css={css} obj={obj} />)
-            }
+            let rule = rules.filter(x=>x.ruleName===obj.Name.replace(/\s/g,'').toLocaleLowerCase())[0];
+            //console.log("rule===>",obj.Name,JSON.parse(rule.impact));
+            return (<PopoverItem key={key} id={key} keyprop={key} obj={obj} rules = {JSON.parse(rule.impact)}/>)       
         });
         return timeLineArray;
     }
@@ -66,7 +65,7 @@ export default class DataCenterView extends React.Component {
             <div className="col-sm-12">
                 <Card className="stats">
                     <span className="text-muted font-weight-bold ml-2 mt-2">TimeLine</span>
-                    <div className='htimeline'>
+                    <div className='htimeline ml-5'>
                         { this.timeline() }
                     </div>
                 </Card>

@@ -60,18 +60,19 @@ class InputView extends React.Component {
     async addRoadMap(CountryRoadMaps){
         //console.log("RoadMap==>",CountryRoadMaps)
         for (const CountryRoadMap of CountryRoadMaps) {
+            //Adding RoadMap to azure table
             let response = await this.utils.addRoadMapObject(CountryRoadMap);
         }
         
     };
 
-    async doCountrySpecificSheets(workbook,countrySheetArr,TimeLine){
+    async doCountrySpecificSheets(workbook,countrySheetArr,TimeLine,CountriesExcelObj){
         let countryOject,workloadObject,datacnterObject,dataCenterArray
         let specific = countrySheetArr.find(x=>x.includes("Specific"));
         let mcio = countrySheetArr.find(x=>x.includes("MCIO"));
         let wrkld = countrySheetArr.find(x=>x.includes("Wrkld"));
         if(specific)
-            [countryOject,dataCenterArray] = await this.utils.getCountryObject(sheet2arr_2(workbook.Sheets[specific]));
+            [countryOject,dataCenterArray] = await this.utils.getCountryObject(sheet2arr_2(workbook.Sheets[specific]),CountriesExcelObj);
 
         if(wrkld && dataCenterArray){
             if(dataCenterArray.length>0){
@@ -80,6 +81,7 @@ class InputView extends React.Component {
                 workloadObject = this.utils.getWorkloadObject(workloadRowArr,dataCenterArray,countryOject.Name,workLoadsHeader);
                 //console.log("WorkLoad ==>",workloadObject);
                 for (const obj of workloadObject) {
+                    //Adding Workload to azure table
                     let response = await this.utils.addWorkLoads(obj);
                 }
             }  
@@ -91,17 +93,26 @@ class InputView extends React.Component {
                 datacnterObject = this.utils.getDataCenterObject(dataCenterRowArr,dataCenterArray,countryOject.Name,TimeLine);
                 //console.log("Datacenter ==>",datacnterObject);
                 for (const obj of datacnterObject) {
+                    //Adding Datacenter to azure table
                     let response = await this.utils.addDataCenter(obj);
                 }
             }
         }
 
         //console.log("Country===>",countryOject)
-        let response = await this.utils.addCountryObject(countryOject);
+        //Adding Country to azure table
+        if(countryOject){
+            let response = await this.utils.addCountryObject(countryOject);
+        }
+            
     };
 
     handleChange2  = async (e, results) => {
         let self = this;
+        
+        if(results[0][1]["name"].split(".")[1] !== "xlsx")
+            return "not an xlsx file";
+
         results.forEach(result => {
             const [e, file] = result;
             let workbook = XLSX.read(e.target.result, {
@@ -114,9 +125,15 @@ class InputView extends React.Component {
             let {CountryRoadMaps,TimeLine} = this.utils.getRoadMapObject(roadMapArr);
             this.addRoadMap(CountryRoadMaps);
 
+            let countries = workbook.Sheets['Countries'];
+            let countriesExcelSheet = sheet2arr(countries);
+            //console.log("countriesExcelSheet==>",countriesExcelSheet);
+            let {CountriesExcelObj} = this.utils.getCountriesExcelObj(countriesExcelSheet);
+
             let sheetMap = {};
             workbook.SheetNames.forEach(function(sheetName) {
                 if(sheetName!=="Roadmap") {
+                    //console.log("sheetName==>",sheetName)
                     let sheetNamePOSTFix = sheetName.split("_")[0];
                     if(!(sheetNamePOSTFix in sheetMap))
                         sheetMap[sheetNamePOSTFix] = [];
@@ -127,7 +144,7 @@ class InputView extends React.Component {
 
             Object.keys(sheetMap).forEach(key=>{
                 //console.log("sheetMap[key]==>",sheetMap[key])
-                self.doCountrySpecificSheets(workbook,sheetMap[key],TimeLine);
+                self.doCountrySpecificSheets(workbook,sheetMap[key],TimeLine,CountriesExcelObj);
             });
         });
     }
@@ -138,7 +155,7 @@ class InputView extends React.Component {
             <div className="content">
                 <label htmlFor="my-file-input">Select the excel</label>
                 <FileReaderInput as="binary" id="my-file-input"
-                                onChange={this.handleChange2}>
+                                onChange={this.handleChange2} accept=".xlsx">
                 <button>Select</button>
                 </FileReaderInput>
           </div>
