@@ -36,19 +36,22 @@ export default class Auth {
     login = async ()=>{
         let token = null;
         let accessToken = null;
+        let errorMessage = null;
         let userAgentApplication = this.getUserAgentApplication();
         try {
             console.log("login started===>amma rakshikane",userAgentApplication);
             token =  await userAgentApplication.loginPopup(graphScopes);
             accessToken = await userAgentApplication.acquireTokenSilent(graphScopes);
+            const {exp} = jwtDecode(accessToken);
             console.log("token Access ==>",accessToken);
             ls.set("token",accessToken);
             ls.set("userAuthenticated",true);
         } catch (error) {
-            console.log("Authentication error ==> " + error.message);
+            errorMessage = error.message;
+            console.log("Authentication error ==> " + "invalid Token");
         }
     
-        return accessToken;
+        return {accessToken,errorMessage};
     };
 
     logout = async ()=>{
@@ -62,17 +65,21 @@ export default class Auth {
         let authenticated = ls.get("userAuthenticated");;
         let token = ls.get("token");
         
-        if(token){
+        try {
+            if(token){
 
-            console.log("isAuthenticated==>", token);
-            const {exp} = jwtDecode(token);
-            let now = new Date().getTime();
-            now = now/1000;
-
-            if(!exp<now){
-                console.log("isAuthenticated==> authentication success");
-                return {authenticated,token}
+                console.log("isAuthenticated==>", token);
+                const {exp} = jwtDecode(token);
+                let now = new Date().getTime();
+                now = now/1000;
+    
+                if(!exp<now){
+                    console.log("isAuthenticated==> authentication success");
+                    return {authenticated,token}
+                }
             }
+        } catch (error) {
+            console.log("isAuthenticated==> authentication failed",error,token);
         }
 
         authenticated = false;

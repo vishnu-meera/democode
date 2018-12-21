@@ -3,7 +3,7 @@ import FileReaderInput from 'react-file-reader-input';
 import XLSX from'xlsx';
 import Utils from 'utils/inputUtils';
 import Auth from 'utils/auth';
-
+import Spinner from "components/spinner/spin";
 const sheet2arr = function(sheet){
     let result = [];
     let row;
@@ -65,7 +65,8 @@ class InputView extends React.Component {
         this.handleChange2 = this.handleChange2.bind(this);
         this.takeSnapShot = this.takeSnapShot.bind(this);
         this.state = {
-            readyToview : false
+            readyToview : false,
+            message:""
         };
     }
 
@@ -83,12 +84,13 @@ class InputView extends React.Component {
         //console.log("RoadMap==>",CountryRoadMaps)
         for (const CountryRoadMap of CountryRoadMaps) {
             //Adding RoadMap to azure table
-            //let response = await this.utils.addRoadMapObject(CountryRoadMap);
+            let response = await this.utils.addRoadMapObject(CountryRoadMap);
         }
         
     };
 
     async doCountrySpecificSheets(workbook,countrySheetArr,TimeLine,CountriesExcelObj){
+
         let countryOject,workloadObject,datacnterObject,dataCenterArray
         let specific = countrySheetArr.find(x=>x.includes("Specific"));
         let mcio = countrySheetArr.find(x=>x.includes("MCIO"));
@@ -104,7 +106,7 @@ class InputView extends React.Component {
                 //console.log("WorkLoad ==>",workloadObject);
                 for (const obj of workloadObject) {
                     //Adding Workload to azure table
-                    //let response = await this.utils.addWorkLoads(obj);
+                    let response = await this.utils.addWorkLoads(obj);
                 }
             }  
         }
@@ -116,7 +118,7 @@ class InputView extends React.Component {
                 //console.log("Datacenter ==>",datacnterObject);
                 for (const obj of datacnterObject) {
                     //Adding Datacenter to azure table
-                    //let response = await this.utils.addDataCenter(obj);
+                    let response = await this.utils.addDataCenter(obj);
                 }
             }
         }
@@ -124,14 +126,16 @@ class InputView extends React.Component {
         //console.log("Country===>",countryOject)
         //Adding Country to azure table
         if(countryOject){
-            //let response = await this.utils.addCountryObject(countryOject);
+            let response = await this.utils.addCountryObject(countryOject);
         }
-            
+
+        await this.setState({readyToview:false,message:"Excel sheets loaded into table storage"});
     };
 
     handleChange2  = async (e, results) => {
         let self = this;
-        
+        await this.setState({readyToview:true});
+
         if(results[0][1]["name"].split(".")[1] !== "xlsx")
             return "not an xlsx file";
 
@@ -180,32 +184,49 @@ class InputView extends React.Component {
             console.log("takeSnapShot==>",response);
         }
         console.log("takeSnapShot==>finished");
-        await this.setState({readyToview:false});
+        await this.setState({readyToview:false,message:"Successfully took the snapshot of table storage."});
     };
     
     render() {
         return (<div className="content">
-
-                <div className="pt-4 pl-5 pr-5">
-                    <div className="custom-file">
-                        <label className="custom-file-label" htmlFor="my-file-input">Choose Excel file</label>
-                        <FileReaderInput 
-                            as="binary" 
-                            id="my-file-input" onChange={this.handleChange2} 
-                            disabled={this.state.readyToview}
-                        accept=".xlsx"> </FileReaderInput>
+                    <div className="row">
+                        <div className="col-sm-9 col-md-7 col-lg-5 mx-auto">
+                            <div className="card card-signin my-5">
+                                <div className="card-body">
+                                    <div className="custom-file">
+                                        <label className="custom-file-label" htmlFor="my-file-input">Choose Excel file</label>
+                                        <FileReaderInput 
+                                            as="binary" 
+                                            id="my-file-input" onChange={this.handleChange2} 
+                                            disabled={this.state.readyToview}
+                                            accept=".xlsx">
+                                        </FileReaderInput>
+                                    </div>
+                                    <button 
+                                        type="button" 
+                                        className="btn btn-secondary btn-md btn-block"
+                                        onClick = {this.takeSnapShot}
+                                        disabled={this.state.readyToview}
+                                    >
+                                            Take SnapShot of Table Storage
+                                    </button>
+                                    <hr className="my-4" />
+                                    {
+                                        (this.state.readyToview)?
+                                        <div className="alert alert-light" role="alert">
+                                            {Spinner.call(this)}
+                                        </div>:null
+                                    }
+                                    {(this.state.message)?
+                                        <div>
+                                            <span className="text-success">{this.state.message}!!</span>
+                                        </div>:null
+                                    }
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                
-                    <button 
-                        type="button" 
-                        className="btn btn-secondary btn-md btn-block"
-                        onClick = {this.takeSnapShot}
-                        disabled={this.state.readyToview}>
-                        Take SnapShot of Table Storage
-                    </button>
-                </div>
-
-            </div>);
+                </div>);
     }
 }
 

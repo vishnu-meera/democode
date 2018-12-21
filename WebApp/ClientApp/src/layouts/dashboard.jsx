@@ -18,7 +18,8 @@ class DashboardLayout extends React.Component {
             backgroundColor: "black",
             activeColor: "info",
             sidebarMini: false,
-            authenticated:false
+            authenticated:false,
+            errorMessage:null
         };
         this.loginToApp = this.loginToApp.bind(this);
     };
@@ -58,13 +59,17 @@ class DashboardLayout extends React.Component {
         let authenticated = false;
         if(!toggleLogin){
             console.log("toggleLogin==>",toggleLogin)
-            let token  = await this.auth.login();
-            //console.log("loginToApp==>",token);
-            if(token){
+            let {accessToken,errorMessage}  = await this.auth.login();
+            console.log("loginToApp==>",errorMessage);
+
+            if(errorMessage){
+                await this.setState({authenticated,errorMessage});
+            }else if(accessToken){
                 authenticated=true;
+                await this.setState({authenticated});
+                this.props.history.push("/admin/dashboard");
             };
-            await this.setState({authenticated});
-            this.props.history.push("/admin/dashboard");
+
         }else{
             let token  = await this.auth.logout();
             await this.setState({authenticated});
@@ -86,6 +91,30 @@ class DashboardLayout extends React.Component {
                             loginToApp={this.loginToApp} 
                             authenticated={this.state.authenticated}/>
                     <Switch>{this.getRoutes(dashboardRoutes)}</Switch>
+                    {!this.state.authenticated?
+                        <div className="content">
+                        <div className="row">
+                            <div className="col-sm-9 col-md-7 col-lg-5 mx-auto">
+                                <div className="card card-signin my-5">
+                                    <div className="card-body">
+                                        <h6 className="card-title text-muted text-center">Please Login to see Azure Dashboard</h6>
+
+                                        <button 
+                                            className="btn btn-md btn-secondary btn-block" 
+                                            onClick={()=>{this.loginToApp(this.state.authenticated)}}>Log in</button>
+                                        <hr className="my-4" />
+                                        {this.state.errorMessage?
+                                            <div className="alert alert-light" role="alert">
+                                                <span className="text-danger">{this.state.errorMessage}!!</span>
+                                            </div>:null
+                                        }
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>:null
+                    }
                 </div>
             </div>
         );
