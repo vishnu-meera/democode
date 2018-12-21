@@ -8,9 +8,10 @@ import DashboardLayout from "layouts/dashboard";
 import "bootstrap/dist/css/bootstrap.css";
 import "assests/sass/paper-adv-dashboard.css";
 
+const layout  = "/admin";
 
 const indexRoutes = [
-    { path: "/", component: DashboardLayout }
+    { path: layout, component: DashboardLayout }
 ];
 
 export default indexRoutes;

@@ -7,27 +7,28 @@ import Dashboard from "views/dashboard";
 import Country from "views/country";
 import DataCapture from "views/datacapture";
 
+const layout = "/admin";
 var dashboardRoutes = [
     {
-        path: "dashboard",
+        path: "/dashboard",
         name: "Dashboard",
         icon: "nc-icon nc-bank",
         component: Dashboard,
-        layout: "/"
+        layout: layout
     },
     {
-        path: "country",
+        path: "/country",
         name: "Country",
         icon: "nc-icon nc-chart-bar-32",
         component: Country,
-        layout: "/"
+        layout: layout
     },
     {
-        path: "enterdata",
+        path: "/enterdata",
         name: "DataCapture",
         icon: "nc-icon nc-chart-bar-32",
         component: DataCapture,
-        layout: "/"
+        layout: layout
     }
 ];
 

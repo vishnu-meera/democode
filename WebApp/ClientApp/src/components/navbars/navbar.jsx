@@ -27,17 +27,23 @@ class DashBoardNav extends React.Component {
             color: "navbar-transparent",
             openAvatar: false,
             userName: props.userName || "defaultName",
-            avatar: props.avatar || defaultavatar
+            avatar: props.avatar || defaultavatar,
+            authenticated:this.props.authenticated || false
         };
     };
 
-    componentDidUpdate(e) {
-        if (
-            window.outerWidth < 993 &&
-            e.history.location.pathname !== e.location.pathname &&
-            document.documentElement.className.indexOf("nav-open") !== -1
-        ) {
-            document.documentElement.classList.toggle("nav-open");
+    async componentDidUpdate(prevProps) {
+        // if (
+        //     window.outerWidth < 993 &&
+        //     e.history.location.pathname !== e.location.pathname &&
+        //     document.documentElement.className.indexOf("nav-open") !== -1
+        // ) {
+        //     document.documentElement.classList.toggle("nav-open");
+        // }
+
+        if (this.props.authenticated !== prevProps.authenticated) {
+            console.log("userauthenticated===>",this.props.authenticated)
+            await this.setState({authenticated:this.props.authenticated})
         }
     };
 
@@ -126,8 +132,11 @@ class DashBoardNav extends React.Component {
                                         <p><span className="d-lg-none d-md-block">User Account</span></p>
                                     </DropdownToggle>
                                     <DropdownMenu aria-labelledby="navbarDropdownMenuLink" right>
-                                        <DropdownItem href="#pablo" onClick={e => e.preventDefault()}>Settings</DropdownItem>
-                                        <DropdownItem href="#pablo" onClick={e => e.preventDefault()}>Log Out</DropdownItem>
+                                        <DropdownItem  
+                                            onClick={()=>{this.props.loginToApp(this.props.authenticated)}}
+                                        >
+                                            {(this.props.authenticated)?"Log Off": "Log in"}
+                                        </DropdownItem>
                                     </DropdownMenu>
                                 </UncontrolledDropdown>
                             </Nav>

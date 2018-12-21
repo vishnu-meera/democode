@@ -5,14 +5,7 @@
 
 import React from "react";
 import Utils from 'utils/utils';
-import {
-    Card,
-    CardHeader,
-    CardBody,
-    Row,
-    Col
-} from "reactstrap";
-
+import Auth from 'utils/auth';
 import Spinner from "components/spinner/spin";
 import DataCenterView from "views/datacenters.jsx"
 import MoveStatus from "components/countryView/movestatus";
@@ -26,6 +19,7 @@ class Country extends React.Component {
     constructor(props) {
         super(props);
         this.utils = new Utils();
+        this.auth = new Auth();
         const { country ,status ,countriesObject,dataCentersObject,toolTipObject} = props.location.state
 
         this.state = {
@@ -48,21 +42,27 @@ class Country extends React.Component {
     }
 
     async componentDidMount() {
-        if (this.state.loading) {
-            let countryCode = await this.utils.getCode(this.state.country);
-            let imgUri = `https://www.countryflags.io/${countryCode}/shiny/64.png`;
-            let ruleTable = await this.utils.getRuleTable();
-            
-            await this.setState({ imgUri, countryCode,ruleTable })
-            if("InProgress"===this.state.status){
-                let dataCenterTimeLineObj = await this.utils.getDataCenterObjectWithDCCode(this.state.country,this.state.dataCentersObject[0].dcCode);
-                let workloadobject = await this.utils.geAlltWorkloadObjects(this.state.country,this.state.dataCentersObject[0].dcCode)
-                await this.setState({horizontalTabs:this.state.dataCentersObject[0].dcCode,dataCenterTimeLineObj,workloadobject});
-            }else if("Live"===this.state.status){
-                let  {moveStatusObject }= await this.utils.geMoveStatusObject(this.state.country);
-                await this.setState({moveStatusObject});
+        let {authenticated,token} = await this.auth.isAuthenticated();
+        if(authenticated){
+            if (this.state.loading) {
+                let countryCode = await this.utils.getCode(this.state.country);
+                let imgUri = `https://www.countryflags.io/${countryCode}/shiny/64.png`;
+                let ruleTable = await this.utils.getRuleTable();
+                
+                await this.setState({ imgUri, countryCode,ruleTable })
+                if("InProgress"===this.state.status){
+                    let dataCenterTimeLineObj = await this.utils.getDataCenterObjectWithDCCode(this.state.country,this.state.dataCentersObject[0].dcCode);
+                    let workloadobject = await this.utils.geAlltWorkloadObjects(this.state.country,this.state.dataCentersObject[0].dcCode)
+                    await this.setState({horizontalTabs:this.state.dataCentersObject[0].dcCode,dataCenterTimeLineObj,workloadobject});
+                }else if("Live"===this.state.status){
+                    let  {moveStatusObject }= await this.utils.geMoveStatusObject(this.state.country);
+                    await this.setState({moveStatusObject});
+                }
+                await this.setState({loading: false });
             }
-            await this.setState({loading: false });
+        }else{
+            console.log("dashboard===> not authenticated");
+            this.props.history.push("/admin");
         }
     }
 

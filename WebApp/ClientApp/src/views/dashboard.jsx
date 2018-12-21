@@ -5,18 +5,18 @@
 
 import React from "react";
 import Utils from 'utils/utils';
+import Auth from 'utils/auth';
 import CountryTables from "components/dashboardView/table";
 import Cards from "components/dashboardView/cards";
 import WorldMap from "components/dashboardView/worldmap";
 import Spinner from "components/spinner/spin";
-import GreenRoundedTooltip from "components/tooltip/tool-tip";
-import { Tooltip } from "react-lightweight-tooltip";
 
 class Dashboard extends React.Component {
 
     constructor(props) {
         super(props);
         this.utils = new Utils();
+        this.auth = new Auth();
         this.state = {
             loading : true,
             cardsStatus: {},
@@ -31,7 +31,7 @@ class Dashboard extends React.Component {
             CountriesObject:{},
             toolTipShow:false,
             clientX:0,
-            clientY:0,
+            clientY:0
         };
         this.handleClick = this.handleClick.bind(this);
         this.onMapRegionOver = this.onMapRegionOver.bind(this);
@@ -40,14 +40,21 @@ class Dashboard extends React.Component {
     }
 
     async componentDidMount() {
-        if (this.state.loading) {
-            //getting data for card tiles
-            let cardsStatus = await this.utils.getCardsData();
-            //getting data for Map
-            let { mapData, tableData,toolTipObject ,CountriesObject} = await this.utils.getMapData();
-            let mapFeedData = this.utils.cloneObject(mapData);
-            let tableFeedData = this.utils.cloneObject(tableData);
-            this.setState({ mapFeedData,tableFeedData,cardsStatus, mapData,tableData,loading:false,toolTipObject,CountriesObject})
+        let {authenticated,token} = await this.auth.isAuthenticated();
+        if(authenticated){
+            console.log("dashboard===> authenticated");
+            if (this.state.loading) {
+                //getting data for card tiles
+                let cardsStatus = await this.utils.getCardsData();
+                //getting data for Map
+                let { mapData, tableData,toolTipObject ,CountriesObject} = await this.utils.getMapData();
+                let mapFeedData = this.utils.cloneObject(mapData);
+                let tableFeedData = this.utils.cloneObject(tableData);
+                this.setState({ mapFeedData,tableFeedData,cardsStatus, mapData,tableData,loading:false,toolTipObject,CountriesObject})
+            }
+        }else{
+            console.log("dashboard===> not authenticated");
+            this.props.history.push("/admin");
         }
     }
 

@@ -2,6 +2,7 @@ import * as React from 'react';
 import FileReaderInput from 'react-file-reader-input';
 import XLSX from'xlsx';
 import Utils from 'utils/inputUtils';
+import Auth from 'utils/auth';
 
 const sheet2arr = function(sheet){
     let result = [];
@@ -60,6 +61,7 @@ class InputView extends React.Component {
     constructor(props) {
         super(props);
         this.utils = new Utils();
+        this.auth = new Auth();
         this.handleChange2 = this.handleChange2.bind(this);
         this.takeSnapShot = this.takeSnapShot.bind(this);
         this.state = {
@@ -67,6 +69,15 @@ class InputView extends React.Component {
         };
     }
 
+    async componentDidMount() {
+        let {authenticated,token} = await this.auth.isAuthenticated();
+        if(authenticated){
+
+        }else{
+            console.log("dashboard===> not authenticated");
+            this.props.history.push("/admin");
+        }
+    }
     //adding roadmap array
     async addRoadMap(CountryRoadMaps){
         //console.log("RoadMap==>",CountryRoadMaps)

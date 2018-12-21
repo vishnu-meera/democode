@@ -11,7 +11,7 @@ class Sidebar extends React.Component {
     createLinks = routes => {
         console.log("Routes===>,",routes)
         return routes.map((prop, key) => {
-            if(prop.path !=='country')
+            if(prop.path !=='/country')
                 return (
                     <li className={this.activeRoute(prop.layout + prop.path)} key={key}>
                         <NavLink to={prop.layout + prop.path} activeClassName="">
