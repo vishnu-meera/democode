@@ -29,6 +29,10 @@ export default class Auth {
 
     userAgentApplication = (userAgentApplication)?userAgentApplication:this.getUserAgentApplication();
 
+    clear = ()=>{
+        ls.clear();
+    };
+
     login = async ()=>{
         let token = null;
         let accessToken = null;
@@ -48,6 +52,7 @@ export default class Auth {
     };
 
     logout = async ()=>{
+        ls.clear();
         let userAgentApplication = this.getUserAgentApplication();
         let logoutresponse = await userAgentApplication.logout();
         console.log("logout===>",logoutresponse);

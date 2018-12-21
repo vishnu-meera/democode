@@ -13,6 +13,7 @@ class DashboardLayout extends React.Component {
     constructor(props) {
         super(props);
         this.auth = new Auth();
+        this.auth.clear();
         this.state = {
             backgroundColor: "black",
             activeColor: "info",
@@ -36,7 +37,6 @@ class DashboardLayout extends React.Component {
                         path={prop.layout + prop.path}
                         component={prop.component}
                         key={key}
-                        authenticated={this.state.authenticated}
                     />
                 );
             } else {
@@ -63,6 +63,7 @@ class DashboardLayout extends React.Component {
             if(token){
                 authenticated=true;
             };
+            await this.setState({authenticated});
             this.props.history.push("/admin/dashboard");
         }else{
             let token  = await this.auth.logout();
@@ -80,7 +81,10 @@ class DashboardLayout extends React.Component {
                     activeColor={this.state.activeColor}
                 />
                 <div className="main-panel" ref="mainPanel">
-                    <DashBoardNav  {...this.props} handleMiniClick={this.handleMiniClick} loginToApp={this.loginToApp} authenticated={this.state.authenticated}/>
+                    <DashBoardNav  {...this.props} 
+                            handleMiniClick={this.handleMiniClick} 
+                            loginToApp={this.loginToApp} 
+                            authenticated={this.state.authenticated}/>
                     <Switch>{this.getRoutes(dashboardRoutes)}</Switch>
                 </div>
             </div>

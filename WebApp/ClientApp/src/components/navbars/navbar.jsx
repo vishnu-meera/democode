@@ -18,32 +18,33 @@ import {
 } from "reactstrap";
 
 import defaultavatar from "assests/img/defaultavatar.png"; //default picture
+import Auth from 'utils/auth';
 
 class DashBoardNav extends React.Component {
     constructor(props) {
         super(props);
+        this.auth = new Auth();
         this.state = {
             collapseOpen: false,
             color: "navbar-transparent",
             openAvatar: false,
             userName: props.userName || "defaultName",
             avatar: props.avatar || defaultavatar,
-            authenticated:this.props.authenticated || false
+            authenticated:false
         };
     };
 
+    async componentDidMount() {
+        let {authenticated,token} = await this.auth.isAuthenticated();
+        console.log("NAVBAR AUTHENTICATED",authenticated,token);
+        await this.setState({authenticated});
+    }
     async componentDidUpdate(prevProps) {
-        // if (
-        //     window.outerWidth < 993 &&
-        //     e.history.location.pathname !== e.location.pathname &&
-        //     document.documentElement.className.indexOf("nav-open") !== -1
-        // ) {
-        //     document.documentElement.classList.toggle("nav-open");
-        // }
-
         if (this.props.authenticated !== prevProps.authenticated) {
-            console.log("userauthenticated===>",this.props.authenticated)
-            await this.setState({authenticated:this.props.authenticated})
+            console.log("NAVBAR AUTHENTICATED===>",this.props.authenticated)
+            if(this.props.authenticated){
+                await this.setState({authenticated:this.props.authenticated});
+            }
         }
     };
 
@@ -133,9 +134,9 @@ class DashBoardNav extends React.Component {
                                     </DropdownToggle>
                                     <DropdownMenu aria-labelledby="navbarDropdownMenuLink" right>
                                         <DropdownItem  
-                                            onClick={()=>{this.props.loginToApp(this.props.authenticated)}}
+                                            onClick={()=>{this.props.loginToApp(this.state.authenticated)}}
                                         >
-                                            {(this.props.authenticated)?"Log Off": "Log in"}
+                                            {(this.state.authenticated)?"Log Off": "Log in"}
                                         </DropdownItem>
                                     </DropdownMenu>
                                 </UncontrolledDropdown>
