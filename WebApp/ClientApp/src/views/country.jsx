@@ -34,6 +34,7 @@ class Country extends React.Component {
             countryCode: "",
             imgUri: "",
             moveStatusObject:{},
+            moveStatusItems:{},
             dataCentersObject:dataCentersObject,
             dataCenterTimeLineObj:{},
             workloadobject:{},
@@ -42,8 +43,8 @@ class Country extends React.Component {
     }
 
     async componentDidMount() {
-        let {authenticated,token} = await this.auth.isAuthenticated();
-        if(authenticated){
+        // let {authenticated,token} = await this.auth.isAuthenticated();
+        // if(authenticated){
             if (this.state.loading) {
                 let countryCode = await this.utils.getCode(this.state.country);
                 let imgUri = `https://www.countryflags.io/${countryCode}/shiny/64.png`;
@@ -55,15 +56,15 @@ class Country extends React.Component {
                     let workloadobject = await this.utils.geAlltWorkloadObjects(this.state.country,this.state.dataCentersObject[0].dcCode)
                     await this.setState({horizontalTabs:this.state.dataCentersObject[0].dcCode,dataCenterTimeLineObj,workloadobject});
                 }else if("Live"===this.state.status){
-                    let  {moveStatusObject }= await this.utils.geMoveStatusObject(this.state.country);
-                    await this.setState({moveStatusObject});
+                    let  {moveStatusObject,moveStatusItems }= await this.utils.geMoveStatusObject(this.state.country);
+                    await this.setState({moveStatusObject,moveStatusItems});
                 }
                 await this.setState({loading: false });
             }
-        }else{
-            console.log("dashboard===> not authenticated");
-            this.props.history.push("/admin");
-        }
+        // }else{
+        //     console.log("dashboard===> not authenticated");
+        //     this.props.history.push("/admin");
+        // }
     }
 
     toggleDC = async (dcCode,dataCenterObj)=>{
@@ -125,7 +126,8 @@ class Country extends React.Component {
                             status={this.state.status} 
                             dataCenterTimeLineObj={this.state.dataCenterTimeLineObj} 
                             workloadobject = {this.state.workloadobject}
-                            ruleTable= {this.state.ruleTable}/>
+                            ruleTable= {this.state.ruleTable}
+                            moveStatusItems = {this.state.moveStatusItems}/>
                         }
                     </div>
                 </div>

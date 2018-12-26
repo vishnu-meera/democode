@@ -8,6 +8,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Core.Models;
 using Core.Queries;
+using Core.Commands;
+using Core.MigrationQueries;
 
 namespace WebApp.Api
 {
@@ -24,5 +26,21 @@ namespace WebApp.Api
             return Ok(await Mediator.Send(query));
         }
 
+        [HttpGet("{country}")]
+        [ProducesResponseType(typeof(CountryModel), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> Get(string country)
+        {
+            return Ok(await Mediator.Send(new GetMoveStatus { Country = country }));
+        }
+
+        // POST: api/RoadMap
+        [HttpPost]
+        [ProducesResponseType(typeof(DataCenterMoveStatusModel), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> Add([FromBody] AddMoveStatus command)
+        {
+            var CountryName = await Mediator.Send(command);
+
+            return CreatedAtAction("Get", new { CounryName = CountryName });
+        }
     }
 }

@@ -46,10 +46,26 @@ class CountryTables extends React.Component {
         this.state = {
             ...getTableData(this.data),
             loading:true,
-            index:0
+            index:0,
+            countrystatus:""
         };
         this.submitClick = this.submitClick.bind(this);
+        this.searchChange = this.searchChange.bind(this);
     }
+
+    searchChange = (e)=>{
+        let countrystatus = this.state.countrystatus;
+        let searchType = e.target.value;
+        let data = JSON.parse(JSON.stringify(this.props.data));
+        data = data.filter(x=>x[0].toLowerCase().search(searchType.toLowerCase()) !== -1);
+        console.log("searchChange 2==>",data);
+        if(data.length>0)
+        {
+            if(countrystatus==="All") this.setState({ ...getTableData(data),index:0});
+            else this.setState({ ...getTableData(data.filter(x=>x.includes(countrystatus))),index:0 });
+        }
+        //this.setState({ ...getTableData(data),index:0});
+    };
 
     async submitClick(rowInfo){
         console.log("onClickDropDown==>",rowInfo)
@@ -77,10 +93,10 @@ class CountryTables extends React.Component {
 
     async onClickDropDown(e){
         //console.log("onClickDropDown==>",e)
-        let status = e.value;
-        if(status==="All") await this.setState({ ...getTableData(this.data)});
-        else await this.setState({ ...getTableData(this.data.filter(x=>x.includes(status))) });
-        await this.setState({ index:0});
+        let countrystatus = e.value;
+        if(countrystatus==="All") await this.setState({ ...getTableData(this.data)});
+        else await this.setState({ ...getTableData(this.data.filter(x=>x.includes(countrystatus))) });
+        await this.setState({ index:0,countrystatus});
     }
 
     render() {
@@ -107,7 +123,7 @@ class CountryTables extends React.Component {
                                                     <i className="nc-icon nc-zoom-split" />
                                                 </InputGroupText>
                                             </InputGroupAddon>
-                                        <Input defaultValue="" placeholder="Search Country..." type="text" />
+                                        <Input defaultValue="" placeholder="Search Country..." type="text" onChangeCapture={(e)=>this.searchChange(e)}/>
                                     </InputGroup>
                                     <Select
                                         className="react-select primary col-md-4 ml-auto"

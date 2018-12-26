@@ -9,7 +9,7 @@ const { getCode,getName} = require('country-list');
 const mapColorCodes = {
     "Live" : "#CC99FF",
     "InProgress":"#FF9933",
-    "Approved":"#66CC00",
+    "Approved":"#228B22",
     "Potential":"#00FFFF"
 };
 
@@ -68,7 +68,7 @@ export default class Utils {
 
     textIconCssObj = {
         "Potential": "text-info",
-        "Approved": "text-success",
+        "Approved": "text-green",
         "InProgress": "text-warning",
         "Live": "text-potenial"
     };
@@ -303,14 +303,14 @@ export default class Utils {
     async geMoveStatusObject(country){
         let moveStatusObject = {}, moveStatusItems={}
         try {
-            let requestUrl = 'api/MoveStatus';
+            let requestUrl = `api/MoveStatus/${country}`;
             let response = await fetch(requestUrl, {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
                 method: "GET"//,headers: { 'authorization': 'Bearer ' + this.getWebApiToken() }
             });
             let data = await (this.handleErrors(response)).json();
-
+            console.log("geMoveStatusObject==>",country)
             moveStatusObject = JSON.parse(data.moveStatusPercentageObj);
             moveStatusItems = JSON.parse(data.moveStatusItems);
         } catch (error) {
@@ -318,6 +318,7 @@ export default class Utils {
         } finally {
            //TODO
         }
+        
         return {moveStatusObject,moveStatusItems};
     };
 

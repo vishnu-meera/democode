@@ -89,12 +89,14 @@ class InputView extends React.Component {
         
     };
 
-    async doCountrySpecificSheets(workbook,countrySheetArr,TimeLine,CountriesExcelObj){
+    async doCountrySpecificSheets(workbook,countrySheetArr,TimeLine,CountriesExcelObj,countryName){
 
         let countryOject,workloadObject,datacnterObject,dataCenterArray
         let specific = countrySheetArr.find(x=>x.includes("Specific"));
         let mcio = countrySheetArr.find(x=>x.includes("MCIO"));
         let wrkld = countrySheetArr.find(x=>x.includes("Wrkld"));
+        let moveStatus = countrySheetArr.find(x=>x.includes("MoveStatus"));
+
         if(specific)
             [countryOject,dataCenterArray] = await this.utils.getCountryObject(sheet2arr_2(workbook.Sheets[specific]),CountriesExcelObj);
 
@@ -102,7 +104,7 @@ class InputView extends React.Component {
             if(dataCenterArray.length>0){
                 let workloadRowArr = sheet2arr(workbook.Sheets[wrkld]);
                 let workLoadsHeader = sheet2arr_2(workbook.Sheets[wrkld])[0]
-                workloadObject = this.utils.getWorkloadObject(workloadRowArr,dataCenterArray,countryOject.Name,workLoadsHeader);
+                workloadObject = this.utils.getWorkloadObject(workloadRowArr,dataCenterArray,countryName,workLoadsHeader);
                 //console.log("WorkLoad ==>",workloadObject);
                 for (const obj of workloadObject) {
                     //Adding Workload to azure table
@@ -114,7 +116,7 @@ class InputView extends React.Component {
         if(mcio && dataCenterArray && TimeLine){
             if(dataCenterArray.length>0){
                 let dataCenterRowArr = sheet2arr(workbook.Sheets[mcio]);
-                datacnterObject = this.utils.getDataCenterObject(dataCenterRowArr,dataCenterArray,countryOject.Name,TimeLine);
+                datacnterObject = this.utils.getDataCenterObject(dataCenterRowArr,dataCenterArray,countryName,TimeLine);
                 //console.log("Datacenter ==>",datacnterObject);
                 for (const obj of datacnterObject) {
                     //Adding Datacenter to azure table
@@ -122,6 +124,13 @@ class InputView extends React.Component {
                 }
             }
         }
+
+        if(moveStatus && countryName){
+            let moveStatusRowArr = sheet2arr_2(workbook.Sheets[moveStatus]);
+            let moveStatusObject = this.utils.getMoveStatusObject(moveStatusRowArr,countryName);
+            console.log("sheetname==>",moveStatusObject);
+            let response = await this.utils.addMoveStatus(moveStatusObject);
+        };
 
         //console.log("Country===>",countryOject)
         //Adding Country to azure table
@@ -169,8 +178,8 @@ class InputView extends React.Component {
             });
 
             Object.keys(sheetMap).forEach(key=>{
-                //console.log("sheetMap[key]==>",sheetMap[key])
-                self.doCountrySpecificSheets(workbook,sheetMap[key],TimeLine,CountriesExcelObj);
+                console.log("sheetMap[key]==>",sheetMap[key],key)
+                self.doCountrySpecificSheets(workbook,sheetMap[key],TimeLine,CountriesExcelObj,key);
             });
         });
     };
@@ -191,26 +200,33 @@ class InputView extends React.Component {
         return (<div className="content">
                     <div className="row">
                         <div className="col-sm-9 col-md-7 col-lg-5 mx-auto">
-                            <div className="card card-signin my-5">
+                            <div className="card card-signin my-4">
                                 <div className="card-body">
-                                    <div className="custom-file">
-                                        <label className="custom-file-label" htmlFor="my-file-input">Choose Excel file</label>
-                                        <FileReaderInput 
-                                            as="binary" 
-                                            id="my-file-input" onChange={this.handleChange2} 
-                                            disabled={this.state.readyToview}
-                                            accept=".xlsx">
-                                        </FileReaderInput>
+                                    <div className="row pl-3 pr-3">
+                                        <div className="text-left text-muted pb-1">Choose Excel File For Dashboard.</div>
+                                        <div className="custom-file">
+                                            <label className="custom-file-label" htmlFor="my-file-input">Choose Excel file to load...</label>
+                                            <FileReaderInput 
+                                                as="binary" 
+                                                id="my-file-input" onChange={this.handleChange2} 
+                                                disabled={this.state.readyToview}
+                                                accept=".xlsx">
+                                            </FileReaderInput>
+                                        </div>
                                     </div>
-                                    <button 
-                                        type="button" 
-                                        className="btn btn-secondary btn-md btn-block"
-                                        onClick = {this.takeSnapShot}
-                                        disabled={this.state.readyToview}
-                                    >
-                                            Take SnapShot of Table Storage
-                                    </button>
                                     <hr className="my-4" />
+                                    <div className="row pl-3 pr-3">
+                                        <div className="text-left text-muted">You can take backup of table storage using below button.</div>
+                                        <button 
+                                            type="button" 
+                                            className="btn btn-secondary btn-md btn-block"
+                                            onClick = {this.takeSnapShot}
+                                            disabled={this.state.readyToview}
+                                        >
+                                                Take DB snaphot
+                                        </button>
+                                    </div>
+                                    
                                     {
                                         (this.state.readyToview)?
                                         <div className="alert alert-light" role="alert">

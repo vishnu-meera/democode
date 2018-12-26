@@ -5,61 +5,42 @@
 
 import React from "react";
 import ReactTable from "react-table";
-import {
-    Card,
-    CardBody
-} from "reactstrap";
-
-
-const dataTable = [
-    ["Move Deadline"],
-    ["Internal EXO Target Deadline"],
-    ["EXO Enrolled Tenants"],
-    ["EXO Enrolled Tenant Competetion "],
-    ["Migration From Regional To Local"],
-    ["EXO Capacity Distribution GoLocal vs Regional"]
-];
 
 class MoveStatusTable extends React.Component {
     constructor(props) {
         super(props);
         this.data = this.props.data
         this.state = {
-            data: dataTable.map((prop, key) => {
+            data: this.data.map((prop, key) => {
                 return {
                     id: key,
-                    workLoadName: prop[0]
+                    workLoadName: prop
                 };
             }),
         };
-        this.submitClick = this.submitClick.bind(this);
+       
     }
-
-    async submitClick(e) {
-
-    }
-
 
     render() {
         const header = this.props.workloadName;
-        return (<Card>
-                <CardBody>
-                    <ReactTable
+        return (<div className="pb-1 pl-1 pr-1">
+                <ReactTable
                         data={this.state.data}
                         columns={[
                             {
                                 Header: header,
                                 accessor: "workLoadName",
-                                headerStyle: { textAlign: "center",backgroundColor:"grey"}
+                                headerStyle: { textAlign: "center",backgroundColor:"grey"},
+                                minWidth:200
                             }
                         ]}
                         sortable = {false}
                         showPageSizeOptions={false}
+                       
                         showPagination={false}
                         defaultPageSize= {6}
                     />
-                </CardBody>
-            </Card>);
+        </div>);
     }
 }
 

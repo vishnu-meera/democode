@@ -46,6 +46,7 @@
     "react-google-maps": "^9.4.5",
     "react-horizontal-timeline": "^1.5.3",
     "react-hot-loader": "^4.3.12",
+    "react-icons": "^3.2.2",
     "react-image-gallery": "^0.8.12",
     "react-jvectormap": "0.0.4",
     "react-lightweight-tooltip": "^1.0.0",

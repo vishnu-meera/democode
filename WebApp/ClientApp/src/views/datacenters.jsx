@@ -5,7 +5,7 @@
 
 import React from "react";
 import Utils from 'utils/utils';
-
+import { FaArrowUp } from 'react-icons/fa';
 import {
     Card,
     CardHeader,
@@ -60,6 +60,21 @@ export default class DataCenterView extends React.Component {
         return timeLineArray;
     }
 
+            
+    timeLineArrow = () =>{
+        const timeLine = JSON.parse(this.state.dataCenterTimeLineObj.timeLine);
+        const timelineArrowArr = timeLine.map((obj,key)=>{
+            let color = (obj.rgb === "none"?"grey":obj.rgb);
+            let style = {"width": "20rem"};
+            return (<div className="col-sm-1" key={key}>
+                        <div className="col"><FaArrowUp size={23} color={color}/></div>
+                        <div className="row">{obj["Actual Date"]}</div>
+                    </div>);    
+        });
+
+        return timelineArrowArr;
+    };
+
     _renderTimeLineAndPopOver(){
         return(<div className="row">
             <div className="col-sm-12">
@@ -68,25 +83,36 @@ export default class DataCenterView extends React.Component {
                     <div className='htimeline ml-5'>
                         { this.timeline() }
                     </div>
+                    <div className="row ml-5">
+                        {this.timeLineArrow()}
+                    </div>
                 </Card>
             </div>
         </div>);
     };
 
+    
+
     render(){
+        console.log("moveStatusItems===>",this.props.moveStatusItems);
+        let length = Object.keys(this.props.moveStatusItems).length;
+        let columnSize = length > 0 ? 12/length:12;
+        let css = `col-sm-${columnSize}`;
         if(this.state.status === "Live"){
             return(<div>
                 <Row>
                     <Col sm="12">
                         <Card>
                             <CardHeader>Move Status</CardHeader>
-                            <CardBody>
                                 <Row>
-                                    <Col lg="4" md="5" sm="5"><MoveStatusTable workloadName={"SPO"}/></Col>
-                                    <Col lg="4" md="5" sm="5"><MoveStatusTable workloadName={"Exo"}/></Col>
-                                    <Col lg="4" md="5" sm="5"><MoveStatusTable workloadName={"Teams"}/></Col>
+                                    {
+                                        Object.keys(this.props.moveStatusItems).map((key)=>{
+                                          return  (<div key={key} className={css}>
+                                                        <MoveStatusTable workloadName={key} data={this.props.moveStatusItems[key]}/>
+                                                    </div>)
+                                        })
+                                    }
                                 </Row>
-                            </CardBody>
                         </Card>
                     </Col>
                 </Row>

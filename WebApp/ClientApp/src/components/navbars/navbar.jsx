@@ -100,9 +100,9 @@ class DashBoardNav extends React.Component {
                             </div>
                             <NavbarBrand>
                                 <span className="d-none d-md-block">
-                                    DashBoard
+                                    Dashboard
                 </span>
-                                <span className="d-block d-md-none">DashBoard</span>
+                                <span className="d-block d-md-none">Dashboard</span>
                             </NavbarBrand>
                         </div>
                         <button

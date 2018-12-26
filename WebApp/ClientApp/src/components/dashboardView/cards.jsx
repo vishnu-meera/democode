@@ -4,7 +4,7 @@
 */
 
 import React from "react";
-import { Card,CardBody,CardTitle,Row,Col} from "reactstrap";
+import { Card,Row,Col} from "reactstrap";
 //    font-size: 20px;
 export default function Cards(){
     let keys = Object.keys(this.state.cardsStatus.countriesStatusList);
@@ -12,6 +12,8 @@ export default function Cards(){
         let iconcss = `${this.utils.cardIconCssObj[key]} ${this.utils.textIconCssObj[key]}`;
         let textcss = `text-left ${this.utils.textIconCssObj[key]} numbers`;
         let btnvcss = `card-stats btn btn-none ${this.state.cardActiveKey===key?'active':null}`;
+        let cardName = key;
+        cardName = (cardName==="InProgress")?"In Progress":cardName;
         return (
             <div className="col-sm"key={key} >
                 <Card 
@@ -25,7 +27,7 @@ export default function Cards(){
                                 </div>
                             </Col>
                             <Col md="8" xs="7">
-                                <h6 className="text-left text-muted">{key}</h6>
+                                <h6 className="text-left text-muted">{cardName}</h6>
                                 <h6 className={textcss}>{this.state.cardsStatus.countriesStatusList[key]}</h6>
                             </Col>
                         </Row>

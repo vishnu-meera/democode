@@ -164,7 +164,7 @@ export default class DataCapturingUtils {
             });
         }
 
-        console.log("TimeLine==>",TimeLine);
+        //console.log("TimeLine==>",TimeLine);
         return {CountryRoadMaps,TimeLine};
     };
 
@@ -223,7 +223,7 @@ export default class DataCapturingUtils {
             dataCenterArray.push(dataCenterObject);
         }
         countryObject.DataCenters = JSON.stringify(dataCenterArray);
-        console.log("countryObject==>",countryObject);
+        //console.log("countryObject==>",countryObject);
         return [countryObject,dataCenterArray];
     };
 
@@ -324,7 +324,35 @@ export default class DataCapturingUtils {
         }
         //console.log("getDataCenterObject 2==>",temp);
         return temp;
-    }
+    };
+
+    getMoveStatusObject(moveStatusArr,countryName){
+        let moveStatusObject = {};
+        moveStatusObject["PartitionKey"] = "Countries"
+        moveStatusObject["RowKey"] = countryName;
+        let temp = {}, temp1 ={};
+        //console.log("sheetname==>",moveStatusArr);
+        for (let index = 1; index < moveStatusArr.length; index++) {
+            const element = moveStatusArr[index];
+
+            temp[element[0][0]] = [];
+            temp[element[0][0]].push(`Move Deadline  : ${element[1][0]}`);
+            temp[element[0][0]].push(`Internal Target Deadline  : ${element[2][0]}`);
+            temp[element[0][0]].push(`Enrolled Tenants  : ${element[3][0]}`);
+            temp[element[0][0]].push(`Enrolled Tenant Competetion  : ${element[4][0]}`);
+            temp[element[0][0]].push(`Migration From Regional To Local  : ${element[5][0]}`);
+            temp[element[0][0]].push(`Capacity Distribution GoLocal vs Regional  : ${element[6][0]}`);
+            temp[element[0][0]].push(`Move Status Percentage  : ${element[7][0]}`);
+
+            temp1[element[0][0]] = element[7][0];
+            //console.log("getMoveStatusObject==>",temp);
+        }
+        //console.log("getMoveStatusObject==>",temp,temp1);
+        moveStatusObject["moveStatusItems"] = JSON.stringify(temp);
+        moveStatusObject["moveStatusPercentageObj"] = JSON.stringify(temp1);
+        return moveStatusObject;
+    };
+
     async addRoadMapObject(body){
         //console.log("addRoadMapObject==>",JSON.stringify(body))
         try {
@@ -374,6 +402,21 @@ export default class DataCapturingUtils {
         //console.log("addCountryObject==>",JSON.stringify(body))
         try {
             let requestUrl = `api/CountryWorkLoad`;
+            let response = await fetch(requestUrl, {
+                "headers":{"Content-Type":"application/json"},
+                "method": "POST",
+                "body":JSON.stringify(body)
+            });
+            console.log("response===>",response)
+        } catch (error) {
+            return null
+        } 
+    };
+
+    async addMoveStatus(body){
+        //console.log("addCountryObject==>",JSON.stringify(body))
+        try {
+            let requestUrl = `api/MoveStatus`;
             let response = await fetch(requestUrl, {
                 "headers":{"Content-Type":"application/json"},
                 "method": "POST",

@@ -131,7 +131,14 @@ class CountryPanel extends React.Component {
                         className="card"
                         id="accordion"
                         role="tablist">
-
+                        <Link
+                            style = {linkCss}
+                            disabled={!countryButtonEnable.includes(this.props.status)}
+                            className="btn btn-none ml-5 mr-5 pt-1 pb-1 pr-4 pl-4" 
+                            to={{ pathname: '/admin/country', 
+                            state: { country: this.props.country, status: this.props.status, countriesObject:this.props.CountriesObject ,toolTipObject:this.props.toolTipObject,dataCentersObject:this.state.dataCentersObject} }}
+                        ><span className="text-center">See Details</span></Link>
+                        
                         <span className="text-left ml-3 mt-2"><h6>{this.props.country}</h6></span>
                         {panelComponents}
 
