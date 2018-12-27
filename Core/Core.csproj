@@ -43,6 +43,9 @@
     <Reference Include="Microsoft.AspNetCore.Authentication.Core, Version=2.2.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNetCore.Authentication.Core.2.2.0\lib\netstandard2.0\Microsoft.AspNetCore.Authentication.Core.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.AspNetCore.Authentication.JwtBearer, Version=2.2.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNetCore.Authentication.JwtBearer.2.2.0\lib\netstandard2.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.AspNetCore.Authentication.OAuth, Version=2.2.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNetCore.Authentication.OAuth.2.2.0\lib\netstandard2.0\Microsoft.AspNetCore.Authentication.OAuth.dll</HintPath>
     </Reference>
@@ -222,7 +225,6 @@
   <ItemGroup>
     <Compile Include="Authentication\AzureAdAuthenticationBuilderExtensions.cs" />
     <Compile Include="Authentication\AzureAdOptions.cs" />
-    <Compile Include="Authentication\SessionTokenCache.cs" />
     <Compile Include="CommandHandler\AddCountryHandler.cs" />
     <Compile Include="CommandHandler\AddDataCenterHandler.cs" />
     <Compile Include="CommandHandler\AddMoveStatusHandler.cs" />

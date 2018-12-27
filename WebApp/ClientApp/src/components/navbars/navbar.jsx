@@ -18,7 +18,7 @@ import {
 } from "reactstrap";
 
 import defaultavatar from "assests/img/defaultavatar.png"; //default picture
-import Auth from 'utils/auth';
+import Auth from 'utils/authhelper';
 
 class DashBoardNav extends React.Component {
     constructor(props) {

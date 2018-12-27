@@ -7,7 +7,7 @@ import { Route, Switch } from "react-router-dom";
 import DashBoardNav from "components/navbars/navbar";
 import Sidebar from "components/sidebar/sidebar.jsx";
 import dashboardRoutes from "routes/routes-dashboard";
-import Auth from "utils/auth"
+import Auth from "utils/authhelper"
 
 class DashboardLayout extends React.Component {
     constructor(props) {

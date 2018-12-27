@@ -5,7 +5,7 @@
 
 import React from "react";
 import Utils from 'utils/utils';
-import Auth from 'utils/auth';
+import Auth from 'utils/authhelper';
 import Spinner from "components/spinner/spin";
 import DataCenterView from "views/datacenters.jsx"
 import MoveStatus from "components/countryView/movestatus";

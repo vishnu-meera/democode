@@ -5,7 +5,7 @@
 
 import React from "react";
 import Utils from 'utils/utils';
-import Auth from 'utils/auth';
+import Auth from 'utils/authhelper';
 import CountryTables from "components/dashboardView/table";
 import Cards from "components/dashboardView/cards";
 import WorldMap from "components/dashboardView/worldmap";
