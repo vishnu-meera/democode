@@ -95,7 +95,7 @@ export default class AuthClient {
         return {accessToken,errorMessage};
     };
 
-    async userHasWebApiToken() { // TODO: Need to refactor these functions
+    async userHasWebApiToken() { 
         const tokenResult = localStorage.getItem(webApiTokenStoreKey);
 
         if (tokenResult) {

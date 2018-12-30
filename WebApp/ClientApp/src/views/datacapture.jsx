@@ -66,8 +66,13 @@ class InputView extends React.Component {
         this.takeSnapShot = this.takeSnapShot.bind(this);
         this.state = {
             readyToview : false,
-            message:""
+            message:"",
+            textCss:"text-success"
         };
+    }
+
+    delay(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
     }
 
     async componentDidMount() {
@@ -81,107 +86,133 @@ class InputView extends React.Component {
     }
     //adding roadmap array
     async addRoadMap(CountryRoadMaps){
+        try {
         //console.log("RoadMap==>",CountryRoadMaps)
         for (const CountryRoadMap of CountryRoadMaps) {
             //Adding RoadMap to azure table
             let response = await this.utils.addRoadMapObject(CountryRoadMap);
+        }
+        } catch (error) {
+            await this.setState({message:error.message,textCss:"text-danger"});
+            await this.delay(3000);
+            await this.setState({message:"",textCss:"text-success",readyToview:false});
         }
         
     };
 
     async doCountrySpecificSheets(workbook,countrySheetArr,TimeLine,CountriesExcelObj,countryName){
 
-        let countryOject,workloadObject,datacnterObject,dataCenterArray
-        let specific = countrySheetArr.find(x=>x.includes("Specific"));
-        let mcio = countrySheetArr.find(x=>x.includes("MCIO"));
-        let wrkld = countrySheetArr.find(x=>x.includes("Wrkld"));
-        let moveStatus = countrySheetArr.find(x=>x.includes("MoveStatus"));
-
-        if(specific)
-            [countryOject,dataCenterArray] = await this.utils.getCountryObject(sheet2arr_2(workbook.Sheets[specific]),CountriesExcelObj);
-
-        if(wrkld && dataCenterArray){
-            if(dataCenterArray.length>0){
-                let workloadRowArr = sheet2arr(workbook.Sheets[wrkld]);
-                let workLoadsHeader = sheet2arr_2(workbook.Sheets[wrkld])[0]
-                workloadObject = this.utils.getWorkloadObject(workloadRowArr,dataCenterArray,countryName,workLoadsHeader);
-                //console.log("WorkLoad ==>",workloadObject);
-                for (const obj of workloadObject) {
-                    //Adding Workload to azure table
-                    let response = await this.utils.addWorkLoads(obj);
-                }
-            }  
-        }
-
-        if(mcio && dataCenterArray && TimeLine){
-            if(dataCenterArray.length>0){
-                let dataCenterRowArr = sheet2arr(workbook.Sheets[mcio]);
-                datacnterObject = this.utils.getDataCenterObject(dataCenterRowArr,dataCenterArray,countryName,TimeLine);
-                //console.log("Datacenter ==>",datacnterObject);
-                for (const obj of datacnterObject) {
-                    //Adding Datacenter to azure table
-                    let response = await this.utils.addDataCenter(obj);
+        try {
+            let countryOject,workloadObject,datacnterObject,dataCenterArray
+            let specific = countrySheetArr.find(x=>x.includes("Specific"));
+            let mcio = countrySheetArr.find(x=>x.includes("MCIO"));
+            let wrkld = countrySheetArr.find(x=>x.includes("Wrkld"));
+            let moveStatus = countrySheetArr.find(x=>x.includes("MoveStatus"));
+    
+            if(specific)
+                [countryOject,dataCenterArray] = await this.utils.getCountryObject(sheet2arr_2(workbook.Sheets[specific]),CountriesExcelObj);
+    
+            if(wrkld && dataCenterArray){
+                if(dataCenterArray.length>0){
+                    let workloadRowArr = sheet2arr(workbook.Sheets[wrkld]);
+                    let workLoadsHeader = sheet2arr_2(workbook.Sheets[wrkld])[0]
+                    workloadObject = this.utils.getWorkloadObject(workloadRowArr,dataCenterArray,countryName,workLoadsHeader);
+                    //console.log("WorkLoad ==>",workloadObject);
+                    for (const obj of workloadObject) {
+                        //Adding Workload to azure table
+                        let response = await this.utils.addWorkLoads(obj);
+                    }
+                }  
+            }
+    
+            if(mcio && dataCenterArray && TimeLine){
+                if(dataCenterArray.length>0){
+                    let dataCenterRowArr = sheet2arr(workbook.Sheets[mcio]);
+                    datacnterObject = this.utils.getDataCenterObject(dataCenterRowArr,dataCenterArray,countryName,TimeLine);
+                    //console.log("Datacenter ==>",datacnterObject);
+                    for (const obj of datacnterObject) {
+                        //Adding Datacenter to azure table
+                        let response = await this.utils.addDataCenter(obj);
+                    }
                 }
             }
+    
+            if(moveStatus && countryName){
+                let moveStatusRowArr = sheet2arr_2(workbook.Sheets[moveStatus]);
+                let moveStatusObject = this.utils.getMoveStatusObject(moveStatusRowArr,countryName);
+                //console.log("sheetname==>",moveStatusObject);
+                let response = await this.utils.addMoveStatus(moveStatusObject);
+            };
+    
+            //console.log("Country===>",countryOject)
+            //Adding Country to azure table
+            if(countryOject){
+                let response = await this.utils.addCountryObject(countryOject);
+            }
+    
+            await this.setState({readyToview:false,message:"Excel sheets loaded into table storage"});
+        } catch (error) {
+            await this.setState({message:error.message,textCss:"text-danger"});
+            await this.delay(3000);
+            await this.setState({message:"",textCss:"text-success",readyToview:false});
         }
-
-        if(moveStatus && countryName){
-            let moveStatusRowArr = sheet2arr_2(workbook.Sheets[moveStatus]);
-            let moveStatusObject = this.utils.getMoveStatusObject(moveStatusRowArr,countryName);
-            console.log("sheetname==>",moveStatusObject);
-            let response = await this.utils.addMoveStatus(moveStatusObject);
-        };
-
-        //console.log("Country===>",countryOject)
-        //Adding Country to azure table
-        if(countryOject){
-            let response = await this.utils.addCountryObject(countryOject);
-        }
-
-        await this.setState({readyToview:false,message:"Excel sheets loaded into table storage"});
     };
 
     handleChange2  = async (e, results) => {
         let self = this;
         await this.setState({readyToview:true});
 
-        if(results[0][1]["name"].split(".")[1] !== "xlsx")
-            return "not an xlsx file";
+        try {
+            if(results[0][1]["name"].split(".")[1] !== "xlsx")
+                throw new Error ("not an xlsx file");
+        } catch (error) {
+            await this.setState({message:error.message,textCss:"text-danger"});
+            await this.delay(3000);
+            await this.setState({message:"",textCss:"text-success",readyToview:false});
+            return;
+        }
 
-        results.forEach(result => {
-            const [e, file] = result;
-            let workbook = XLSX.read(e.target.result, {
-                type: 'binary',
-                cellStyles:true
+        try {
+            results.forEach(result => {
+                const [e, file] = result;
+                let workbook = XLSX.read(e.target.result, {
+                    type: 'binary',
+                    cellStyles:true
+                });
+    
+                let roadmapSheet = workbook.Sheets['Roadmap']
+                let roadMapArr = sheet2arr(roadmapSheet);
+                let {CountryRoadMaps,TimeLine} = this.utils.getRoadMapObject(roadMapArr);
+                this.addRoadMap(CountryRoadMaps);
+    
+                let countries = workbook.Sheets['Countries'];
+                let countriesExcelSheet = sheet2arr(countries);
+                //console.log("countriesExcelSheet==>",countriesExcelSheet);
+                let {CountriesExcelObj} = this.utils.getCountriesExcelObj(countriesExcelSheet);
+    
+                let sheetMap = {};
+                workbook.SheetNames.forEach(function(sheetName) {
+                    if(sheetName!=="Roadmap") {
+                        //console.log("sheetName==>",sheetName)
+                        let sheetNamePOSTFix = sheetName.split("_")[0];
+                        if(!(sheetNamePOSTFix in sheetMap))
+                            sheetMap[sheetNamePOSTFix] = [];
+                        sheetMap[sheetNamePOSTFix].push(sheetName);
+                        //self.doCountrySpecificSheets(workbook,sheetName);
+                    }
+                });
+    
+                Object.keys(sheetMap).forEach(key=>{
+                    //console.log("sheetMap[key]==>",sheetMap[key],key)
+                    self.doCountrySpecificSheets(workbook,sheetMap[key],TimeLine,CountriesExcelObj,key);
+                });
             });
-
-            let roadmapSheet = workbook.Sheets['Roadmap']
-            let roadMapArr = sheet2arr(roadmapSheet);
-            let {CountryRoadMaps,TimeLine} = this.utils.getRoadMapObject(roadMapArr);
-            this.addRoadMap(CountryRoadMaps);
-
-            let countries = workbook.Sheets['Countries'];
-            let countriesExcelSheet = sheet2arr(countries);
-            //console.log("countriesExcelSheet==>",countriesExcelSheet);
-            let {CountriesExcelObj} = this.utils.getCountriesExcelObj(countriesExcelSheet);
-
-            let sheetMap = {};
-            workbook.SheetNames.forEach(function(sheetName) {
-                if(sheetName!=="Roadmap") {
-                    //console.log("sheetName==>",sheetName)
-                    let sheetNamePOSTFix = sheetName.split("_")[0];
-                    if(!(sheetNamePOSTFix in sheetMap))
-                        sheetMap[sheetNamePOSTFix] = [];
-                    sheetMap[sheetNamePOSTFix].push(sheetName);
-                    //self.doCountrySpecificSheets(workbook,sheetName);
-                }
-            });
-
-            Object.keys(sheetMap).forEach(key=>{
-                console.log("sheetMap[key]==>",sheetMap[key],key)
-                self.doCountrySpecificSheets(workbook,sheetMap[key],TimeLine,CountriesExcelObj,key);
-            });
-        });
+        } catch (error) {
+            await this.setState({message:error.message,textCss:"text-danger"});
+            await this.delay(3000);
+            await this.setState({message:"",textCss:"text-success",readyToview:false});
+            return;
+        }
     };
       
 
@@ -189,10 +220,15 @@ class InputView extends React.Component {
         await this.setState({readyToview:true});
 
         for (const url of MigrateTableAPIs) {
-            let response = await this.utils.migrateTables(url);
-            console.log("takeSnapShot==>",response);
+            try {
+                let response = await this.utils.migrateTables(url);
+            } catch (error) {
+                await this.setState({message:error.message,textCss:"text-danger"});
+                await this.delay(1000);
+            }
+
         }
-        console.log("takeSnapShot==>finished");
+        //console.log("takeSnapShot==>finished");
         await this.setState({readyToview:false,message:"Successfully took the snapshot of table storage."});
     };
     
@@ -235,7 +271,7 @@ class InputView extends React.Component {
                                     }
                                     {(this.state.message)?
                                         <div>
-                                            <span className="text-success">{this.state.message}!!</span>
+                                            <span className={this.state.textCss}>{this.state.message}!!</span>
                                         </div>:null
                                     }
                                 </div>
