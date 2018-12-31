@@ -20,7 +20,7 @@ namespace Infrastructure.Data
         public DataRepository()
         {
             tableList = TableStorageConfig.Instance;
-            backUpTableList = BackUpTableStorageConfig.Instance;
+            backUpTableList = TableStorageConfig.BackUpInstance;
         }
 
         public async Task<string> Add<T>(T entity, string tableName) where T : BaseEntity, new()
