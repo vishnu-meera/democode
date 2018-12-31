@@ -56,16 +56,6 @@ namespace Core.QueryHandler
                 statusList.CountriesStatusList[item.Name] = status;
             }
 
-            if (items == null)
-            {
-                throw new NotFoundException(nameof(Country), "Countries Overall Status Check");
-            }
-
-            if (items.Count() == 0)
-            {
-                throw new NotFoundException(nameof(Country), "Countries Overall Status Check");
-            }
-
             return statusList;
         }
     }

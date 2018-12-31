@@ -248,6 +248,8 @@
     <Compile Include="MigrationQueries\MigrateCountryDataCenters.cs" />
     <Compile Include="MigrationQueries\MigrateCountryDataCentersHandler.cs" />
     <Compile Include="MigrationQueries\MigrateCountryHandler.cs" />
+    <Compile Include="MigrationQueries\MigrateMoveStatus.cs" />
+    <Compile Include="MigrationQueries\MigrateMoveStatusHandler,cs.cs" />
     <Compile Include="MigrationQueries\MigrateRoadMap.cs" />
     <Compile Include="MigrationQueries\MigrateRoadMapHandler.cs" />
     <Compile Include="MigrationQueries\MigrateRuleTable.cs" />

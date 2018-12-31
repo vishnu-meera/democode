@@ -54,7 +54,8 @@ const MigrateTableAPIs =    ["api/RuleTable/Migrate",
                             "api/Country/Migrate",
                             "api/CountryDataCenters/Migrate",
                             "api/CountryRoadMap/Migrate",
-                            "api/CountryWorkLoad/Migrate"];
+                            "api/CountryWorkLoad/Migrate",
+                            "api/MoveStatus/Migrate"];
 
                             
 class InputView extends React.Component {

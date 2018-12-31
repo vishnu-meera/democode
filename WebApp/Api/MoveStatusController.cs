@@ -42,5 +42,12 @@ namespace WebApp.Api
 
             return CreatedAtAction("Get", new { CounryName = CountryName });
         }
+
+        [Route("[action]")]
+        [HttpGet]
+        public async Task<IActionResult> Migrate()
+        {
+            return Ok(await Mediator.Send(new MigrateMoveStatus { Name = "MoveStatus" }));
+        }
     }
 }

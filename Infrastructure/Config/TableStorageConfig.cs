@@ -14,6 +14,7 @@ namespace Infrastructure.Config
         static Dictionary<string, CloudTable> instance = null;
         static Dictionary<string, CloudTable> backupinstance = null;
         static readonly object padlock = new object();
+
         //static string cs = System.Configuration.ConfigurationManager.AppSettings["StorageConnectionString"];
         TableStorageConfig(){}
 
@@ -64,7 +65,8 @@ namespace Infrastructure.Config
             CloudTable table = null;
             try
             {
-                var storageTableConnectionString = "DefaultEndpointsProtocol=https;AccountName=golocaldashboarddb;AccountKey=ws+3kh+5yaAK4reikf1gAygzvUprXeN06ic0hBwi5QBiCh7fWxH/6A4tIxmjmEuqrsE9rxfJOiAEWsPxCK0bsw==;EndpointSuffix=core.windows.net";
+                var storageTableConnectionString = "DefaultEndpointsProtocol=https;AccountName=golocaldashboardapp;AccountKey=B8+vdC+QXHLvLrRffr1aQd1T4EchD6n/LpUzOtnB2BOpOcUR6asQXszYLJxfYSRpR3M73c7CivG2oI3W2+4KtQ==;EndpointSuffix=core.windows.net";
+                
                 CloudStorageAccount storageAccount = CloudStorageAccount.Parse(storageTableConnectionString);
                 // Create the table client.
                 CloudTableClient tableClient = storageAccount.CreateCloudTableClient();
@@ -85,7 +87,7 @@ namespace Infrastructure.Config
             CloudTable table = null;
             try
             {
-                var storageTableConnectionString = "DefaultEndpointsProtocol=https;AccountName=golocaldashboarddbbakup;AccountKey=7W0r1vSED0K1fu/bKk4XxSvtu1jWaQB76vwo2z3N0Wqd9l1/uCEARyWlbbKD47O23IiAwcqoPN2VPDh7H2W0Pw==;EndpointSuffix=core.windows.net";
+                var storageTableConnectionString = "DefaultEndpointsProtocol=https;AccountName=golocaldashboardappbkup;AccountKey=Ix2FUA1na9bJ2vZ71tzelVpPIaFbsTX5vILoaEGaZhIUbe3wr/vsfPDLR90/W8kyD/uZp60kQWBXVaxsMVuqDw==;EndpointSuffix=core.windows.net";
                 CloudStorageAccount storageAccount = CloudStorageAccount.Parse(storageTableConnectionString);
                 // Create the table client.
                 CloudTableClient tableClient = storageAccount.CreateCloudTableClient();
