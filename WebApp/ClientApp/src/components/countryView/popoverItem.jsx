@@ -19,23 +19,33 @@ class PopoverItem extends React.Component {
   }
 
   render() {
-    console.log("key==",this.props.obj.Name.replace(/\s/g,'').toLowerCase())
+    console.log("PopoverItem==",this.props.obj.ShowTimeLineDate)
     let cssPopColor = {"backgroundColor":"#fbf3f3"};
     let css = `step col-sm-1 ${(this.props.obj.rgb === "none"?"none":this.props.obj.rgb)}`; //TODO ..the logic is with respect to
     let num = this.props.keyprop +1;
+    let displayBlock = {"display":"block",};
+    let displayNone = {"display":"none"};
+
     let element = <span>
         <li     
             id={'Popover-' + this.props.id} onMouseOver={this.toggle} onMouseOut={this.toggle} 
             key ={this.props.keyprop}data-date={num.toString()} 
             className={css}>
-            <div>{this.props.obj.Name}</div>
+            <div>
+                <div>{this.props.obj.Name}</div>
+                <div 
+                    className = "font-italic font-weight-bold"
+                    style={this.props.obj.ShowTimeLineDate?displayBlock:displayNone}>
+                        {this.props.obj["Actual Date"].replace("**","")}
+                </div>
+            </div>
         </li>
         <Popover placement={'bottom'} isOpen={this.state.popoverOpen} target={'Popover-' + this.props.id} toggle={this.toggle} style={cssPopColor}>
             <PopoverHeader className="text-center"><span className="text-muted font-weight-bold">{this.props.obj.Name}</span><br/></PopoverHeader>
             <PopoverBody>
                 <div className="mt-1 mb-1">
-                    <div>Planned Date: {this.props.obj["Planned Date"]}</div>
-                    <div>Actual Date: {this.props.obj["Actual Date"]}</div>
+                    <div>Planned Date: {this.props.obj["Planned Date"].replace("**","")}</div>
+                    <div>Actual Date: {this.props.obj["Actual Date"].replace("**","")}</div>
                     <div>Notes: </div><br />
                     {
                         

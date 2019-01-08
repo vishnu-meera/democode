@@ -24,9 +24,11 @@ class Dashboard extends React.Component {
             tableData: {},
             mapFeedData : {},
             tableFeedData : {},
+            tableFeedData_2:{},
             mapColorCode:this.utils.mapColorCode,
             mapLoading:false,
             cardActiveKey:"",
+            activeCountryCode:"",
             toolTipObject: {},
             CountriesObject:{},
             toolTipShow:false,
@@ -58,8 +60,28 @@ class Dashboard extends React.Component {
         }
     }
 
-    handleClick =(event,code,tip)=>{
-        event.preventDefault();
+    handleClick = async (event,code,tip)=>{
+        if (code in this.state.mapFeedData) {
+            if(this.state.activeCountryCode.length===0){
+                let tableFeedData = this.state.tableData.filter(element => {
+                    return element[0]===this.utils.getName(code);
+                });
+
+                await this.setState({tableFeedData,activeCountryCode:code});
+            }else  if(code === this.state.activeCountryCode){
+                //cardActiveKey
+                let tableFeedData = this.state.tableData;
+
+                if(this.state.cardActiveKey)
+                    tableFeedData = this.state.tableData.filter(x=>x.includes(this.state.cardActiveKey));
+
+                await this.setState({tableFeedData,activeCountryCode:""});
+            }else
+                event.preventDefault();
+
+        }else{
+            event.preventDefault();
+        }
     };
 
     //TODO: Will move this code to funcational component
@@ -114,12 +136,12 @@ class Dashboard extends React.Component {
 
     async onCardClick(key){
         if(key!==this.state.cardActiveKey){
-            await this.setState({mapLoading:true,cardActiveKey:key});
+            await this.setState({mapLoading:true,cardActiveKey:key,activeCountryCode:""});
             let {mapFeedData,tableFeedData,mapColorCode} = this.utils.filterMapAndTableDataOnCard(key,this.state.mapData,this.state.tableData);
             await this.setState({mapFeedData,tableFeedData,mapColorCode});
             await this.setState({mapLoading:false})
         }else{
-            await this.setState({mapLoading:true,cardActiveKey:""});
+            await this.setState({mapLoading:true,cardActiveKey:"",activeCountryCode:""});
             let mapFeedData = this.state.mapData;
             let tableFeedData=this.state.tableData;
             let mapColorCode = this.utils.mapColorCode;

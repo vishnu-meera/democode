@@ -129,8 +129,9 @@ class InputView extends React.Component {
             if(mcio && dataCenterArray && TimeLine){
                 if(dataCenterArray.length>0){
                     let dataCenterRowArr = sheet2arr(workbook.Sheets[mcio]);
+                    console.log("TimeLineObj===>", TimeLine,countryName);
                     datacnterObject = this.utils.getDataCenterObject(dataCenterRowArr,dataCenterArray,countryName,TimeLine);
-                    //console.log("Datacenter ==>",datacnterObject);
+                    console.log("Datacenter ==>",datacnterObject);
                     for (const obj of datacnterObject) {
                         //Adding Datacenter to azure table
                         let response = await this.utils.addDataCenter(obj);
@@ -142,6 +143,7 @@ class InputView extends React.Component {
                 let moveStatusRowArr = sheet2arr_2(workbook.Sheets[moveStatus]);
                 let moveStatusObject = this.utils.getMoveStatusObject(moveStatusRowArr,countryName);
                 //console.log("sheetname==>",moveStatusObject);
+                //Adding MoveStatus to azure table
                 let response = await this.utils.addMoveStatus(moveStatusObject);
             };
     

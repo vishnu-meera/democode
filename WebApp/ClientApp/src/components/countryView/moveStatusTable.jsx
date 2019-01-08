@@ -29,6 +29,7 @@ class MoveStatusTable extends React.Component {
                         columns={[
                             {
                                 Header: header,
+                                style: { textAlign: "left",backgroundColor:"white"},
                                 accessor: "workLoadName",
                                 headerStyle: { textAlign: "center",backgroundColor:"grey"},
                                 minWidth:200

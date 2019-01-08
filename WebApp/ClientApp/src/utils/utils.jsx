@@ -74,6 +74,7 @@ export default class Utils {
     };
 
     getCode = getCode;
+    getName = getName;
     mapColorCode = Object.values(mapColorCodes);
     mapColorCodes = mapColorCodes;
     statusToShowDc = "Potential";

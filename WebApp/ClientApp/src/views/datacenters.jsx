@@ -50,11 +50,13 @@ export default class DataCenterView extends React.Component {
 
     timeline = ()=>{
         let rules = this.props.ruleTable.ruleTable;
+        //console.log("rules==>",rules)
         //console.log("rules==>",rules);
         const timeLine = JSON.parse(this.state.dataCenterTimeLineObj.timeLine);
         const timeLineArray = timeLine.map((obj,key)=>{
+            //console.log("obj.Name",obj.Name.replace(/\s/g,'').toLocaleLowerCase())
             let rule = rules.filter(x=>x.ruleName===obj.Name.replace(/\s/g,'').toLocaleLowerCase())[0];
-            //console.log("rule===>",obj.Name,JSON.parse(rule.impact));
+            //console.log("rule===>",rule);
             return (<PopoverItem key={key} id={key} keyprop={key} obj={obj} rules = {JSON.parse(rule.impact)}/>)       
         });
         return timeLineArray;
@@ -83,9 +85,6 @@ export default class DataCenterView extends React.Component {
                     <div className='htimeline ml-5'>
                         { this.timeline() }
                     </div>
-                    <div className="row ml-5">
-                        {this.timeLineArrow()}
-                    </div>
                 </Card>
             </div>
         </div>);
@@ -94,29 +93,24 @@ export default class DataCenterView extends React.Component {
     
 
     render(){
-        console.log("moveStatusItems===>",this.props.moveStatusItems);
-        let length = Object.keys(this.props.moveStatusItems).length;
-        let columnSize = length > 0 ? 12/length:12;
-        let css = `col-sm-${columnSize}`;
+        let css = `col-sm-5 col-xs-6`;
         if(this.state.status === "Live"){
-            return(<div>
-                <Row>
-                    <Col sm="12">
-                        <Card>
-                            <CardHeader>Move Status</CardHeader>
-                                <Row>
-                                    {
-                                        Object.keys(this.props.moveStatusItems).map((key)=>{
-                                          return  (<div key={key} className={css}>
-                                                        <MoveStatusTable workloadName={key} data={this.props.moveStatusItems[key]}/>
-                                                    </div>)
-                                        })
-                                    }
-                                </Row>
-                        </Card>
-                    </Col>
-                </Row>
-            </div>);
+            return(<Card>
+                <CardHeader>Move Status</CardHeader>
+                <CardBody>
+                    <div className="container-fluid testimonial-group">
+                        <div className="row text-center"> 
+                                {
+                                    Object.keys(this.props.moveStatusItems).map((key)=>{
+                                        return  (<div key={key} className={css}>
+                                                    <MoveStatusTable workloadName={key} data={this.props.moveStatusItems[key]}/>
+                                                </div>)
+                                    })
+                                }
+                        </div>
+                    </div>
+                </CardBody>
+            </Card>);
         }else{
             return(<>
                 <div className="text-muted font-weight-bold ml-1 mt-1 mb-2">{this.state.dataCenterTimeLineObj.dataCenterName}</div>

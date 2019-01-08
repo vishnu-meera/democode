@@ -4,9 +4,10 @@
 */
 
 import React from "react";
+import {Card,CardBody} from "reactstrap";
 
 export default function DataCenterCard() {
-    let css_1 = {"backgroundColor":"white"};
+    let css_1 = {"height":"13rem"};
     let css_2 = {"cursor":"pointer"};
 
     let navTabItems = this.state.dataCentersObject.map((datacenter,index)=>{
@@ -39,7 +40,7 @@ export default function DataCenterCard() {
                 role="tabpanel" 
                 aria-labelledby={id}
             >
-                <div className="ml-2 mt-4">
+                <div className="ml-2">
                     <span>Lease Signed: {datacenter.leaseSigned}</span><br />
                     <span>RTEG: {datacenter.rteg}</span><br /><br />
                     <span>DC Vendors: {datacenter.dcVendors.join(",")}</span><br />
@@ -50,14 +51,16 @@ export default function DataCenterCard() {
     });
 
     return(<div className="col-sm-4">
-    <div style={css_1}> 
-        <span className="text-muted font-weight-bold ml-2 mt-2">Data Centers</span><br/>
-        <ul className="nav nav-pills mb-1 ml-3 mt-1" id="pills-tab" role="tablist">
+   <Card style={css_1}>
+    <CardBody>
+    <span className="text-muted font-weight-bold">Data Centers</span><br/>
+        <ul className="nav nav-pills" id="pills-tab" role="tablist">
             {navTabItems}
         </ul>
         <div className="tab-content" id="pills-tabContent">
             {navTabContent}
         </div>
-    </div>
+    </CardBody>
+    </Card>
 </div>);
 };

@@ -4,12 +4,12 @@
 }
       
 
-.htimeline { list-style: none; padding: 8px; margin: 10px 0 0; }
+.htimeline { list-style: none; padding: 7px; margin: 10px 0 0; }
 
 .htimeline .step { 
         float: left; 
         border-bottom-style: solid; 
-        border-bottom-width: 4px; 
+        border-bottom-width: 3px; 
         position: relative; 
         margin-bottom: 20px; 
         padding-bottom:20px;
@@ -28,7 +28,7 @@
 .htimeline .step:hover { background-color: #ccc; border-bottom-width: 6px; cursor: pointer;}
 
 
-.htimeline .step div { margin: 0 5px; font-size: 12px; vertical-align: top; padding: 0;}
+.htimeline .step div { margin: -5px 5px; font-size: 11px; vertical-align: top; padding: 0;}
 
 .htimeline .step.olivedrab { border-bottom-color: #348F50;}
 .htimeline .step.red { border-bottom-color: rgb(255, 0, 43);}

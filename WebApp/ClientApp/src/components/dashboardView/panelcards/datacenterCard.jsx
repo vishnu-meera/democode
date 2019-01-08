@@ -14,9 +14,10 @@ export default function DataCenter(){
     } else {
     return (<div className="ml-3 mt-2">
             <span className="text-muted font-weight-bold">Data Centers</span><br/>
-            {DataCenterNavBars.call(this)}
-            <p></p>
-            <div className="dropdown-divider"></div>
+            <div>   
+                {DataCenterNavBars.call(this)}
+            </div>
+
         </div>);
     }
 }

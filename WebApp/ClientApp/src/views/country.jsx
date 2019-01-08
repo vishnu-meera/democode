@@ -4,6 +4,7 @@
 */
 
 import React from "react";
+import { Link } from "react-router-dom";
 import Utils from 'utils/utils';
 import Auth from 'utils/authhelper';
 import Spinner from "components/spinner/spin";
@@ -104,7 +105,12 @@ class Country extends React.Component {
             <div className="content pt-2 pb-2 ml-5 mr-5">
                 <div className="row"> 
                     <div className="col-sm-12">
-                        <span className="text-muted font-weight-bold"><h6>Dashboard/{this.state.country}</h6></span>
+                        <span className="text-muted font-weight-bold">
+                            <h6>
+                                <Link to={{ pathname: '/admin/dashboard' }}>Dashboard/</Link>
+                                {this.state.country}
+                            </h6>
+                        </span>
                     </div>
                 </div>
                 <div className="row mb-3" style={css_2}>

@@ -48,6 +48,10 @@ export default function WorldMap(mapFeedData,mapColorCode){
                             hover: {
                                 "fill-opacity": 0.4,
                                 cursor: 'pointer'
+                            },
+                            selected: {
+                                "fill-opacity": 0.2,
+                                cursor: 'pointer'
                             }
                         }}
                         regionsSelectable={true}

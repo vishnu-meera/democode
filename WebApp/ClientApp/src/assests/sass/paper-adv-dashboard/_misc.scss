@@ -169,4 +169,13 @@ a[data-toggle="collapse"][aria-expanded="true"] .caret,
   color: #fff;
 }
 
+.testimonial-group > .row {
+  overflow-x: auto;
+  white-space: nowrap;
+  flex-wrap: nowrap;
+}
+.testimonial-group > .row > .col-sm-5 {
+  display: inline-block;
+  float: none;
+}
 

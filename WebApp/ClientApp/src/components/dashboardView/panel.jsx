@@ -134,7 +134,7 @@ class CountryPanel extends React.Component {
                         <Link
                             style = {linkCss}
                             disabled={!countryButtonEnable.includes(this.props.status)}
-                            className="btn btn-none ml-5 mr-5 pt-1 pb-1 pr-4 pl-4" 
+                            className="btn btn-primary ml-5 mr-5 pt-1 pb-1 pr-4 pl-4" 
                             to={{ pathname: '/admin/country', 
                             state: { country: this.props.country, status: this.props.status, countriesObject:this.props.CountriesObject ,toolTipObject:this.props.toolTipObject,dataCentersObject:this.state.dataCentersObject} }}
                         ><span className="text-center">See Details</span></Link>
@@ -145,10 +145,10 @@ class CountryPanel extends React.Component {
                         <Link
                             style = {linkCss}
                             disabled={!countryButtonEnable.includes(this.props.status)}
-                            className="btn btn-none ml-5 mr-5 pt-1 pb-1 pr-4 pl-4" 
+                            className="btn btn-primary ml-5 mr-5 pt-1 pb-1 pr-4 pl-4" 
                             to={{ pathname: '/admin/country', 
                             state: { country: this.props.country, status: this.props.status, countriesObject:this.props.CountriesObject ,toolTipObject:this.props.toolTipObject,dataCentersObject:this.state.dataCentersObject} }}
-                        ><span className="text-center">See Seats Updates</span></Link>
+                        ><span className="text-center">See Details</span></Link>
                     </div>);
         }
     }

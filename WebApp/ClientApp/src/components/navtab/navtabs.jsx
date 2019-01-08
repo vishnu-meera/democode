@@ -12,6 +12,15 @@ import {
     TabPane,
 } from "reactstrap";
 
+
+const test =  {
+    width: "6px",
+    height: "6px",
+    borderRadius: "50%",
+    backgroundColor: "black",
+    boxShadow: "0px 10px 0px black, 0px 20px 0px black"
+    };
+
 export default function DataCenterCard() {
     console.log("DataCenterNavBars movestatusprogress", this.state.dataCentersObject)
     let datacenters = this.state.dataCentersObject.map((datacenter,index)=>{
@@ -28,10 +37,19 @@ export default function DataCenterCard() {
                                         className={
                                             this.state.horizontalTabs === datacenter.dcCode
                                                 ? "active"
-                                                : ""
+                                                : "active"
                                         }
                                         onClick={() =>{this.toggleDC(datacenter.dcCode)}}
-                                    > <span className=" text-bold text-left">{datacenter.name}</span></NavLink>
+                                    > 
+                                        <div className="row">
+                                            <div className="col-xs-6">
+                                                {datacenter.name}
+                                            </div>
+                                            <div className="col-xs-3">
+                                                <div style={test} className="ml-1 pl-1"></div>
+                                            </div>
+                                        </div>
+                                    </NavLink>
                                 </NavItem>
                             </Nav>
                         </div>

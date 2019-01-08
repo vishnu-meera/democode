@@ -96,6 +96,12 @@ const getRMCellObject = (roadMapCell,flag="")=>{
     return temp;
 };
 
+const showtimelinedate = (date)=>{
+    if(date.includes("**"))
+        return true;
+    else
+        return false;
+};
 
 const getTimeLineCellObject = (name,roadMapCell)=>{
 
@@ -117,6 +123,7 @@ const getTimeLineCellObject = (name,roadMapCell)=>{
             "Planned Date":validateDate(values[0].replace(/[\r\n]/g, "")),
             "Risk Level":20,//based on color we will chnage this
             "Notes":{"note1":"Notes not aviable now"},
+            "ShowTimeLineDate":showtimelinedate(values.length>1?values[1]:values[0].replace(/[\r\n]/g, "")),
             "rgb":rgb
         };
         let style = roadMapCell[1]
@@ -131,20 +138,27 @@ export default class DataCapturingUtils {
     utils = new Utils();
 
     getRoadMapObject(roapMapExcelRows){
+       
         const roadmapsummarykeys = ['Infrastructure','Azure','Office'];
         const keysNotInTimeLine = ["RTEG","Public Announcement","Preview"];
 
         let RoadMapSummary = {"Infrastructure":{},"Azure":{},"Office":{}};
         let key ,TimeLine ={};
         let CountryRoadMaps = [];
+        let timeLineShowDateIndex = {};
 
         try {
             roapMapExcelRows[2].forEach((element,key)=>{
+               
+                //timeLineShowDateIndex[element[0]]= element[0].includes("*");
+
                 if(key>=0 && key<8) RoadMapSummary[roadmapsummarykeys[0]][element[0]] = {};
                 else if(key>7 && key<12) RoadMapSummary[roadmapsummarykeys[1]][element[0]] = {};
                 else if(key>11) RoadMapSummary[roadmapsummarykeys[2]][element[0]] = {}; 
             });
-    
+
+            //console.log("roapMapExcelRows===>",timeLineShowDateIndex);
+
             for (let index = 3; index < roapMapExcelRows.length; index++) {
                 const countryRow = roapMapExcelRows[index];
     
@@ -154,7 +168,7 @@ export default class DataCapturingUtils {
                     
                     let objIndex = (index>=1 && index<8) ? 0 : (index>=8 && index<13) ? 1 : 2;
                     let key = roadmapsummarykeys[objIndex];
-                    if(roadmapsummaryObjKeys[index]==="Preview" || roadmapsummaryObjKeys[index]==="Public Announcement")
+                    if(roadmapsummaryObjKeys[index].includes("Preview") || roadmapsummaryObjKeys[index].includes("Public Announcement"))
                         RoadMapSummary[key][roadmapsummaryObjKeys[index]] = getRMCellObject(countryRow[index],"YES")
                     else    
                         RoadMapSummary[key][roadmapsummaryObjKeys[index]] = getRMCellObject(countryRow[index]);   
@@ -163,10 +177,11 @@ export default class DataCapturingUtils {
                         let timeLineIndex = roadmapsummaryObjKeys[index];
                         if(timeLineIndex==="GA"){
                             timeLineIndex = key + " " + timeLineIndex;
-                            //console.log("TimeLine===>key",timeLineIndex);
+                            //console.log("TimeLine===>key",timeLineIndex);//deployment readiness
                         }
-                        if("O365 Services"===timeLineIndex)timeLineIndex="O365 Services Deployment";
-                        if("Engineering Readiness"===timeLineIndex)timeLineIndex="O365 Services Readiness";
+                        if("O365 Services"===timeLineIndex)timeLineIndex="O365 deployment";
+                        if("Engineering Readiness"===timeLineIndex)timeLineIndex="O365 readiness";
+                        //console.log("timeLineShowDateIndex[timeLineIndex]==>",timeLineShowDateIndex[timeLineIndex])
                         TimeLine[countryRow[0][0]].push(getTimeLineCellObject(timeLineIndex,countryRow[index]));
                     }
                 }
