@@ -43,28 +43,51 @@ class CountryTables extends React.Component {
         super(props);
         this.utils = new Utils();
         this.data = this.props.data;
+        let keys = [...new Set(this.data.map(obj=>obj[3]))];
+        if(keys.length>1) keys.unshift("All Countries");
+        this.dropdownItems = keys.map(status => {return {value: status, label: status}});
+
         this.state = {
             ...getTableData(this.data),
             loading:true,
             index:0,
-            countrystatus:""
+            countrystatus:this.dropdownItems[0].value,
+            dropdownItems:this.dropdownItems
         };
         this.submitClick = this.submitClick.bind(this);
         this.searchChange = this.searchChange.bind(this);
     }
 
     searchChange = (e)=>{
-        let countrystatus = this.state.countrystatus;
-        let searchType = e.target.value;
+        let flag = true
         let data = JSON.parse(JSON.stringify(this.props.data));
-        data = data.filter(x=>x[0].toLowerCase().search(searchType.toLowerCase()) !== -1);
-        console.log("searchChange 2==>",data);
-        if(data.length>0)
-        {
-            if(countrystatus==="All") this.setState({ ...getTableData(data),index:0});
-            else this.setState({ ...getTableData(data.filter(x=>x.includes(countrystatus))),index:0 });
+        let countrystatus = this.state.countrystatus;
+
+        if(e.target.value){
+            if(/^[a-zA-Z]+$/.test(e.target.value)){
+                let searchType = e.target.value;
+                data = data.filter(x=>x[0].toLowerCase().search(searchType.toLowerCase()) !== -1);
+                console.log("searchChange 2==>",data,countrystatus);
+                if(data.length>0)
+                {
+                    if(countrystatus !=="All Countries" & countrystatus !=="") {
+                        data = data.filter(x=>x.includes(countrystatus))
+                    }
+                    console.log("searchChange 3==>",data);
+                    flag = false;
+                    if(data.length>0) this.setState({ ...getTableData(data),index:0 });
+
+                }
+            }
         }
-        //this.setState({ ...getTableData(data),index:0});
+
+        if(flag){
+            data = JSON.parse(JSON.stringify(this.props.data));
+            if(countrystatus !=="All Countries" & countrystatus !=="") {
+                data = data.filter(x=>x.includes(countrystatus))
+            }
+            if(data.length>0) this.setState({ ...getTableData(data),index:0 });
+        }
     };
 
     async submitClick(rowInfo){
@@ -80,8 +103,11 @@ class CountryTables extends React.Component {
     async componentDidUpdate(prevProps) {
         if (this.props.data !== prevProps.data) {
             this.data = this.props.data;
+            let keys = [...new Set(this.data.map(obj=>obj[3]))];
+            if(keys.length>1) keys.unshift("All Countries");
+            let dropdownItems = keys.map(status => {return {value: status, label: status}});
             await this.setState({ ...getTableData(this.data) });
-            await this.setState({ index:0});
+            await this.setState({ index:0,dropdownItems, countrystatus:dropdownItems[0].value});
         }
     }
 
@@ -91,19 +117,18 @@ class CountryTables extends React.Component {
         }
     }
 
-    async onClickDropDown(e){
+    onClickDropDown(e){
         //console.log("onClickDropDown==>",e)
         let countrystatus = e.value;
-        if(countrystatus==="All") await this.setState({ ...getTableData(this.data)});
-        else await this.setState({ ...getTableData(this.data.filter(x=>x.includes(countrystatus))) });
-        await this.setState({ index:0,countrystatus});
+        if(countrystatus==="All Countries")  this.setState({ ...getTableData(this.data)});
+        else  this.setState({ ...getTableData(this.data.filter(x=>x.includes(countrystatus))) });
+         this.setState({ index:0,countrystatus});
     }
 
     render() {
         const self = this;
-        let keys = [...new Set(this.data.map(obj=>obj[3]))];
-        keys.push("All");
-        let dropdownItems = keys.map(status => {return {value: status, label: status}});
+        console.log("value===>",this.state.countrystatus,this.state.dropdownItems[0].value);
+        let currentdropvalue = this.state.countrystatus||this.state.dropdownItems[0].value;
         if(this.state.loading)
             return (
                 <div className="content">
@@ -123,16 +148,16 @@ class CountryTables extends React.Component {
                                                     <i className="nc-icon nc-zoom-split" />
                                                 </InputGroupText>
                                             </InputGroupAddon>
-                                        <Input defaultValue="" placeholder="Search Country..." type="text" onChangeCapture={(e)=>this.searchChange(e)}/>
+                                        <Input defaultValue="" placeholder="Search Country..." type="text" onChange={(e)=>this.searchChange(e)}/>
                                     </InputGroup>
                                     <Select
                                         className="react-select primary col-md-4 ml-auto"
                                         classNamePrefix="react-select"
                                         name="singleSelect"
-                                        value={this.state.singleSelect}
+                                        value={currentdropvalue}
                                         onChange={value =>this.onClickDropDown( value )}
-                                        options={dropdownItems}
-                                        placeholder="Single Select"
+                                        options={this.state.dropdownItems}
+                                        placeholder={currentdropvalue}
                                     />
                                 </Row>
                                 <ReactTable

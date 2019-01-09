@@ -44,8 +44,8 @@ class Country extends React.Component {
     }
 
     async componentDidMount() {
-        let {authenticated,token} = await this.auth.isAuthenticated();
-        if(authenticated){
+        // let {authenticated,token} = await this.auth.isAuthenticated();
+        // if(authenticated){
             if (this.state.loading) {
                 let countryCode = await this.utils.getCode(this.state.country);
                 let imgUri = `https://www.countryflags.io/${countryCode}/shiny/64.png`;
@@ -62,10 +62,10 @@ class Country extends React.Component {
                 }
                 await this.setState({loading: false });
             }
-        }else{
-            console.log("dashboard===> not authenticated");
-            this.props.history.push("/admin");
-        }
+        // }else{
+        //     console.log("dashboard===> not authenticated");
+        //     this.props.history.push("/admin");
+        // }
     }
 
     toggleDC = async (dcCode,dataCenterObj)=>{

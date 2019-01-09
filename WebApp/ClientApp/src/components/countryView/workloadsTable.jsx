@@ -173,7 +173,7 @@ class WorkLoadTable extends React.Component {
                                             }
                                             ]}
                                         showPageSizeOptions = {false}
-                                        defaultPageSize={5}
+                                        defaultPageSize={10}
                                         showPaginationBottom
                                         className="-striped -highlight"
                                     />
