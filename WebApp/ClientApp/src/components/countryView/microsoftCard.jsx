@@ -9,21 +9,36 @@ export default function Microsoft(){
 
     let mcio = this.state.countriesObject.filter(x=>x.name === this.state.country)[0];
     let mcio_2 = this.state.toolTipObject[this.state.countryCode]
-    let css_1 = {"height":"13rem"}
+
     if (this.state.loading) {
         return null
     } else {
-    return (<div className="col-sm-3">
-    <Card style={css_1}>
+    return (<div className="col-md-3">
+    <div className="card h-100">
         <CardBody>
-            <div className="text-muted font-weight-bold">Microsoft</div>
-            <div className="">CAPEX Approved &emsp;&emsp;: {mcio.capex} </div>
-            <div className="">Public Announcement &emsp;&emsp;: {mcio_2.publicAnnouncement} </div>
-            <div className="">Azure GA &emsp;&emsp;:{mcio_2.azureGa}</div>
-            <div className="">Office GA&emsp;&emsp;: {mcio_2.officeGa} </div>
-            <div className="">DCX Customers&emsp;&emsp;: {mcio.dcX_Customers} </div><br /><br/> <br/>
+            <div className="text-muted font-weight-bold mb-1">Microsoft</div>
+            <div className="row">
+                    <div className="col-md-8"><span>CAPEX Approved:</span></div>
+                    <div className="col-md-4"><span className="float-right">{mcio.capex}</span></div>
+            </div>
+            <div className="row">
+                    <div className="col-md-8"><span>Public Announcement:</span></div>
+                    <div className="col-md-4"><span className="float-right"> {mcio_2.publicAnnouncement}</span></div>
+            </div>
+            <div className="row">
+                    <div className="col-md-8"><span>Azure GA:</span></div>
+                    <div className="col-md-4"><span className="float-right">{mcio_2.azureGa}</span></div>
+            </div>
+            <div className="row">
+                    <div className="col-md-8"><span>Office GA:</span></div>
+                    <div className="col-md-4"><span className="float-right">{mcio_2.officeGa}</span></div>
+            </div>
+            <div className="row">
+                    <div className="col-md-8"><span>DCX Customers:</span></div>
+                    <div className="col-md-4"><span className="float-right">{mcio.dcX_Customers}</span></div>
+            </div>
         </CardBody>
-    </Card>
+    </div>
     </div>);
     }
 }

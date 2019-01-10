@@ -8,25 +8,42 @@ import {Card,CardBody} from "reactstrap";
 export default function National(){
 
     let mcio = this.state.countriesObject.filter(x=>x.name === this.state.country)[0]
-    let css_1 = {"height":"13rem"}
+
     if (this.state.loading) {
         return null
     } else {
     return (
-        <div className="col-sm-3">
-            <Card style={css_1}>
-                <CardBody>
-                    <div className="text-muted font-weight-bold">National View</div>
-                    <div className="">Population&emsp;&emsp;: {mcio.population}</div>
-                    <div className="">GDP&emsp;&emsp;: {mcio.gdp}</div>
-                    <p></p>
-                    <div className="text-muted font-weight-bold">Opportunity</div>
-                    <div className="">TAM (Restricted)&emsp;&emsp;: {mcio.taM_Restricted}</div>
-                    <div className="">TAM (UnRestricted)&emsp;&emsp;: {mcio.taM_UNRestricted}</div>
-                    <div className="">Revenue Projection 3Y &emsp;&emsp;: {mcio.revenueProjection3Y}</div>
-                    <div className="">Revenue Projection 5Y &emsp;&emsp;: {mcio.revenueProjection5Y}</div>
-                </CardBody>
-            </Card>
+        <div className="col-md-3">
+           <div className="card h-100">
+           <CardBody>
+                <div className="text-muted font-weight-bold mb-1">National View</div>
+                <div className="row">
+                        <div className="col">Population:</div>
+                        <div className="col float-md-right">{mcio.population}</div>
+                </div>
+                <div className="row mb-2">
+                        <div className="col"><span>GDP:</span></div>
+                        <div className="col"><span className="float-right"> </span>{mcio.gdp}</div>
+                </div>
+                <div className="text-muted font-weight-bold mb-1">Opportunity</div>
+                <div className="row">
+                        <div className="col-md-8"><span>TAM (Restricted):</span></div>
+                        <div className="col-md-4"><span className="float-right"></span>{mcio.taM_Restricted}</div>
+                </div>
+                <div className="row">
+                        <div className="col-md-8"><span>TAM (UnRestricted):</span></div>
+                        <div className="col-md-4"><span className="float-right"></span>{mcio.taM_UNRestricted}</div>
+                </div>
+                <div className="row">
+                        <div className="col-md-8"><span>Revenue Projection 3Y:</span></div>
+                        <div className="col-md-4"><span className="float-right">{mcio.revenueProjection3Y}</span></div>
+                </div>
+                <div className="row">
+                        <div className="col-md-8"><span>Revenue Projection 5Y:</span></div>
+                        <div className="col-md-4"><span className="float-right"> {mcio.revenueProjection5Y}</span></div>
+                </div>
+            </CardBody>
+        </div>
     </div>);
     }
 }

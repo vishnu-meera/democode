@@ -15,14 +15,13 @@ import {
 export default function Overview(){
     let css_1 = {"width":"50%"};
     let css_2 = {fontSize:"1rem"}
-    let css_3 = {height:"13rem"}
+
     if (this.state.loading) {
         return null
     } else {
     return (
-        <div className="col-sm-2">
-            <Card style={css_3}>
-                <CardBody>
+        <div className="col-md-2">
+
                 <span className="text-muted font-weight-bold h5">{this.state.country}</span><br/>
                 <img src={this.state.imgUri} alt={this.state.country} style={css_1}/><br/>
                 <span style={css_2}>{this.state.status}
@@ -37,8 +36,7 @@ export default function Overview(){
                         &#x25cf;
                     </span>
                 </span>
-                </CardBody>
-            </Card>
+
         </div>);
     }
 }

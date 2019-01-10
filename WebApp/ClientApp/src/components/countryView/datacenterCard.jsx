@@ -7,7 +7,6 @@ import React from "react";
 import {Card,CardBody} from "reactstrap";
 
 export default function DataCenterCard() {
-    let css_1 = {"height":"13rem"};
     let css_2 = {"cursor":"pointer"};
 
     let navTabItems = this.state.dataCentersObject.map((datacenter,index)=>{
@@ -40,21 +39,33 @@ export default function DataCenterCard() {
                 role="tabpanel" 
                 aria-labelledby={id}
             >
-                <div className="ml-2">
-                    <span>Lease Signed: {datacenter.leaseSigned}</span><br />
-                    <span>RTEG: {datacenter.rteg}</span><br /><br />
-                    <span>DC Vendors: {datacenter.dcVendors.join(",")}</span><br />
-                    <span>Telco Vendors: {datacenter.telcoVendors.join(",")}</span><br />
+                <div className="mt-2">
+                    <div className="row">
+                            <div className="col-md-4"><span>Lease Signed:</span></div>
+                            <div className="col-md-8"><span className="float-right">{datacenter.leaseSigned}</span></div>
+                    </div>
+                    <div className="row">
+                            <div className="col-md-4"><span>RTEG:</span></div>
+                            <div className="col-md-8"><span className="float-right">{datacenter.rteg}</span></div>
+                    </div>
+                    <div className="row">
+                            <div className="col-md-4"><span>DC Vendors:</span></div>
+                            <div className="col-md-8"><span className="float-right">{datacenter.dcVendors.join(",")}</span></div>
+                    </div>
+                    <div className="row">
+                            <div className="col-md-6"><span>Telco Vendors:</span></div>
+                            <div className="col-md-6"><span className="float-right">{datacenter.telcoVendors.join(",")}</span></div>
+                    </div>
                 </div>
             </div>
         );
     });
 
     return(<div className="col-sm-4">
-   <Card style={css_1}>
+   <Card className="h-100">
     <CardBody>
-    <span className="text-muted font-weight-bold">Data Centers</span><br/>
-        <ul className="nav nav-pills" id="pills-tab" role="tablist">
+    <span className="text-muted font-weight-bold mb-1">Data Centers</span><br/>
+        <ul className="nav nav-pills flex-column flex-md-row" id="pills-tab" role="tablist">
             {navTabItems}
         </ul>
         <div className="tab-content" id="pills-tabContent">

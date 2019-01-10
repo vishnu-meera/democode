@@ -8,7 +8,7 @@ import { Progress } from "reactstrap";
 import {Card,CardBody} from "reactstrap";
 
 export default function MoveStatus() {
-    let css_1 = {"height":"13rem"};
+
     let movestatusprogress = Object.keys(this.state.moveStatusObject).map(key=>{
         //console.log(this.state.moveStatusObject[key].toString())
         let progress = {
@@ -17,8 +17,8 @@ export default function MoveStatus() {
         return (
             <div key ={key}>
                 <div className="row">
-                    <div className="col-sm-6"><span className="text-muted">{key}</span></div>
-                    <div className="col-sm-6"><span className="text-muted float-right">In Progress ({this.state.moveStatusObject[key].toString()}%)</span></div>
+                    <div className="col-md-6"><span className="text-muted">{key}</span></div>
+                    <div className="col-md-6"><span className="text-muted float-right">In Progress ({this.state.moveStatusObject[key].toString()}%)</span></div>
                 </div>
                 <Progress max="100"  className="progress" style={progress}/>
                 <p></p>
@@ -26,12 +26,12 @@ export default function MoveStatus() {
         );
     })
 
-    return(<div className="col-sm-4">
-                <Card style={css_1}> 
+    return(<div className="col-md-4">
+                <div className="card h-100">
                     <CardBody>
-                    <span className="text-muted font-weight-bold">Move Status</span><br/>
+                    <span className="text-muted font-weight-bold mb-1">Move Status</span><br/>
                     {movestatusprogress}
                     </CardBody>
-                </Card>
+                </div>
             </div>);
 };
