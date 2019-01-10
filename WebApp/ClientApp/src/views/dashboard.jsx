@@ -42,8 +42,8 @@ class Dashboard extends React.Component {
     }
 
     async componentDidMount() {
-        // let {authenticated,token} = await this.auth.isAuthenticated();
-        // if(authenticated){
+        let {authenticated,token} = await this.auth.isAuthenticated();
+        if(authenticated){
             console.log("dashboard===> authenticated");
             if (this.state.loading) {
                 //getting data for card tiles
@@ -54,10 +54,10 @@ class Dashboard extends React.Component {
                 let tableFeedData = this.utils.cloneObject(tableData);
                 this.setState({ mapFeedData,tableFeedData,cardsStatus, mapData,tableData,loading:false,toolTipObject,CountriesObject})
             }
-        // }else{
-        //     console.log("dashboard===> not authenticated");
-        //     this.props.history.push("/admin");
-        // }
+        }else{
+            console.log("dashboard===> not authenticated");
+            this.props.history.push("/admin");
+        }
     }
 
     handleClick = async (event,code,tip)=>{
