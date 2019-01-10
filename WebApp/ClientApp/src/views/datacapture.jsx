@@ -152,8 +152,7 @@ class InputView extends React.Component {
             if(countryOject){
                 let response = await this.utils.addCountryObject(countryOject);
             }
-    
-            await this.setState({readyToview:false,message:"Excel sheets loaded into table storage"});
+
         } catch (error) {
             await this.setState({message:error.message,textCss:"text-danger"});
             await this.delay(3000);
@@ -176,7 +175,7 @@ class InputView extends React.Component {
         }
 
         try {
-            results.forEach(result => {
+            for (const result of results) {
                 const [e, file] = result;
                 let workbook = XLSX.read(e.target.result, {
                     type: 'binary',
@@ -186,7 +185,7 @@ class InputView extends React.Component {
                 let roadmapSheet = workbook.Sheets['Roadmap']
                 let roadMapArr = sheet2arr(roadmapSheet);
                 let {CountryRoadMaps,TimeLine} = this.utils.getRoadMapObject(roadMapArr);
-                this.addRoadMap(CountryRoadMaps);
+                let temp = await this.addRoadMap(CountryRoadMaps);
     
                 let countries = workbook.Sheets['Countries'];
                 let countriesExcelSheet = sheet2arr(countries);
@@ -194,7 +193,7 @@ class InputView extends React.Component {
                 let {CountriesExcelObj} = this.utils.getCountriesExcelObj(countriesExcelSheet);
     
                 let sheetMap = {};
-                workbook.SheetNames.forEach(function(sheetName) {
+                for (const sheetName of workbook.SheetNames) {
                     if(sheetName!=="Roadmap") {
                         //console.log("sheetName==>",sheetName)
                         let sheetNamePOSTFix = sheetName.split("_")[0];
@@ -203,13 +202,15 @@ class InputView extends React.Component {
                         sheetMap[sheetNamePOSTFix].push(sheetName);
                         //self.doCountrySpecificSheets(workbook,sheetName);
                     }
-                });
+                };
     
-                Object.keys(sheetMap).forEach(key=>{
+                for (const key of Object.keys(sheetMap)) {
                     //console.log("sheetMap[key]==>",sheetMap[key],key)
-                    self.doCountrySpecificSheets(workbook,sheetMap[key],TimeLine,CountriesExcelObj,key);
-                });
-            });
+                    let temp = await self.doCountrySpecificSheets(workbook,sheetMap[key],TimeLine,CountriesExcelObj,key);
+                };
+
+                await this.setState({readyToview:false,message:"Excel sheets loaded into table storage"});
+            };
         } catch (error) {
             await this.setState({message:error.message,textCss:"text-danger"});
             await this.delay(3000);
