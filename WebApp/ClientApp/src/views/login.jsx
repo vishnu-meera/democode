@@ -1,0 +1,71 @@
+// Copyright(c) Microsoft Corporation. 
+// All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the solution root folder for full license information
+
+import React from "react";
+import Auth from "utils/authhelper"
+
+
+export default class Login extends React.Component {
+
+    constructor(props) {
+        super(props);
+        this.auth = new Auth();
+        this.auth.clear();
+        this.state = {
+            authenticated:false,
+            errorMessage:null
+        };
+        this.loginToApp = this.loginToApp.bind(this);
+    }
+
+    loginToApp = async (toggleLogin)=>{
+        let authenticated = false;
+        if(!toggleLogin){
+            console.log("toggleLogin==>",toggleLogin)
+            let {accessToken,errorMessage}  = await this.auth.login();
+            console.log("loginToApp==>",errorMessage);
+
+            if(errorMessage){
+                await this.setState({authenticated,errorMessage});
+            }else if(accessToken){
+                authenticated=true;
+                await this.setState({authenticated});
+                this.props.history.push("/admin/dashboard");
+            };
+
+        }else{
+            let token  = await this.auth.logout();
+            await this.setState({authenticated});
+        }
+    };
+
+    render(){
+        if(!this.state.authenticated)
+            return(<div className="content">
+            <div className="row">
+                <div className="col-sm-9 col-md-7 col-lg-5 mx-auto">
+                    <div className="card card-signin my-5">
+                        <div className="card-body">
+                            <h6 className="card-title text-muted text-center">Please Login to see Azure Dashboard</h6>
+
+                            <button 
+                                className="btn btn-md btn-secondary btn-block" 
+                                onClick={()=>{this.loginToApp(this.state.authenticated)}}>Log in</button>
+                            <hr className="my-4" />
+                            {this.state.errorMessage?
+                                <div className="alert alert-light" role="alert">
+                                    <span className="text-danger">{this.state.errorMessage}!!</span>
+                                </div>:null
+                            }
+                        </div>
+
+                    </div>
+                </div>
+            </div>)
+        </div>)
+        else{
+            return null;
+        }
+    }
+}

@@ -1,0 +1,92 @@
+/*!
+ =========================================================
+ * Dashboard A React - v1.0.0 based on Paper Dashboard 
+ =========================================================
+ * Product Page: https://www.bing.com
+ * Copyright 2018 TBD (http://www.bing.com)
+ * Engineering framework
+ =========================================================
+ * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+ */
+
+@import 'paper-adv-dashboard/variables';
+@import 'paper-adv-dashboard/mixins';
+
+// Plugins CSS
+@import 'paper-adv-dashboard/plugins/plugin-animate-bootstrap-notify';
+@import 'paper-adv-dashboard/plugins/plugin-react-bootstrap-wizard';
+@import 'paper-adv-dashboard/plugins/plugin-react-table';
+@import 'paper-adv-dashboard/plugins/plugin-react-big-calendar';
+@import 'paper-adv-dashboard/plugins/plugin-react-jvectormap';
+@import 'paper-adv-dashboard/plugins/plugin-nouislider';
+@import 'paper-adv-dashboard/plugins/plugin-perfect-scrollbar';
+@import 'paper-adv-dashboard/plugins/plugin-react-bootstrap-sweetalert';
+@import 'paper-adv-dashboard/plugins/plugin-react-bootstrap-switch';
+@import 'paper-adv-dashboard/plugins/plugin-react-datetime';
+@import 'paper-adv-dashboard/plugins/plugin-react-tagsinput';
+@import 'paper-adv-dashboard/plugins/plugin-react-select';
+
+// Core CSS
+@import 'paper-adv-dashboard/nucleo-outline';
+@import 'paper-adv-dashboard/buttons';
+@import 'paper-adv-dashboard/social-buttons';
+@import 'paper-adv-dashboard/animated-buttons';
+@import 'paper-adv-dashboard/inputs';
+@import 'paper-adv-dashboard/typography';
+@import 'paper-adv-dashboard/misc';
+@import 'paper-adv-dashboard/misc-extend';
+@import 'paper-adv-dashboard/navbar';
+@import 'paper-adv-dashboard/dropdown';
+@import 'paper-adv-dashboard/alerts';
+@import 'paper-adv-dashboard/images';
+@import 'paper-adv-dashboard/tables';
+@import 'paper-adv-dashboard/footers';
+@import 'paper-adv-dashboard/fixed-plugin';
+
+// components
+@import 'paper-adv-dashboard/checkboxes-radio';
+@import 'paper-adv-dashboard/progress';
+@import 'paper-adv-dashboard/badges';
+@import 'paper-adv-dashboard/pagination';
+@import 'paper-adv-dashboard/info-areas';
+@import 'paper-adv-dashboard/pills';
+@import 'paper-adv-dashboard/tabs';
+@import 'paper-adv-dashboard/popups';
+@import 'paper-adv-dashboard/modals';
+@import 'paper-adv-dashboard/carousel';
+@import 'paper-adv-dashboard/sidebar-and-main-panel';
+@import 'paper-adv-dashboard/timeline';
+@import 'paper-adv-dashboard/timeline2';
+@import 'paper-adv-dashboard/fileupload';
+
+
+
+// cards
+@import 'paper-adv-dashboard/cards';
+@import "paper-adv-dashboard/cards/card-chart";
+@import "paper-adv-dashboard/cards/card-map";
+@import "paper-adv-dashboard/cards/card-user";
+
+@import "paper-adv-dashboard/cards/card-background";
+@import "paper-adv-dashboard/cards/card-collapse";
+@import "paper-adv-dashboard/cards/card-contributions";
+@import "paper-adv-dashboard/cards/card-info-area";
+@import "paper-adv-dashboard/cards/card-lock";
+@import "paper-adv-dashboard/cards/card-pricing";
+@import "paper-adv-dashboard/cards/card-profile";
+@import "paper-adv-dashboard/cards/card-signup";
+@import "paper-adv-dashboard/cards/card-stats-mini";
+@import "paper-adv-dashboard/cards/card-stats";
+@import "paper-adv-dashboard/cards/card-subcategories";
+@import "paper-adv-dashboard/cards/card-testimonials";
+@import "paper-adv-dashboard/cards/card-tasks";
+
+
+
+// example pages and sections
+@import 'paper-adv-dashboard/example-pages';
+@import 'paper-adv-dashboard/sections';
+
+
+@import 'paper-adv-dashboard/responsive';
+@import 'paper-adv-dashboard/media-queries';
