@@ -18,8 +18,11 @@ class DashboardLayout extends React.Component {
         this.state = {
             backgroundColor: "black",
             activeColor: "info",
-            sidebarMini: false
+            sidebarMini: false,
+            authenticated:false,
+            errorMessage:null
         };
+        this.loginToApp = this.loginToApp.bind(this);
     };
 
     getRoutes = dashboardRoutes => {
@@ -50,6 +53,26 @@ class DashboardLayout extends React.Component {
         document.body.classList.toggle("sidebar-mini");
     };
 
+    loginToApp = async (toggleLogin)=>{
+        let authenticated = false;
+        if(!toggleLogin){
+            console.log("toggleLogin==>",toggleLogin)
+            let {accessToken,errorMessage}  = await this.auth.login();
+            console.log("loginToApp==>",errorMessage);
+
+            if(errorMessage){
+                await this.setState({authenticated,errorMessage});
+            }else if(accessToken){
+                authenticated=true;
+                await this.setState({authenticated});
+                this.props.history.push("/admin/dashboard");
+            };
+
+        }else{
+            let token  = await this.auth.logout();
+            await this.setState({authenticated});
+        }
+    };
 
     render() {
         return (
@@ -67,7 +90,7 @@ class DashboardLayout extends React.Component {
                             authenticated={this.state.authenticated}/>
                     <Switch>{this.getRoutes(dashboardRoutes)}</Switch>
                 </div>
-                <Login  {...this.props}/>
+                <Login  authenticated={this.state.authenticated} errorMessage={this.state.errorMessage} loginToApp={this.loginToApp}/>
             </div>
         );
     }

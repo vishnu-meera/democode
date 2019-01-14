@@ -11,37 +11,13 @@ export default class Login extends React.Component {
     constructor(props) {
         super(props);
         this.auth = new Auth();
-        this.auth.clear();
-        this.state = {
-            authenticated:false,
-            errorMessage:null
-        };
-        this.loginToApp = this.loginToApp.bind(this);
+        //this.auth.clear();
     }
 
-    loginToApp = async (toggleLogin)=>{
-        let authenticated = false;
-        if(!toggleLogin){
-            console.log("toggleLogin==>",toggleLogin)
-            let {accessToken,errorMessage}  = await this.auth.login();
-            console.log("loginToApp==>",errorMessage);
 
-            if(errorMessage){
-                await this.setState({authenticated,errorMessage});
-            }else if(accessToken){
-                authenticated=true;
-                await this.setState({authenticated});
-                this.props.history.push("/admin/dashboard");
-            };
-
-        }else{
-            let token  = await this.auth.logout();
-            await this.setState({authenticated});
-        }
-    };
 
     render(){
-        if(!this.state.authenticated)
+        if(!this.props.authenticated)
             return(<div className="content">
             <div className="row">
                 <div className="col-sm-9 col-md-7 col-lg-5 mx-auto">
@@ -51,9 +27,9 @@ export default class Login extends React.Component {
 
                             <button 
                                 className="btn btn-md btn-secondary btn-block" 
-                                onClick={()=>{this.loginToApp(this.state.authenticated)}}>Log in</button>
+                                onClick={()=>{this.props.loginToApp(this.props.authenticated)}}>Log in</button>
                             <hr className="my-4" />
-                            {this.state.errorMessage?
+                            {this.props.errorMessage?
                                 <div className="alert alert-light" role="alert">
                                     <span className="text-danger">{this.state.errorMessage}!!</span>
                                 </div>:null

@@ -7182,11 +7182,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\vishn\\OneDrive\\Desktop\\MyEngineering\\golocalrefactor\\Infrastructure\\Infrastructure.csproj",
+      "projectUniqueName": "c:\\Users\\vishn\\OneDrive\\Desktop\\MyEngineering\\golocalrefactor\\Infrastructure\\Infrastructure.csproj",
       "projectName": "Infrastructure",
-      "projectPath": "C:\\Users\\vishn\\OneDrive\\Desktop\\MyEngineering\\golocalrefactor\\Infrastructure\\Infrastructure.csproj",
+      "projectPath": "c:\\Users\\vishn\\OneDrive\\Desktop\\MyEngineering\\golocalrefactor\\Infrastructure\\Infrastructure.csproj",
       "packagesPath": "C:\\Users\\vishn\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\vishn\\OneDrive\\Desktop\\MyEngineering\\golocalrefactor\\Infrastructure\\obj\\",
+      "outputPath": "c:\\Users\\vishn\\OneDrive\\Desktop\\MyEngineering\\golocalrefactor\\Infrastructure\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
@@ -7205,8 +7205,8 @@
       "frameworks": {
         "netcoreapp2.2": {
           "projectReferences": {
-            "C:\\Users\\vishn\\OneDrive\\Desktop\\MyEngineering\\golocalrefactor\\Core\\Core.csproj": {
-              "projectPath": "C:\\Users\\vishn\\OneDrive\\Desktop\\MyEngineering\\golocalrefactor\\Core\\Core.csproj"
+            "c:\\Users\\vishn\\OneDrive\\Desktop\\MyEngineering\\golocalrefactor\\Core\\Core.csproj": {
+              "projectPath": "c:\\Users\\vishn\\OneDrive\\Desktop\\MyEngineering\\golocalrefactor\\Core\\Core.csproj"
             }
           }
         }

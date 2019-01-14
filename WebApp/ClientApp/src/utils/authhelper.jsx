@@ -43,8 +43,8 @@ function getUserAgentApplication() {
 };
 
 function handleRemoveWebApiToken() {
-    // localStorage.removeItem(webApiTokenStoreKey);
-    // localStorage.setItem("userAuthenticated", false);
+    localStorage.removeItem(webApiTokenStoreKey);
+    localStorage.setItem("userAuthenticated", false);
 };
 
 function tokenReceivedCallback(errorMessage, token, error, tokenType) {
@@ -118,8 +118,8 @@ export default class AuthClient {
     };
 
     logout = async ()=>{
-        // localStorage.removeItem(webApiTokenStoreKey);
-        // localStorage.setItem("userAuthenticated", false);
+        localStorage.removeItem(webApiTokenStoreKey);
+        localStorage.setItem("userAuthenticated", false);
         let logoutresponse = await this.authClient.logout();
         console.log("logout===>",logoutresponse);
     };
