@@ -86,9 +86,10 @@ export default class AuthClient {
         let accessToken = null;
         let errorMessage = null;
         try {
-            console.log("login started===>amma rakshikane");
+            
             let token = await this.authClient.loginPopup();
             accessToken = await this.authClient.acquireTokenSilent(webApiScopes, authority);
+            console.log("login started===>amma rakshikane",token);
             console.log("LOGIN CALL===>token",accessToken);
             handleWebApiToken(accessToken);
         } catch (error) {
@@ -99,20 +100,15 @@ export default class AuthClient {
         return {accessToken,errorMessage};
     };
 
-    async userHasWebApiToken() { 
+    getWebApiToken() { 
         const tokenResult = localStorage.getItem(webApiTokenStoreKey);
-
-        if (tokenResult) {
-            return true;
-        } else {
-            return false;
-        }
+        return tokenResult;
     };
 
     isAuthenticated = async ()=>{
-        let authenticated = await this.userHasWebApiToken();
-        let token = null;
-        if(authenticated) token= localStorage.getItem(webApiTokenStoreKey);
+        let authenticated = false;
+        let token = this.getWebApiToken();
+        if(token) authenticated=true;
         console.log("isAuthenticated===>",authenticated,token)
         return {authenticated,token};
     };

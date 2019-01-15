@@ -3,6 +3,7 @@
 *  See LICENSE in the source repository root for complete license information. 
 */
 
+import Auth from 'utils/authhelper';
 const { getCode,getName} = require('country-list');
 
 
@@ -59,6 +60,10 @@ const countryStatusConverterObj2 = {
 };
 
 export default class Utils {
+    constructor(){
+        this.auth = new Auth();
+    };
+
     cardIconCssObj = {
         "Potential": "nc-icon nc-bulb-63",
         "Approved": "nc-icon nc-check-2",
@@ -80,11 +85,12 @@ export default class Utils {
     statusToShowDc = "Potential";
     async getCardsData(token) {
         try {
+            let apiToken = token ||  this.auth.getWebApiToken();
             let requestUrl = 'api/CountriesStatus';
             let response = await fetch(requestUrl, {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
-                method: "GET",headers: { 'authorization': 'Bearer ' + token }
+                method: "GET",headers: { 'authorization': 'Bearer ' + apiToken }
             });
             let data = await (this.handleErrors(response)).json();
             return data;
@@ -95,17 +101,18 @@ export default class Utils {
         }
     };
 
-    async getMapData() {
+    async getMapData(token) {
         try {
+            let apiToken = token ||  this.auth.getWebApiToken();
             let requestUrl = 'api/CountriesStatus/ByCountryCode';
             let response = await fetch(requestUrl, {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
-                method: "GET"//,headers: { 'authorization': 'Bearer ' + this.getWebApiToken() }
+                method: "GET",headers: { 'authorization': 'Bearer ' + apiToken}
             });
             let data = await (this.handleErrors(response)).json();
             let keys = Object.keys(data.countriesStatusList);
-            let {CountriesObject} = await this.getCountriesObject();
+            let {CountriesObject} = await this.getCountriesObject(token);
             let mapData = {} , toolTipObject = {};
             keys.forEach(element => {
                 mapData[getCode(element)] = data.countriesStatusList[element];
@@ -118,7 +125,7 @@ export default class Utils {
                 };
             });
             let obj = await this.getTableData({ ...data.countriesStatusList },toolTipObject,CountriesObject);
-            let newToolTipObject = await this.getMicrosoftObject("All",obj.toolTip,CountriesObject);
+            let newToolTipObject = await this.getMicrosoftObject("All",obj.toolTip,CountriesObject,token);
             //console.log("toolTipObject==>",newToolTipObject);
             return { mapData, tableData:obj.tableObj , toolTipObject:newToolTipObject,CountriesObject};
         } catch (error) {
@@ -128,13 +135,14 @@ export default class Utils {
         }
     };
 
-    async getCountriesObject() {
+    async getCountriesObject(token) {
         try {
             let requestUrl = 'api/Country';
+            let apitoken  = token ||  this.auth.getWebApiToken();
             let response = await fetch(requestUrl, {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
-                method: "GET"//,headers: { 'authorization': 'Bearer ' + this.getWebApiToken() }
+                method: "GET",headers: { 'authorization': 'Bearer ' + apitoken }
             });
             let data = await (this.handleErrors(response)).json();
             let CountriesObject = ("countries" in data) ? data.countries : {};
@@ -147,14 +155,15 @@ export default class Utils {
         }
     };
 
-    async geAlltWorkloadObjects(country,dccode){
+    async geAlltWorkloadObjects(country,dccode,token){
         let workloadObject ;
+        let apiToken = token ||  this.auth.getWebApiToken();
         try {
             let requestUrl = `api/CountryWorkLoad/${country.replace(/\s/g, '')}_${dccode}`;
             let response = await fetch(requestUrl, {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
-                method: "GET"//,headers: { 'authorization': 'Bearer ' + this.getWebApiToken() }
+                method: "GET",headers: { 'authorization': 'Bearer ' + apiToken }
             });
 
             response = this.handleErrors(response) ; 
@@ -207,13 +216,14 @@ export default class Utils {
         return await this.getPopulationAndGdp(getCode(country))
     }
     
-    async getMicrosoftObject(country,toolTipObject,CountriesObject) {
+    async getMicrosoftObject(country,toolTipObject,CountriesObject,token) {
         try {
             let requestUrl = country==="All"?`api/CountryRoadMap`: `api/CountryRoadMap/${country}`;
+            let apiToken = token ||  this.auth.getWebApiToken() ;
             let response = await fetch(requestUrl, {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
-                method: "GET"//,headers: { 'authorization': 'Bearer ' + this.getWebApiToken() }
+                method: "GET",headers: { 'authorization': 'Bearer ' + apiToken }
             });
             let data = await (this.handleErrors(response)).json();
             if(country !=="All")
@@ -262,14 +272,15 @@ export default class Utils {
         return overViewObject;
     };
 
-    async getDataCenterObject(country){
+    async getDataCenterObject(country,token){
         let dataCentersObject = [];
         try {
+            let apitoken = token ||  this.auth.getWebApiToken();
             let requestUrl = `api/Country/${country}`;
             let response = await fetch(requestUrl, {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
-                method: "GET"//,headers: { 'authorization': 'Bearer ' + this.getWebApiToken() }
+                method: "GET",headers: { 'authorization': 'Bearer ' + apitoken }
             });
             let data = await (this.handleErrors(response)).json();
 
@@ -280,14 +291,15 @@ export default class Utils {
         } 
     };
 
-    async getDataCenterObjectWithDCCode(country,dccode){
+    async getDataCenterObjectWithDCCode(country,dccode, token){
         let dataCenterTimeLineObject ;
         try {
             let requestUrl = `api/CountryDataCenters/${country}/${dccode}`;
+            let apitoken = token ||  this.auth.getWebApiToken();
             let response = await fetch(requestUrl, {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
-                method: "GET"//,headers: { 'authorization': 'Bearer ' + this.getWebApiToken() }
+                method: "GET",headers: { 'authorization': 'Bearer ' + apitoken }
             });
 
             response = this.handleErrors(response) ; 
@@ -304,11 +316,13 @@ export default class Utils {
     async geMoveStatusObject(country){
         let moveStatusObject = {}, moveStatusItems={}
         try {
+            let apitoken  =  this.auth.getWebApiToken();
+            console.log("geMoveStatusObject==>", apitoken)
             let requestUrl = `api/MoveStatus/${country}`;
             let response = await fetch(requestUrl, {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
-                method: "GET"//,headers: { 'authorization': 'Bearer ' + this.getWebApiToken() }
+                method: "GET",headers: { 'authorization': 'Bearer ' + apitoken }
             });
             let data = await (this.handleErrors(response)).json();
             console.log("geMoveStatusObject==>",country)
@@ -323,14 +337,15 @@ export default class Utils {
         return {moveStatusObject,moveStatusItems};
     };
 
-    async getRuleTable(){
+    async getRuleTable(token){
         let ruleTable ;
         try {
+            let apitoken  = token ||  this.auth.getWebApiToken();
             let requestUrl = 'api/RuleTable';
             let response = await fetch(requestUrl, {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
-                method: "GET"//,headers: { 'authorization': 'Bearer ' + this.getWebApiToken() }
+                method: "GET",headers: { 'authorization': 'Bearer ' + apitoken }
             });
             
             let data = await (this.handleErrors(response)).json();

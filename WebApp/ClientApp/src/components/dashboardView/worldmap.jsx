@@ -31,6 +31,7 @@ export default function WorldMap(mapFeedData,mapColorCode){
                             width: "100%",
                             height: "300px"
                         }}
+
                         onRegionClick={(e,tip,code)=>{this.handleClick(e,tip,code)}} 
                         onRegionTipShow = {(e,tip,code)=>{this.showCustomToolTip(e,tip,code)}}
                         onRegionOver = {(e,code)=>{this.onMapRegionOver(e,code)}}

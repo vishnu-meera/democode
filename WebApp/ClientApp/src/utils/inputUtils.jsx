@@ -1,6 +1,6 @@
 
 import Utils from './utils';
-
+import Auth from 'utils/authhelper';
 import {validateDateArray,validateNumber,validateDate} from './validation';
 
 const convert = require('color-convert');
@@ -135,8 +135,11 @@ const getTimeLineCellObject = (name,roadMapCell)=>{
 };
 export default class DataCapturingUtils {
 
+    
+    constructor(){
+        this.auth = new Auth();
+    };
     utils = new Utils();
-
     getRoadMapObject(roapMapExcelRows){
        
         const roadmapsummarykeys = ['Infrastructure','Azure','Office'];
@@ -419,8 +422,9 @@ export default class DataCapturingUtils {
         //console.log("addRoadMapObject==>",JSON.stringify(body))
         try {
             let requestUrl = `api/CountryRoadMap`;
+            let apiToken = await this.auth.getWebApiToken();
             let response = await fetch(requestUrl, {
-                "headers":{"Content-Type":"application/json"},
+                "headers":{"Content-Type":"application/json",'authorization': 'Bearer ' + apiToken},
                 "method": "POST",
                 "body":JSON.stringify(body)
             });
@@ -434,8 +438,9 @@ export default class DataCapturingUtils {
         //console.log("addCountryObject==>",JSON.stringify(body))
         try {
             let requestUrl = `api/Country`;
+            let apiToken = await this.auth.getWebApiToken();
             let response = await fetch(requestUrl, {
-                "headers":{"Content-Type":"application/json"},
+                "headers":{"Content-Type":"application/json",'authorization': 'Bearer ' + apiToken},
                 "method": "POST",
                 "body":JSON.stringify(body)
             });
@@ -449,8 +454,9 @@ export default class DataCapturingUtils {
         //console.log("addCountryObject==>",JSON.stringify(body))
         try {
             let requestUrl = `api/CountryDataCenters`;
+            let apiToken = await this.auth.getWebApiToken();
             let response = await fetch(requestUrl, {
-                "headers":{"Content-Type":"application/json"},
+                "headers":{"Content-Type":"application/json",'authorization': 'Bearer ' + apiToken},
                 "method": "POST",
                 "body":JSON.stringify(body)
             });
@@ -464,8 +470,9 @@ export default class DataCapturingUtils {
         //console.log("addCountryObject==>",JSON.stringify(body))
         try {
             let requestUrl = `api/CountryWorkLoad`;
+            let apiToken = await this.auth.getWebApiToken();
             let response = await fetch(requestUrl, {
-                "headers":{"Content-Type":"application/json"},
+                "headers":{"Content-Type":"application/json",'authorization': 'Bearer ' + apiToken},
                 "method": "POST",
                 "body":JSON.stringify(body)
             });
@@ -479,8 +486,9 @@ export default class DataCapturingUtils {
         //console.log("addCountryObject==>",JSON.stringify(body))
         try {
             let requestUrl = `api/MoveStatus`;
+            let apiToken = await this.auth.getWebApiToken();
             let response = await fetch(requestUrl, {
-                "headers":{"Content-Type":"application/json"},
+                "headers":{"Content-Type":"application/json",'authorization': 'Bearer ' + apiToken},
                 "method": "POST",
                 "body":JSON.stringify(body)
             });
@@ -492,9 +500,10 @@ export default class DataCapturingUtils {
 
     async migrateTables(url){
         try {
+            let apiToken = await this.auth.getWebApiToken();
             let response = await fetch(url, {
-                "headers":{"Accept":"application/json","Content-Type":"application/json"},
-                "method": "GET"
+                "headers":{"Accept":"application/json","Content-Type":"application/json",'authorization': 'Bearer ' + apiToken},
+                "method": "GET",
             });
             console.log("response===>",response)
             let data = await (this.handleErrors(response)).json();

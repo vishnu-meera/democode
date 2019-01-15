@@ -33,7 +33,8 @@ class Dashboard extends React.Component {
             CountriesObject:{},
             toolTipShow:false,
             clientX:0,
-            clientY:0
+            clientY:0,
+            token:null
         };
         this.handleClick = this.handleClick.bind(this);
         this.onMapRegionOver = this.onMapRegionOver.bind(this);
@@ -52,7 +53,7 @@ class Dashboard extends React.Component {
                 let { mapData, tableData,toolTipObject ,CountriesObject} = await this.utils.getMapData(token);
                 let mapFeedData = this.utils.cloneObject(mapData);
                 let tableFeedData = this.utils.cloneObject(tableData);
-                this.setState({ mapFeedData,tableFeedData,cardsStatus, mapData,tableData,loading:false,toolTipObject,CountriesObject})
+                this.setState({ mapFeedData,tableFeedData,cardsStatus, mapData,tableData,loading:false,toolTipObject,CountriesObject,token})
             }
         }else{
             console.log("dashboard===> not authenticated");
@@ -69,6 +70,7 @@ class Dashboard extends React.Component {
 
                 await this.setState({tableFeedData,activeCountryCode:code});
             }else  if(code === this.state.activeCountryCode){
+
                 //cardActiveKey
                 let tableFeedData = this.state.tableData;
 
@@ -76,6 +78,7 @@ class Dashboard extends React.Component {
                     tableFeedData = this.state.tableData.filter(x=>x.includes(this.state.cardActiveKey));
 
                 await this.setState({tableFeedData,activeCountryCode:""});
+                
             }else
                 event.preventDefault();
 

@@ -48,7 +48,8 @@ class Country extends React.Component {
             if (this.state.loading) {
                 let countryCode = await this.utils.getCode(this.state.country);
                 let imgUri = `https://www.countryflags.io/${countryCode}/shiny/64.png`;
-                let ruleTable = await this.utils.getRuleTable();
+
+                let ruleTable = await this.utils.getRuleTable(token);
                 
                 await this.setState({ imgUri, countryCode,ruleTable })
                 if("InProgress"===this.state.status){
@@ -56,7 +57,7 @@ class Country extends React.Component {
                     let workloadobject = await this.utils.geAlltWorkloadObjects(this.state.country,this.state.dataCentersObject[0].dcCode,token)
                     await this.setState({horizontalTabs:this.state.dataCentersObject[0].dcCode,dataCenterTimeLineObj,workloadobject});
                 }else if("Live"===this.state.status){
-                    let  {moveStatusObject,moveStatusItems }= await this.utils.geMoveStatusObject(this.state.country,token);
+                    let  {moveStatusObject,moveStatusItems }= await this.utils.geMoveStatusObject(this.state.country);
                     await this.setState({moveStatusObject,moveStatusItems});
                 }
                 await this.setState({loading: false });

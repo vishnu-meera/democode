@@ -64,10 +64,7 @@ namespace Infrastructure.Config
                 // Retrieve a reference to the table.
                 table = tableClient.GetTableReference(tableName);
             }
-            catch (Exception ex)
-            {
-                
-            }
+            catch {}
 
             return table;
         }

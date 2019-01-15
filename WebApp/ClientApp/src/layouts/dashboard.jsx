@@ -69,6 +69,7 @@ class DashboardLayout extends React.Component {
             };
 
         }else{
+            console.log("toggleLogin==>",toggleLogin)
             let token  = await this.auth.logout();
             await this.setState({authenticated});
         }

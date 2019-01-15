@@ -9,7 +9,7 @@ import { Card,Row,Col} from "reactstrap";
 export default function Cards(){
     let keys =0;
 
-
+    if(this.state.cardsStatus){
         keys = Object.keys(this.state.cardsStatus.countriesStatusList);
 
         let cardwithData = keys.map((key) => {
@@ -48,5 +48,13 @@ export default function Cards(){
             {cardwithData.filter(x=>x.key==="Approved")} 
             {cardwithData.filter(x=>x.key==="Potential")} 
         </div>);
-    
+    }
+    else{
+        return (
+        <div className="row">
+           <div className="col">
+                <h6>No Data</h6>
+           </div>
+        </div>);
+    }
 }

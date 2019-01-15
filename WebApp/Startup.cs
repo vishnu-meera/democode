@@ -19,6 +19,7 @@ using Core.Sharedkernel;
 using Core.Queries;
 using Microsoft.AspNetCore.Authentication;
 using Core.Authentication;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace WebApp
 {
@@ -41,6 +42,7 @@ namespace WebApp
 
             services.AddAuthentication()
                     .AddAzureAdBearer("AzureAdBearer", "AzureAdBearer for web api calls", options => Configuration.Bind("AzureAd", options));
+
 
             services.Configure<ConfigOption>(Configuration.GetSection("TableStorageConfig"));
 
