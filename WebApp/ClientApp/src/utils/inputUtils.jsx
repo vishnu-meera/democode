@@ -1,7 +1,13 @@
 
 import Utils from './utils';
 import Auth from 'utils/authhelper';
-import {validateDateArray,validateNumber,validateDate} from './validation';
+import {
+        validateDateArray,
+        validateNumber,
+        validateDate,
+        validateString,
+        validateNumberAndString
+    } from './validation';
 
 const convert = require('color-convert');
 
@@ -70,9 +76,6 @@ const DataCenterDetailsObject = {
     "WorkLoads": ""
 };
 
-//temp for getting status...this will defently change
-const statusArray = ['Approved', 'Live', 'InProgress','Potential'];   
-
 const getRMCellObject = (roadMapCell,flag="")=>{
     let values = roadMapCell[0].split("\n");
     if(flag.length>0) return values[0];
@@ -86,10 +89,7 @@ const getRMCellObject = (roadMapCell,flag="")=>{
         temp["actualdate"]=values.length>1?values[1]:values[0].replace(/[\r\n]/g, "");
         temp["planneddate"]=values[0].replace(/[\r\n]/g, "");
         temp["startdate"]=values[0].replace(/[\r\n]/g, "");
-        temp["Status"] = "Live" //TODO : need to work here with color
-
-        let style = roadMapCell[1]
-    //console.log("sheet2Arr==>",temp,style)
+        temp["Status"] = "" ;
     } catch (error) {
         throw new Error(error.message);
     }
@@ -97,7 +97,8 @@ const getRMCellObject = (roadMapCell,flag="")=>{
 };
 
 const showtimelinedate = (date)=>{
-    if(date.includes("**"))
+    let inputData = date.replace(/\s/g, '');
+    if(inputData.includes("**"))
         return true;
     else
         return false;
@@ -107,7 +108,6 @@ const getTimeLineCellObject = (name,roadMapCell)=>{
 
     let values = roadMapCell[0].split("\n");
     let rgb = "none";
-    let riskLevel = 0;
     let temp = null;
     try {
         if("fgColor" in roadMapCell[1]){
@@ -121,46 +121,38 @@ const getTimeLineCellObject = (name,roadMapCell)=>{
             "Name":name,
             "Actual Date":validateDate(values.length>1?values[1]:values[0].replace(/[\r\n]/g, "")),
             "Planned Date":validateDate(values[0].replace(/[\r\n]/g, "")),
-            "Risk Level":20,//based on color we will chnage this
+            "Risk Level":"",
             "Notes":{"note1":"Notes not aviable now"},
             "ShowTimeLineDate":showtimelinedate(values.length>1?values[1]:values[0].replace(/[\r\n]/g, "")),
             "rgb":rgb
         };
-        let style = roadMapCell[1]
-        //console.log("sheet2Arr==>",temp,style)
+
     } catch (error) {
         throw new Error(error.message);
     }
     return temp;
 };
 export default class DataCapturingUtils {
-
-    
     constructor(){
         this.auth = new Auth();
     };
     utils = new Utils();
+
     getRoadMapObject(roapMapExcelRows){
        
         const roadmapsummarykeys = ['Infrastructure','Azure','Office'];
         const keysNotInTimeLine = ["RTEG","Public Announcement","Preview"];
 
         let RoadMapSummary = {"Infrastructure":{},"Azure":{},"Office":{}};
-        let key ,TimeLine ={};
+        let TimeLine ={};
         let CountryRoadMaps = [];
-        let timeLineShowDateIndex = {};
 
         try {
             roapMapExcelRows[2].forEach((element,key)=>{
-               
-                //timeLineShowDateIndex[element[0]]= element[0].includes("*");
-
                 if(key>=0 && key<8) RoadMapSummary[roadmapsummarykeys[0]][element[0]] = {};
                 else if(key>7 && key<12) RoadMapSummary[roadmapsummarykeys[1]][element[0]] = {};
                 else if(key>11) RoadMapSummary[roadmapsummarykeys[2]][element[0]] = {}; 
             });
-
-            //console.log("roapMapExcelRows===>",timeLineShowDateIndex);
 
             for (let index = 3; index < roapMapExcelRows.length; index++) {
                 const countryRow = roapMapExcelRows[index];
@@ -178,13 +170,10 @@ export default class DataCapturingUtils {
                         
                     if(!keysNotInTimeLine.includes(roadmapsummaryObjKeys[index]))  {
                         let timeLineIndex = roadmapsummaryObjKeys[index];
-                        if(timeLineIndex==="GA"){
-                            timeLineIndex = key + " " + timeLineIndex;
-                            //console.log("TimeLine===>key",timeLineIndex);//deployment readiness
-                        }
+                        if(timeLineIndex==="GA")timeLineIndex = key + " " + timeLineIndex;
                         if("O365 Services"===timeLineIndex)timeLineIndex="O365 deployment";
                         if("Engineering Readiness"===timeLineIndex)timeLineIndex="O365 readiness";
-                        //console.log("timeLineShowDateIndex[timeLineIndex]==>",timeLineShowDateIndex[timeLineIndex])
+
                         TimeLine[countryRow[0][0]].push(getTimeLineCellObject(timeLineIndex,countryRow[index]));
                     }
                 }
@@ -227,23 +216,23 @@ export default class DataCapturingUtils {
     };
 
     async getCountryObject(cntryArray,countryExcelObject){
-        //console.log("cntryArray===>",countryExcelObject)
+
         let dataCenterArray = [];
         let countryObject = JSON.parse(JSON.stringify(CountryObject));
         try {
-            countryObject.Name = cntryArray[0][0][0];
-            countryObject.RowKey = cntryArray[0][0][0];
+            countryObject.Name = validateString(cntryArray[0][0][0]);
+            countryObject.RowKey = validateString(cntryArray[0][0][0]);
     
             if(countryObject.Name in countryExcelObject){
-                countryObject.Status =  countryExcelObject[countryObject.Name]["Status"];
-                countryObject.RevenueProjection3Y =  countryExcelObject[countryObject.Name]["Revenue Projection 3Y"];
-                countryObject.RevenueProjection5Y =  countryExcelObject[countryObject.Name]["Revenue Projection 5Y"];
-                countryObject.TAM_Restricted =  countryExcelObject[countryObject.Name]["TAM Restricted"];
-                countryObject.TAM_UNRestricted =  countryExcelObject[countryObject.Name]["TAM Unrestricted"];
+                countryObject.Status =  validateString(countryExcelObject[countryObject.Name]["Status"]);
+                countryObject.RevenueProjection3Y =  validateNumberAndString(countryExcelObject[countryObject.Name]["Revenue Projection 3Y"]);
+                countryObject.RevenueProjection5Y =  validateNumberAndString(countryExcelObject[countryObject.Name]["Revenue Projection 5Y"]);
+                countryObject.TAM_Restricted =  validateNumberAndString(countryExcelObject[countryObject.Name]["TAM Restricted"]);
+                countryObject.TAM_UNRestricted =  validateNumberAndString(countryExcelObject[countryObject.Name]["TAM Unrestricted"]);
             }
     
-            countryObject.AzureStatus = cntryArray[2].filter(y=>y[2]==="Azure Status")[0][0];
-            countryObject.CAPEX = cntryArray[2].filter(y=>y[2]==="CAPEX")[0][0];
+            countryObject.AzureStatus = validateDate(cntryArray[2].filter(y=>y[2]==="Azure Status")[0][0]);
+            countryObject.CAPEX = validateDate(cntryArray[2].filter(y=>y[2]==="CAPEX")[0][0]);
     
             let {Population,Gdp} = await this.utils.getPopulationAndGdpByName(countryObject.Name);
             countryObject.Population = Math.trunc(Population/1000000) + " million";
@@ -251,7 +240,7 @@ export default class DataCapturingUtils {
     
             for (const arr of cntryArray[2].filter(y=>y[2]==="Lease Signed")) {
                 let dataCenterObject = JSON.parse(JSON.stringify(DataCenterObject));
-                dataCenterObject.dcCode = arr[0].match(/\((.*)\)/)[1].replace(/\s/g, '');
+                dataCenterObject.dcCode = validateNumberAndString(arr[0].match(/\((.*)\)/)[1].replace(/\s/g, ''));
                 dataCenterObject.name =  arr[0].substr(0,arr[0].indexOf('(')-1);
                 dataCenterObject.coloName =  arr[0].substr(0,arr[0].indexOf('(')-1);
                 dataCenterObject.leaseName =  arr[0];
@@ -286,18 +275,18 @@ export default class DataCapturingUtils {
     
                 phasesObject[key].push({
                     "Phase"				:length===10? elementArray[1][0]:elementArray[0][0],
-                    "Planned Start"		:length===10? elementArray[2][0]:elementArray[1][0],
-                    "Planned Finish"	:length===10? elementArray[3][0]:elementArray[2][0],
+                    "Planned Start"		:validateDate(length===10? elementArray[2][0]:elementArray[1][0]),
+                    "Planned Finish"	:validateDate(length===10? elementArray[3][0]:elementArray[2][0]),
                     "Planned Duration"	:length===10? elementArray[4][0]:elementArray[3][0],
-                    "Revised Start"		:length===10? elementArray[5][0]:elementArray[4][0],
-                    "Revised Finish"	:length===10? elementArray[6][0]:elementArray[5][0],
+                    "Revised Start"		:validateDate(length===10? elementArray[5][0]:elementArray[4][0]),
+                    "Revised Finish"	:validateDate(length===10? elementArray[6][0]:elementArray[5][0]),
                     "Revised Duration"	:length===10? elementArray[7][0]:elementArray[6][0],
                     "Status"			:length===10? elementArray[8][0]:elementArray[7][0],
                     "Remarks"			:length===10? elementArray[9][0]:elementArray[8][0]
                 });
                 
             }
-            //console.log("getPhasesObject key==>",phasesObject);
+
         } catch (error) {
             throw new Error(error.message);
         }
@@ -321,9 +310,8 @@ export default class DataCapturingUtils {
                     workLoadObject.Phases = JSON.stringify(phasesObject[element[0]]);
                     temp.push(workLoadObject);
                 }
-            }
-            //console.log("getWorkLoadPhaseseObject 1==>",workloadarray);
-            //console.log("getWorkLoadPhaseseObject 2==>",temp);
+            };
+
         } catch (error) {
             throw new Error(error.message);
         }
@@ -333,7 +321,7 @@ export default class DataCapturingUtils {
 
     getDCWorkLoads(dataCenterRowArr){
         let workloads = {}, key ,count=0;
-        //console.log("getDCWorkLoads dataCenterRowArr==>",dataCenterRowArr);
+      
         try {
             for (let index = 0; index < dataCenterRowArr.length; index++) {
                 const elementArray = dataCenterRowArr[index];
@@ -361,7 +349,7 @@ export default class DataCapturingUtils {
         } catch (error) {
             throw new Error(error.message);
         }
-        //console.log("getDCWorkLoads key==>",workloads);
+      
         return {workloads};
     };
 
@@ -369,7 +357,7 @@ export default class DataCapturingUtils {
         let temp = [];
         try {
             let {workloads} = this.getDCWorkLoads(dataCenterRowArr);
-            //console.log("TimeLine==>",TimeLine)
+
             for (const arr of dataCenterArray) {
                 let dObj = JSON.parse(JSON.stringify(DataCenterDetailsObject));
                 dObj.PartionKey = countryName;
@@ -380,7 +368,7 @@ export default class DataCapturingUtils {
                 dObj.WorkLoads = JSON.stringify(workloads[arr.dcCode]);
                 temp.push(dObj);
             }
-            //console.log("getDataCenterObject 2==>",temp);
+      
         } catch (error) {
             throw new Error(error.message);
         }
@@ -393,7 +381,7 @@ export default class DataCapturingUtils {
             moveStatusObject["PartitionKey"] = "Countries"
             moveStatusObject["RowKey"] = countryName;
             let temp = {}, temp1 ={};
-            //console.log("sheetname==>",moveStatusArr);
+    
             for (let index = 1; index < moveStatusArr.length; index++) {
                 const element = moveStatusArr[index];
     

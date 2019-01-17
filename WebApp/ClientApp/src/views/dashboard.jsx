@@ -34,6 +34,7 @@ class Dashboard extends React.Component {
             toolTipShow:false,
             clientX:0,
             clientY:0,
+            onMapCountryClicked:false,
             token:null
         };
         this.handleClick = this.handleClick.bind(this);
@@ -61,38 +62,57 @@ class Dashboard extends React.Component {
         }
     }
 
-    handleClick = async (event,code,tip)=>{
-        if (code in this.state.mapFeedData) {
+    handleClick =  async (event,code,tip)=>{
+        event.preventDefault();
+        await this.setState({onMapCountryClicked:true});
+
+        if (code in this.state.mapData) {
+            await this.setState({mapLoading:true});
             if(this.state.activeCountryCode.length===0){
-                let tableFeedData = this.state.tableData.filter(element => {
-                    return element[0]===this.utils.getName(code);
-                });
-
-                await this.setState({tableFeedData,activeCountryCode:code});
-            }else  if(code === this.state.activeCountryCode){
-
-                //cardActiveKey
-                let tableFeedData = this.state.tableData;
-
-                if(this.state.cardActiveKey)
-                    tableFeedData = this.state.tableData.filter(x=>x.includes(this.state.cardActiveKey));
-
-                await this.setState({tableFeedData,activeCountryCode:""});
-                
-            }else
-                event.preventDefault();
-
-        }else{
-            event.preventDefault();
+                let {mapFeedData,tableFeedData,mapColorCode} = this.utils.filterMapAndTable(code,this.state.mapData,this.state.tableData);
+                await this.setState({mapFeedData,tableFeedData,mapColorCode,activeCountryCode:code});
+            }else{
+                if(this.state.cardActiveKey.length !==0){
+                    let {mapFeedData,tableFeedData,mapColorCode} = this.utils.filterMapAndTableDataOnCard(this.state.cardActiveKey,this.state.mapData,this.state.tableData);
+                    await this.setState({mapFeedData,tableFeedData,mapColorCode,activeCountryCode:""});
+                }else{
+                    let mapFeedData = this.state.mapData;
+                    let tableFeedData=this.state.tableData;
+                    let mapColorCode = this.utils.mapColorCode;
+                    await this.setState({mapFeedData,tableFeedData,mapColorCode,activeCountryCode:""});
+                }
+            }
+            await this.setState({mapLoading:false})
         }
-    };
+    }
+
+    async onCardClick(key){
+        if(key!==this.state.cardActiveKey){
+            await this.setState({mapLoading:true,cardActiveKey:key,activeCountryCode:""});
+            let {mapFeedData,tableFeedData,mapColorCode} = this.utils.filterMapAndTableDataOnCard(key,this.state.mapData,this.state.tableData);
+            await this.setState({mapFeedData,tableFeedData,mapColorCode});
+            await this.setState({mapLoading:false})
+        }else{
+            await this.setState({mapLoading:true,cardActiveKey:"",activeCountryCode:""});
+            let mapFeedData = this.state.mapData;
+            let tableFeedData=this.state.tableData;
+            let mapColorCode = this.utils.mapColorCode;
+            await this.setState({mapFeedData,tableFeedData,mapColorCode});
+            await this.setState({mapLoading:false})
+        }
+    }
+
+    delay(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
 
     //TODO: Will move this code to funcational component
     async showCustomToolTip (event,tip,code){
-
+        //if(this.state.onMapCountryClicked)
+            event.preventDefault();
 		if (code in this.state.mapFeedData) {
             if(this.state.toolTipObject[code].Status===this.utils.statusToShowDc){
-                tip.html(`<div className = 'btn btn-none'>
+                tip.html(`<div className = 'btn btn-none' ref="tooltipobject">
                 <strong className="bold">${this.state.toolTipObject[code].Name}</strong><br/><br>
                 <em>Population: ${this.state.toolTipObject[code].Population}</em><br/>
                 <em>GDP: ${this.state.toolTipObject[code].Gdp}</em><br/><em>_________________</em><br/>
@@ -135,23 +155,6 @@ class Dashboard extends React.Component {
         }
         //event.preventDefault();
     };
-
-
-    async onCardClick(key){
-        if(key!==this.state.cardActiveKey){
-            await this.setState({mapLoading:true,cardActiveKey:key,activeCountryCode:""});
-            let {mapFeedData,tableFeedData,mapColorCode} = this.utils.filterMapAndTableDataOnCard(key,this.state.mapData,this.state.tableData);
-            await this.setState({mapFeedData,tableFeedData,mapColorCode});
-            await this.setState({mapLoading:false})
-        }else{
-            await this.setState({mapLoading:true,cardActiveKey:"",activeCountryCode:""});
-            let mapFeedData = this.state.mapData;
-            let tableFeedData=this.state.tableData;
-            let mapColorCode = this.utils.mapColorCode;
-            await this.setState({mapFeedData,tableFeedData,mapColorCode});
-            await this.setState({mapLoading:false})
-        }
-    }
 
     render() {
         let css_2= {"backgroundColor":"#F9F9FB"};

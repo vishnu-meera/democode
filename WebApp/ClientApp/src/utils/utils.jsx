@@ -383,6 +383,26 @@ export default class Utils {
 
     }
 
+    filterMapAndTable(countryCode,mapObj,tableData){
+        
+        let mapFeedData = {};
+        let mapColorCode = [];
+
+        let tableFeedData = tableData.filter(x=>x.includes(this.getName(countryCode)));
+
+        Object.keys(mapObj).forEach(objKy=>{
+            if(objKy===countryCode)
+            mapFeedData[countryCode] = mapObj[countryCode];
+        });
+        
+        mapColorCode.push(mapColorCodes[countryStatusConverterObj[mapFeedData[countryCode]]]);
+
+        console.log("countryCode==>",mapColorCode);
+        console.log("mapFeedData==>",mapFeedData);
+        console.log("tableFeedData==>",tableFeedData);
+        return {mapFeedData,tableFeedData,mapColorCode};
+    }
+
     handleErrors(response) {
         console.log("handleErrors==>", response);
         let ok = response.ok;
