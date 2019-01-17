@@ -8,7 +8,7 @@
 import * as React from 'react';
 import FileReaderInput from 'react-file-reader-input';
 import XLSX from'xlsx';
-import Utils from 'utils/inputUtils';
+import Utils from 'utils/datacaptureUtils';
 import Auth from 'utils/authhelper';
 import Spinner from "components/spinner/spin";
 const sheet2arr = function(sheet){

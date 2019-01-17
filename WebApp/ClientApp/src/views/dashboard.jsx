@@ -179,18 +179,27 @@ class Dashboard extends React.Component {
                             </span>
                         </div>
                     </div>
-                        <div style={css_2}>
-                            {Cards.call(this)}
-                            {WorldMap.call(this,this.state.mapFeedData,this.state.mapColorCode)}
-                        </div>
-
-                        <div style={css_2}>
-                            <CountryTables 
-                                data={this.state.tableFeedData} 
-                                tableData={this.state.tableData} 
-                                CountriesObject={this.state.CountriesObject}
-                                toolTipObject = {this.state.toolTipObject}/>
-                        </div>
+                        {
+                            (this.state.tableData&&this.state.mapData&&this.state.cardsStatus)?
+                            (<div style={css_2}>
+                                {Cards.call(this)}
+                                {WorldMap.call(this,this.state.mapFeedData,this.state.mapColorCode)}
+                                <CountryTables 
+                                    data={this.state.tableFeedData} 
+                                    tableData={this.state.tableData} 
+                                    CountriesObject={this.state.CountriesObject}
+                                    toolTipObject = {this.state.toolTipObject}/>
+                            </div>):
+                            (
+                                <div style={css_2}>
+                                <span className="text-muted font-weight-bold">
+                                <h6>
+                                    Please use datacapture to enter some data.
+                                </h6>
+                                </span>
+                            </div>
+                            )
+                        }
                     </div>
                 </div>
             );
