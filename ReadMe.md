@@ -1,19 +1,19 @@
 The functionality of this dashboard is to Show Azure deployment status in various countries
 
 The code is split three parts
-    1) Core (have data quiries)
+    1) Core (have application quiries/commands)
+    2) Infrastructure (Data repository and functionality)
+    3) Webapp (two functionalities 1 UI and 2) data parsing from excel)
 
-There are two main actions availble in the dashboard.
-
-    1) Show the data
-    2) parse the xlsx data and store it in Azure Table Storage
-        (connection string is given in the appsettings file.)
-
-1) Show the data
+1) UI
 =================
+    there are five views for the Dashboard
+        1) Dashboard
+        2) Country
+            3) Datacenters
+        4) Datacapturing
+        5) Login
 
-The Schema is very important, dont change the coulmn structure.
-
-The data will be stored in the Azure Table Storage 
-
-The dashboard t
+2) Data Parsing
+===============
+    Uses datacapturing view
