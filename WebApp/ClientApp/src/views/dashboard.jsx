@@ -10,6 +10,7 @@ import CountryTables from "components/dashboardView/table";
 import Cards from "components/dashboardView/cards";
 import WorldMap from "components/dashboardView/worldmap";
 import Spinner from "components/spinner/spin";
+import { array } from "prop-types";
 
 class Dashboard extends React.Component {
 
@@ -17,6 +18,7 @@ class Dashboard extends React.Component {
         super(props);
         this.utils = new Utils();
         this.auth = new Auth();
+        this.toolTipRef = React.createRef();
         this.state = {
             loading : true,
             cardsStatus: {},
@@ -64,6 +66,10 @@ class Dashboard extends React.Component {
 
     handleClick =  async (event,code,tip)=>{
         event.preventDefault();
+        console.log("REFFFFFFF===>",document.body.getElementsByClassName("jvectormap-tip"));
+        let tipObjArr = document.body.getElementsByClassName("jvectormap-tip");
+        console.log("typeof---->", Object.keys(tipObjArr))
+        Object.keys(tipObjArr).forEach(x=>tipObjArr[x].style.display="none")
         await this.setState({onMapCountryClicked:true});
 
         if (code in this.state.mapData) {
@@ -109,17 +115,17 @@ class Dashboard extends React.Component {
     //TODO: Will move this code to funcational component
     async showCustomToolTip (event,tip,code){
         //if(this.state.onMapCountryClicked)
-            event.preventDefault();
+        //event.preventDefault();
 		if (code in this.state.mapFeedData) {
             if(this.state.toolTipObject[code].Status===this.utils.statusToShowDc){
-                tip.html(`<div className = 'btn btn-none' ref="tooltipobject">
+                tip.html(`<div className = 'btn btn-none' id="tooptipObject" ref=${this.toolTipRef}>
                 <strong className="bold">${this.state.toolTipObject[code].Name}</strong><br/><br>
                 <em>Population: ${this.state.toolTipObject[code].Population}</em><br/>
                 <em>GDP: ${this.state.toolTipObject[code].Gdp}</em><br/><em>_________________</em><br/>
                 <em>Status: ${this.state.toolTipObject[code].Status}</em><br/>
                 </div>`); 
             }else{
-                tip.html(`<div className = 'btn btn-none'>
+                tip.html(`<div className = 'btn btn-none' id="tooptipObject">
                 <strong className="bold">${this.state.toolTipObject[code].Name}</strong><br/><br>
                 <em>Population: ${this.state.toolTipObject[code].Population}</em><br/>
                 <em>GDP: ${this.state.toolTipObject[code].Gdp}</em><br/><em>_________________</em><br/>
