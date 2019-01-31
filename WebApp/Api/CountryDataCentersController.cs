@@ -14,7 +14,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace WebApp.Api
 {
-    [Authorize(AuthenticationSchemes = "AzureAdBearer")]
+    //[Authorize(AuthenticationSchemes = "AzureAdBearer")]
     [Route("api/[controller]")]
     [ApiController]
     public class CountryDataCentersController : BaseController
@@ -41,6 +41,12 @@ namespace WebApp.Api
         public async Task<IActionResult> Migrate()
         {
             return Ok(await Mediator.Send(new MigrateCountryDataCenters { Name = "Country" }));
+        }
+
+        [ProducesResponseType(typeof(TimelineList), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> Get([FromQuery] GetAllTImeline query)
+        {
+            return Ok(await Mediator.Send(query));
         }
 
     }

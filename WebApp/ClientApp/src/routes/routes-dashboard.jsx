@@ -6,6 +6,7 @@
 import Dashboard from "views/dashboard";
 import Country from "views/country";
 import DataCapture from "views/datacapture";
+import Timeline from "views/timeline";
 
 const layout = "/admin";
 var dashboardRoutes = [
@@ -28,6 +29,13 @@ var dashboardRoutes = [
         name: "DataCapture",
         icon: "nc-icon nc-chart-bar-32",
         component: DataCapture,
+        layout: layout
+    },
+    {
+        path: "/Timeline",
+        name: "Timeline",
+        icon: "nc-icon nc-chart-bar-32",
+        component: Timeline,
         layout: layout
     }
 ];

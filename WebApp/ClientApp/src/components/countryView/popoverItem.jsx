@@ -53,7 +53,7 @@ class PopoverItem extends React.Component {
                 </div>
             </div>
         </li>
-        <Popover placement={'bottom'} isOpen={this.state.popoverOpen} target={'Popover-' + this.props.id} toggle={this.toggle} style={cssPopColor}>
+        <Popover placement={'top'} isOpen={this.state.popoverOpen} target={'Popover-' + this.props.id} toggle={this.toggle} style={cssPopColor}>
             <PopoverHeader className="text-center"><span className="text-muted font-weight-bold">{this.props.obj.Name}</span><br/></PopoverHeader>
             <PopoverBody>
                 <div className="mt-1 mb-1">
@@ -67,7 +67,11 @@ class PopoverItem extends React.Component {
                 </div>
             </PopoverBody>
         </Popover>
-        <Popover placement={'top'} isOpen={this.state.popoverOpen && this.state.popoverTopOpen} target={'Popover-' + this.props.id} toggle={this.toggle} style={cssPopColor}>
+        <Popover 
+                placement={'bottom'} 
+                isOpen={this.state.popoverOpen && this.state.popoverTopOpen} 
+                target={'Popover-' + this.props.id} 
+                toggle={this.toggle} style={cssPopColor}>
             <PopoverHeader className="text-center"><span className="text-muted font-weight-bold">Impact</span><br/></PopoverHeader>
             <PopoverBody>
                 <div className="mt-1 mb-1">
@@ -78,8 +82,6 @@ class PopoverItem extends React.Component {
             </PopoverBody>
         </Popover>
       </span>;
-      //console.log("element===>",element.props.children[0]);
-      //element.props.children[0].style.setProperty("--timeline-bulb-bgColor",this.props.obj.rgb.toString());
       return element;
   }
 }

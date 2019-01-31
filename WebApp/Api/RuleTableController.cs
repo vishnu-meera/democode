@@ -14,7 +14,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace WebApp.Api
 {
-    [Authorize(AuthenticationSchemes = "AzureAdBearer")]
+    //[Authorize(AuthenticationSchemes = "AzureAdBearer")]
     [Route("api/[controller]")]
     [ApiController]
     public class RuleTableController : BaseController

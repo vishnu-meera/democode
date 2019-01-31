@@ -359,6 +359,29 @@ export default class Utils {
         return {ruleTable};
     };
 
+    async getAllTimelineList(token){
+        let timelineObject ;
+        try {
+            let requestUrl = `api/CountryDataCenters`;
+            let apitoken = token ||  this.auth.getWebApiToken();
+            let response = await fetch(requestUrl, {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                method: "GET",headers: { 'authorization': 'Bearer ' + apitoken }
+            });
+
+            response = this.handleErrors(response) ; 
+            let data = await response.text();
+            timelineObject = JSON.parse(data);
+            console.log("timelineObject==> error",timelineObject)
+            return timelineObject;
+
+        } catch (error) {
+            console.log("timelineObject==> error",error.message)
+            return timelineObject
+        } 
+    };
+
     getToolTipText(code){
 
     }

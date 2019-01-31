@@ -6,4 +6,3 @@ C:\Users\vishn\OneDrive\Desktop\MyEngineering\golocalrefactor\Core\obj\Debug\net
 C:\Users\vishn\OneDrive\Desktop\MyEngineering\golocalrefactor\Core\obj\Debug\netcoreapp2.1\Core.AssemblyInfo.cs
 C:\Users\vishn\OneDrive\Desktop\MyEngineering\golocalrefactor\Core\obj\Debug\netcoreapp2.1\Core.dll
 C:\Users\vishn\OneDrive\Desktop\MyEngineering\golocalrefactor\Core\obj\Debug\netcoreapp2.1\Core.pdb
-C:\Users\vishn\OneDrive\Desktop\MyEngineering\golocalrefactor\Core\obj\Debug\netcoreapp2.1\Core.csprojAssemblyReference.cache
