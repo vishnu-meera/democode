@@ -27,6 +27,8 @@ class PopoverItem extends React.Component {
   render() {
     console.log("PopoverItem==",this.props.obj.ShowTimeLineDate)
     let cssPopColor = {"backgroundColor":"#fbf3f3"};
+    let cssNotHide = {"display":"none"};
+    let cssToBottomPopOver = this.props.notshowbottombox ? cssNotHide :cssPopColor;
     let css = `step col-sm-1 ${(this.props.obj.rgb === "none"?"none":this.props.obj.rgb)}`; //TODO ..the logic is with respect to
     let num = this.props.keyprop +1;
     let displayBlock = {"display":"block",};
@@ -71,7 +73,7 @@ class PopoverItem extends React.Component {
                 placement={'bottom'} 
                 isOpen={this.state.popoverOpen && this.state.popoverTopOpen} 
                 target={'Popover-' + this.props.id} 
-                toggle={this.toggle} style={cssPopColor}>
+                toggle={this.toggle} style={cssToBottomPopOver}>
             <PopoverHeader className="text-center"><span className="text-muted font-weight-bold">Impact</span><br/></PopoverHeader>
             <PopoverBody>
                 <div className="mt-1 mb-1">

@@ -55,7 +55,14 @@ export default class DataCenterView extends React.Component {
             if(length===key+1)
                 lastelementcss = true;
             let rule = rules.filter(x=>x.ruleName===obj.Name.replace(/\s/g,'').toLocaleLowerCase())[0];
-            return (<PopoverItem key={key} id={key} keyprop={key} obj={obj} rules = {JSON.parse(rule.impact)} lastelementcss={lastelementcss}/>);   
+            return (<PopoverItem 
+                            key={key} 
+                            id={key} 
+                            keyprop={key} 
+                            obj={obj} 
+                            rules = {JSON.parse(rule.impact)} 
+                            lastelementcss={lastelementcss}
+                            notshowbottombox={false}/>);   
               
         });
 

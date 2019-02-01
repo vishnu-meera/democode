@@ -51,7 +51,11 @@ class Timeline extends React.Component {
             if(length===key+1)
                 lastelementcss = true;
             let rule = rules.filter(x=>x.ruleName===obj.Name.replace(/\s/g,'').toLocaleLowerCase())[0];
-            return (<PopoverItem key={++this.counter} id={++this.counter} keyprop={key} obj={obj} rules = {JSON.parse(rule.impact)} lastelementcss={lastelementcss}/>);   
+            return (<PopoverItem key={++this.counter} 
+                                id={++this.counter} 
+                                keyprop={key} obj={obj} 
+                                rules = {JSON.parse(rule.impact)} 
+                                lastelementcss={lastelementcss} notshowbottombox={true}/>);   
               
         });
 

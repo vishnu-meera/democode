@@ -3,8 +3,6 @@
 *  See LICENSE in the source repository root for complete license information. 
 */
 
-
-
 import * as React from 'react';
 import FileReaderInput from 'react-file-reader-input';
 import XLSX from'xlsx';
@@ -70,7 +68,7 @@ class InputView extends React.Component {
         super(props);
         this.utils = new Utils();
         this.auth = new Auth();
-        this.handleChange2 = this.handleChange2.bind(this);
+        this.parseAndLoadExcel = this.parseAndLoadExcel.bind(this);
         this.takeSnapShot = this.takeSnapShot.bind(this);
         this.state = {
             readyToview : false,
@@ -168,7 +166,7 @@ class InputView extends React.Component {
         }
     };
 
-    handleChange2  = async (e, results) => {
+    parseAndLoadExcel  = async (e, results) => {
         let self = this;
         await this.setState({readyToview:true});
 
@@ -256,7 +254,7 @@ class InputView extends React.Component {
                                             <label className="custom-file-label" htmlFor="my-file-input">Choose Excel file to load...</label>
                                             <FileReaderInput 
                                                 as="binary" 
-                                                id="my-file-input" onChange={this.handleChange2} 
+                                                id="my-file-input" onChange={this.parseAndLoadExcel} 
                                                 disabled={this.state.readyToview}
                                                 accept=".xlsx">
                                             </FileReaderInput>
