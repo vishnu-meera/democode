@@ -78,7 +78,7 @@ class PopoverItem extends React.Component {
             <PopoverBody>
                 <div className="mt-1 mb-1">
                     {
-                      this.props.rules.map((value,key)=><div key={key}>{value}</div>)
+                      (Array.isArray(this.props.rules))?this.props.rules.map((value,key)=><div key={key}>{value}</div>):"No rules added for this phase."
                     } 
                 </div>
             </PopoverBody>

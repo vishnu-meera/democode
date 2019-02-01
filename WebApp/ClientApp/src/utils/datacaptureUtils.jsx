@@ -16,16 +16,17 @@ let roadmapsummaryObjKeys = {
     2:"CAPEX Approved",
     3:"Lease Signed",
     4:"TAM Award",
-    5:"Colo Ready",
-    6:"Dock Date",
-    7:"RTEG Network",
-    8:"RTEG Server",
-    9:"RTEG",
-    10:"Preview",
-    11:"O365 Services",
-    12:"GA",
-    13:"Engineering Readiness", 
-    14:"GA"
+    5:"WhiteSpace Ready",
+    6:"Colo Ready",
+    7:"Dock Date",
+    8:"RTEG Network",
+    9:"RTEG Server",
+    10:"RTEG",
+    11:"Preview",
+    12:"O365 Services",
+    13:"GA",
+    14:"Engineering Readiness", 
+    15:"GA"
 };
 
 const CountryObject = {
@@ -77,21 +78,34 @@ const DataCenterDetailsObject = {
 };
 
 const getRMCellObject = (roadMapCell,flag="")=>{
-    let values = roadMapCell[0].split("\n");
-    if(flag.length>0) return values[0];
 
     let temp = {};
+    temp["actualdate"]="no data";
+    temp["planneddate"]="no data";
+    temp["startdate"]="no data";
+    temp["Status"] = "" ;
+
+    if(!Array.isArray(roadMapCell)){ 
+        return temp;
+    }
+
+    let values = roadMapCell[0].split("\n");
+    if(flag.length>0) return values[0]; 
 
     try {
-            //validating the date string
-        values = validateDateArray(values);
+        if(Array.isArray(values)){
+            //values = validateDateArray(values);
+            temp["actualdate"]=values.length>1?values[1]:values[0].replace(/[\r\n]/g, "");
+            temp["planneddate"]=values[0].replace(/[\r\n]/g, "");
+            temp["startdate"]=values[0].replace(/[\r\n]/g, "");
+            temp["Status"] = "" ;
+        }else if(typeof values ==="string"){
 
-        temp["actualdate"]=values.length>1?values[1]:values[0].replace(/[\r\n]/g, "");
-        temp["planneddate"]=values[0].replace(/[\r\n]/g, "");
-        temp["startdate"]=values[0].replace(/[\r\n]/g, "");
-        temp["Status"] = "" ;
+        }else
+            throw new Error("Roadmap sheet: Excel contains wrong values")
+
     } catch (error) {
-        throw new Error(error.message);
+        throw new Error(error.message)
     }
     return temp;
 };
@@ -106,9 +120,23 @@ const showtimelinedate = (date)=>{
 
 const getTimeLineCellObject = (name,roadMapCell)=>{
 
+    let temp = {
+        "Name":name,
+        "Actual Date":"no data",
+        "Planned Date":"no data",
+        "Risk Level":"no data",
+        "Notes":{"note1":"Notes not aviable now"},
+        "ShowTimeLineDate":false,
+        "rgb":"none"
+    };
+
+    if(!Array.isArray(roadMapCell)){ 
+        return temp;
+    }
+
     let values = roadMapCell[0].split("\n");
     let rgb = "none";
-    let temp = null;
+
     try {
         if("fgColor" in roadMapCell[1]){
             if("rgb" in roadMapCell[1]["fgColor"]){
@@ -130,6 +158,7 @@ const getTimeLineCellObject = (name,roadMapCell)=>{
     } catch (error) {
         throw new Error(error.message);
     }
+
     return temp;
 };
 export default class DataCapturingUtils {
@@ -148,44 +177,47 @@ export default class DataCapturingUtils {
         let CountryRoadMaps = [];
 
         try {
+            //if you add roadmap columns , then you need change below code
             roapMapExcelRows[2].forEach((element,key)=>{
-                if(key>=0 && key<8) RoadMapSummary[roadmapsummarykeys[0]][element[0]] = {};
-                else if(key>7 && key<12) RoadMapSummary[roadmapsummarykeys[1]][element[0]] = {};
-                else if(key>11) RoadMapSummary[roadmapsummarykeys[2]][element[0]] = {}; 
+                if(key>=0 && key<9) RoadMapSummary[roadmapsummarykeys[0]][element[0]] = {};
+                else if(key>8 && key<12) RoadMapSummary[roadmapsummarykeys[1]][element[0]] = {};
+                else if(key>12) RoadMapSummary[roadmapsummarykeys[2]][element[0]] = {}; 
             });
 
             for (let index = 3; index < roapMapExcelRows.length; index++) {
                 const countryRow = roapMapExcelRows[index];
-    
-                if(!(countryRow[0][0] in TimeLine)) TimeLine[countryRow[0][0]]=[];
-    
-                for (let index = 1; index < countryRow.length; index++) {
+                if(countryRow.length >1){
+                    if(!(countryRow[0][0] in TimeLine)) TimeLine[countryRow[0][0]]=[];
                     
-                    let objIndex = (index>=1 && index<8) ? 0 : (index>=8 && index<13) ? 1 : 2;
-                    let key = roadmapsummarykeys[objIndex];
-                    if(roadmapsummaryObjKeys[index].includes("Preview") || roadmapsummaryObjKeys[index].includes("Public Announcement"))
-                        RoadMapSummary[key][roadmapsummaryObjKeys[index]] = getRMCellObject(countryRow[index],"YES")
-                    else    
-                        RoadMapSummary[key][roadmapsummaryObjKeys[index]] = getRMCellObject(countryRow[index]);   
+                    for (let index = 1; index <= Object.keys(roadmapsummaryObjKeys).length; index++) {
                         
-                    if(!keysNotInTimeLine.includes(roadmapsummaryObjKeys[index]))  {
-                        let timeLineIndex = roadmapsummaryObjKeys[index];
-                        if(timeLineIndex==="GA")timeLineIndex = key + " " + timeLineIndex;
-                        if("O365 Services"===timeLineIndex)timeLineIndex="O365 deployment";
-                        if("Engineering Readiness"===timeLineIndex)timeLineIndex="O365 readiness";
-
-                        TimeLine[countryRow[0][0]].push(getTimeLineCellObject(timeLineIndex,countryRow[index]));
-                    }
-                }
-                
-                [TimeLine[countryRow[0][0]][7], TimeLine[countryRow[0][0]][8]] = [TimeLine[countryRow[0][0]][8], TimeLine[countryRow[0][0]][7]];
+                        let objIndex = (index>=1 && index<9) ? 0 : (index>=9 && index<14) ? 1 : 2;
+                        let key = roadmapsummarykeys[objIndex];
+                        //console.log("countryRow[index]==>",countryRow[index])
+                        if(roadmapsummaryObjKeys[index].includes("Preview") || roadmapsummaryObjKeys[index].includes("Public Announcement"))
+                            RoadMapSummary[key][roadmapsummaryObjKeys[index]] = getRMCellObject(countryRow[index],"YES")
+                        else    
+                            RoadMapSummary[key][roadmapsummaryObjKeys[index]] = getRMCellObject(countryRow[index]);   
+                            
+                        if(!keysNotInTimeLine.includes(roadmapsummaryObjKeys[index]))  {
+                            let timeLineIndex = roadmapsummaryObjKeys[index];
+                            if(timeLineIndex==="GA")timeLineIndex = key + " " + timeLineIndex;
+                            if("O365 Services"===timeLineIndex)timeLineIndex="O365 deployment";
+                            if("Engineering Readiness"===timeLineIndex)timeLineIndex="O365 readiness";
     
-                CountryRoadMaps.push({
-                    "PartitionKey": "Countries",
-                    "RowKey": countryRow[0][0],
-                    "Status":"Live",
-                    "RoadMapObject":JSON.stringify(RoadMapSummary)
-                });
+                            TimeLine[countryRow[0][0]].push(getTimeLineCellObject(timeLineIndex,countryRow[index]));
+                        }
+                    }
+                    
+                    [TimeLine[countryRow[0][0]][7], TimeLine[countryRow[0][0]][8]] = [TimeLine[countryRow[0][0]][8], TimeLine[countryRow[0][0]][7]];
+        
+                    CountryRoadMaps.push({
+                        "PartitionKey": "Countries",
+                        "RowKey": countryRow[0][0],
+                        "Status":"Live",
+                        "RoadMapObject":JSON.stringify(RoadMapSummary)
+                    });
+                }
             }
         } catch (error) {
             throw new Error(error.message);
@@ -222,7 +254,9 @@ export default class DataCapturingUtils {
         try {
             countryObject.Name = validateString(cntryArray[0][0][0]);
             countryObject.RowKey = validateString(cntryArray[0][0][0]);
-    
+
+            //console.log("getCountryObject 1===>",countryExcelObject);
+
             if(countryObject.Name in countryExcelObject){
                 countryObject.Status =  validateString(countryExcelObject[countryObject.Name]["Status"]);
                 countryObject.RevenueProjection3Y =  validateNumberAndString(countryExcelObject[countryObject.Name]["Revenue Projection 3Y"]);
@@ -230,28 +264,52 @@ export default class DataCapturingUtils {
                 countryObject.TAM_Restricted =  validateNumberAndString(countryExcelObject[countryObject.Name]["TAM Restricted"]);
                 countryObject.TAM_UNRestricted =  validateNumberAndString(countryExcelObject[countryObject.Name]["TAM Unrestricted"]);
             }
-    
+
+            //console.log("getCountryObject 2===>",cntryArray[2]);
+
             countryObject.AzureStatus = validateDate(cntryArray[2].filter(y=>y[2]==="Azure Status")[0][0]);
             countryObject.CAPEX = validateDate(cntryArray[2].filter(y=>y[2]==="CAPEX")[0][0]);
     
+            //console.log("getCountryObject 2===>",cntryArray);
             let {Population,Gdp} = await this.utils.getPopulationAndGdpByName(countryObject.Name);
-            countryObject.Population = Math.trunc(Population/1000000) + " million";
+            countryObject.Population = Math.trunc(Population/1000000)===0 ? Population :  Math.trunc(Population/1000000) + " million";
             countryObject.GDP = Math.trunc(Gdp/1000000000) + " billion USD";
-    
+
+            //console.log("getCountryObject 2===>",Population,Gdp,countryObject.Name);
+
             for (const arr of cntryArray[2].filter(y=>y[2]==="Lease Signed")) {
                 let dataCenterObject = JSON.parse(JSON.stringify(DataCenterObject));
-                dataCenterObject.dcCode = validateNumberAndString(arr[0].match(/\((.*)\)/)[1].replace(/\s/g, ''));
-                dataCenterObject.name =  arr[0].substr(0,arr[0].indexOf('(')-1);
-                dataCenterObject.coloName =  arr[0].substr(0,arr[0].indexOf('(')-1);
+                
+                if(arr[0].includes("(") && arr[0].includes(")")){
+                    dataCenterObject.dcCode = validateNumberAndString(arr[0].match(/\((.*)\)/)[1]);
+                    dataCenterObject.name =  arr[0].substr(0,arr[0].indexOf('(')-1);
+                    dataCenterObject.coloName =  arr[0].substr(0,arr[0].indexOf('(')-1);
+                }else{
+                    dataCenterObject.dcCode = validateNumberAndString(arr[0]);
+                    dataCenterObject.name =  validateNumberAndString(arr[0]);
+                    dataCenterObject.coloName =  validateNumberAndString(arr[0]);
+                }
+
+
                 dataCenterObject.leaseName =  arr[0];
+
                 cntryArray[2].filter(y=>y[2]==="DC Vendors").forEach(arr=>{
-                    if(arr[0].split(':')[0]===dataCenterObject.dcCode)
-                        dataCenterObject.dcVendors.push(arr[0].split(':')[1])
+                    if(arr[0].includes(":")){
+                        if(arr[0].split(':')[0]===dataCenterObject.dcCode)
+                            dataCenterObject.dcVendors.push(arr[0].split(':')[1])
+                    }else{
+                            //console.log("dc vendors: ",arr)
+                            dataCenterObject.dcVendors.push(arr[0])
+                    }
                 });
+                //console.log("getCountryObject dataCenterObject===>",dataCenterObject);
+
                 dataCenterObject.telcoVendors = cntryArray[2].filter(y=>y[2]==="Telco vendor").map(x=>x[0]);
                 dataCenterObject.coloready =  cntryArray[3].filter(y=>y[2]===dataCenterObject.coloName)[0][0];
                 dataCenterObject.leaseSigned = cntryArray[3].filter(y=>y[2]===dataCenterObject.leaseName)[0][0];
+
                 dataCenterArray.push(dataCenterObject);
+                //console.log("getCountryObject dataCenterArray===>",dataCenterArray);
             }
             countryObject.DataCenters = JSON.stringify(dataCenterArray);
         } catch (error) {
@@ -327,7 +385,12 @@ export default class DataCapturingUtils {
                 const elementArray = dataCenterRowArr[index];
     
                 let length = elementArray.length;
-                key = (length===1) ? elementArray[0][0].match(/\((.*)\)/)[1].replace(/\s/g, '') :key;
+                if(elementArray[0][0].includes("(") && elementArray[0][0].includes(")")){
+                    key = (length===1) ? elementArray[0][0].match(/\((.*)\)/)[1] :key;
+                }else{
+                    key = (length===1) ? elementArray[0][0] :key;
+                }
+
                 if (!(key in workloads)) {
                     workloads[key] = [];
                     count = 0;
@@ -357,7 +420,7 @@ export default class DataCapturingUtils {
         let temp = [];
         try {
             let {workloads} = this.getDCWorkLoads(dataCenterRowArr);
-
+            console.log("getDataCenterObject===>getDCWorkLoads",workloads)
             for (const arr of dataCenterArray) {
                 let dObj = JSON.parse(JSON.stringify(DataCenterDetailsObject));
                 dObj.PartionKey = countryName;

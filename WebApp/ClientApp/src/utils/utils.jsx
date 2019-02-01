@@ -199,12 +199,15 @@ export default class Utils {
         try {
             let bodyPop = await fetch(`https://api.worldbank.org/v2/countries/${countryCode}/indicators/SP.POP.TOTL?format=json`);
             let bodyGdp = await fetch(`https://api.worldbank.org/v2/countries/${countryCode}/indicators/NY.GDP.MKTP.CD?format=json`);
+            
             bodyPop = await bodyPop.text();
             bodyGdp = await bodyGdp.text();
             let data1 = JSON.parse(bodyPop);
             let data2 = JSON.parse(bodyGdp);
-            Population = data1[1][0].value
-            Gdp = data2[1][0].value
+
+            Population = data1[1][0].value ? data1[1][0].value : data1[1][1].value;
+            Gdp = data2[1][0].value ? data2[1][0].value : data2[1][1].value;
+            //console.log("getPopulationAndGdp===>",Population,Gdp)
         } catch (error) {
             console.log("getPopulationAndGdp==>", error.message);
         }

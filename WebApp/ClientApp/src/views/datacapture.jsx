@@ -94,11 +94,11 @@ class InputView extends React.Component {
     //adding roadmap array
     async addRoadMap(CountryRoadMaps){
         try {
-        //console.log("RoadMap==>",CountryRoadMaps)
-        for (const CountryRoadMap of CountryRoadMaps) {
-            //Adding RoadMap to azure table
-            let response = await this.utils.addRoadMapObject(CountryRoadMap);
-        }
+            //console.log("RoadMap==>",CountryRoadMaps)
+            for (const CountryRoadMap of CountryRoadMaps) {
+                //Adding RoadMap to azure table
+                let response = await this.utils.addRoadMapObject(CountryRoadMap);
+            }
         } catch (error) {
             await this.setState({message:error.message,textCss:"text-danger"});
             await this.delay(3000);
@@ -119,12 +119,19 @@ class InputView extends React.Component {
             if(specific)
                 [countryOject,dataCenterArray] = await this.utils.getCountryObject(sheet2arr_2(workbook.Sheets[specific]),CountriesExcelObj);
     
+            console.log("Country Specific===>",countryOject);
+            console.log("Country Specific 2===>",dataCenterArray)
+            // //Adding Country to azure table
+            if(countryOject){
+                let response = await this.utils.addCountryObject(countryOject);
+            }
+
             if(wrkld && dataCenterArray){
                 if(dataCenterArray.length>0){
                     let workloadRowArr = sheet2arr(workbook.Sheets[wrkld]);
                     let workLoadsHeader = sheet2arr_2(workbook.Sheets[wrkld])[0]
                     workloadObject = this.utils.getWorkloadObject(workloadRowArr,dataCenterArray,countryName,workLoadsHeader);
-                    //console.log("WorkLoad ==>",workloadObject);
+                    console.log("workloadObject ==>",workloadObject);
                     for (const obj of workloadObject) {
                         //Adding Workload to azure table
                         let response = await this.utils.addWorkLoads(obj);
@@ -152,12 +159,6 @@ class InputView extends React.Component {
                 //Adding MoveStatus to azure table
                 let response = await this.utils.addMoveStatus(moveStatusObject);
             };
-    
-            //console.log("Country===>",countryOject)
-            //Adding Country to azure table
-            if(countryOject){
-                let response = await this.utils.addCountryObject(countryOject);
-            }
 
         } catch (error) {
             await this.setState({message:error.message,textCss:"text-danger"});
@@ -191,17 +192,19 @@ class InputView extends React.Component {
                 let roadmapSheet = workbook.Sheets['Roadmap']
                 let roadMapArr = sheet2arr(roadmapSheet);
                 let {CountryRoadMaps,TimeLine} = this.utils.getRoadMapObject(roadMapArr);
+                console.log("CountryRoadMaps ===>",CountryRoadMaps);
+                console.log("TimeLine===>",TimeLine);
                 let temp = await this.addRoadMap(CountryRoadMaps);//api to midd
     
                 let countries = workbook.Sheets['Countries'];
                 let countriesExcelSheet = sheet2arr(countries);
-                //console.log("countriesExcelSheet==>",countriesExcelSheet);
                 let {CountriesExcelObj} = this.utils.getCountriesExcelObj(countriesExcelSheet);
-    
+                console.log("CountriesExcelObj==>",CountriesExcelObj);
+
                 let sheetMap = {};
                 for (const sheetName of workbook.SheetNames) {
-                    if(sheetName!=="Roadmap") {
-                        //console.log("sheetName==>",sheetName)
+                    if(!(sheetName==="Roadmap" || sheetName ==="Countries")) {
+                        console.log("sheetName==>",sheetName)
                         let sheetNamePOSTFix = sheetName.split("_")[0];
                         if(!(sheetNamePOSTFix in sheetMap))
                             sheetMap[sheetNamePOSTFix] = [];

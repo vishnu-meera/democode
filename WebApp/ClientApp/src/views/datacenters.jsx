@@ -54,13 +54,15 @@ export default class DataCenterView extends React.Component {
         const timeLineArray = timeLine.map((obj,key)=>{
             if(length===key+1)
                 lastelementcss = true;
+            console.log("timeline===>",obj)
             let rule = rules.filter(x=>x.ruleName===obj.Name.replace(/\s/g,'').toLocaleLowerCase())[0];
+            console.log("timeline===>",rule)
             return (<PopoverItem 
                             key={key} 
                             id={key} 
                             keyprop={key} 
                             obj={obj} 
-                            rules = {JSON.parse(rule.impact)} 
+                            rules = {rule?JSON.parse(rule.impact):null} 
                             lastelementcss={lastelementcss}
                             notshowbottombox={false}/>);   
               

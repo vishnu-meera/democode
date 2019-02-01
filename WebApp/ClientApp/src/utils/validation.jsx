@@ -16,6 +16,9 @@ export const validateDateArray = (values)=>{
 
 
 export const validateNumber = (value)=>{
+
+    if(!value)return value;
+    if(value==="NA")return value;
     if(!parseInt(value)){
         throw new Error("Invalid number value in Excel");
     }
@@ -23,6 +26,9 @@ export const validateNumber = (value)=>{
 };
 
 export const validateDate = (value)=>{
+
+    if(!value)return value;
+    if(value==="NA")return value;
     let element = value.replace("**", '');
     if(!Date.parse(element)){
         throw new Error("Invalid date value in Excel");
@@ -31,6 +37,9 @@ export const validateDate = (value)=>{
 };
 
 export const validateString = (value)=>{
+
+    if(!value)return value;
+    if(value==="NA")return value;
     if(!(/^[a-zA-Z\s]*$/.test(value))){
         throw new Error("Invalid string value in Excel " + value);
     }
@@ -39,6 +48,9 @@ export const validateString = (value)=>{
 
 
 export const validateNumberAndString = (value)=>{
+
+    if(!value)return value;
+    if(value==="NA")return value;
     if(!(/^[A-z0-9\s]*$/.test(value))){
         throw new Error("Invalid string/Number value in Excel");
     }

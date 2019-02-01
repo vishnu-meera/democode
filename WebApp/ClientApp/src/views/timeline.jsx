@@ -54,7 +54,7 @@ class Timeline extends React.Component {
             return (<PopoverItem key={++this.counter} 
                                 id={++this.counter} 
                                 keyprop={key} obj={obj} 
-                                rules = {JSON.parse(rule.impact)} 
+                                rules = {rule?JSON.parse(rule.impact):null} 
                                 lastelementcss={lastelementcss} notshowbottombox={true}/>);   
               
         });
