@@ -10,4 +10,5 @@ export const instanceId = 'https://login.microsoftonline.com/';
 export const webApiScopes = ["api://19f454a6-d5d7-4a9b-8036-4b1b46740d47/access_as_user"]
 export const authority ="https://login.microsoftonline.com/common";
 export const localStorePrefix = "env1_"; //Local Store Prefix.
+export const enableLogging = true;
 

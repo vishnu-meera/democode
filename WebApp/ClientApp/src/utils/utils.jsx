@@ -4,6 +4,7 @@
 */
 
 import Auth from 'utils/authhelper';
+import {enableLogging} from 'utils/config';
 const { getCode,getName} = require('country-list');
 
 const mapColorCodes = {
@@ -65,10 +66,12 @@ export default class Utils {
     };
 
     log = (modulename,message,object)=>{
-        if(object)
-            console.log(`${modulename} file : ${message}`, object);
-        else
-            console.log(`${modulename} file : ${message}`);
+        if(enableLogging){
+            if(object)
+                console.log(`${modulename} file : ${message}`, object);
+            else
+                console.log(`${modulename} file : ${message}`);
+        }
     };
 
     cardIconCssObj = {

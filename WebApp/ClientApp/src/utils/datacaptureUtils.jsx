@@ -1,6 +1,7 @@
 
 import Utils from './utils';
 import Auth from 'utils/authhelper';
+import {enableLogging} from 'utils/config';
 const convert = require('color-convert');
 
 let roadmapsummaryObjKeys = {    
@@ -164,10 +165,12 @@ export default class DataCapturingUtils {
 
 
     log = (modulename,message,object)=>{
-        if(object)
-            console.log(`${modulename} file : ${message}`, object);
-        else
-            console.log(`${modulename} file : ${message}`);
+        if(enableLogging){
+            if(object)
+                console.log(`${modulename} file : ${message}`, object);
+            else
+                console.log(`${modulename} file : ${message}`);
+        }
     };
 
     getRoadMapObject(roapMapExcelRows){
