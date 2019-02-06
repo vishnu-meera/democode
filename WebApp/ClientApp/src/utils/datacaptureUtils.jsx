@@ -440,13 +440,15 @@ export default class DataCapturingUtils {
             for (const arr of dataCenterArray) {
                 let dcCode = arr.dcCode;
                 dcCode = dcCode.replace(/\s/g, '').toLowerCase();
+                this.log("datacapture","getDataCenterObject method enter",dcCode);
                 let dObj = JSON.parse(JSON.stringify(DataCenterDetailsObject));
                 dObj.PartionKey = countryName;
-                dObj.RowKey = arr.dcCode;
+                dObj.RowKey = dcCode;
                 dObj.DataCenterName = arr.name
                 dObj.DataCenterStatus = ""//TODO;
                 dObj.TimeLine = JSON.stringify(TimeLine[countryName]);
                 let workloadsStr = JSON.stringify(workloads[dcCode]);
+                this.log("datacapture","getDataCenterObject method enter",workloadsStr);
                 if(!workloadsStr){
                     dcCode = Object.keys(workloads).find(x=>dcCode.includes(x));
                     if(dcCode) workloadsStr = JSON.stringify(workloads[dcCode]);

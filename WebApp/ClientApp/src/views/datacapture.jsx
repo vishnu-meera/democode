@@ -147,17 +147,17 @@ class InputView extends React.Component {
             }
     
             try {
-                if(wrkld && dataCenterArray){
+                if(mcio && dataCenterArray && TimeLine){
                     if(dataCenterArray.length>0){
-                        let workloadRowArr = sheet2arr(workbook.Sheets[wrkld]);
-                        let workLoadsHeader = sheet2arr_2(workbook.Sheets[wrkld])[0]
-                        workloadObject = this.utils.getWorkloadObject(workloadRowArr,dataCenterArray,countryName,workLoadsHeader);
-                        
-                        for (const obj of workloadObject) {
-                            //Adding Workload to azure table
-                            let response = await this.utils.addWorkLoads(obj);
+                        let dataCenterRowArr = sheet2arr(workbook.Sheets[mcio]);
+                        console.log("TimeLineObj===>", TimeLine,countryName);
+                        datacnterObject = this.utils.getDataCenterObject(dataCenterRowArr,dataCenterArray,countryName,TimeLine);
+                        console.log("Datacenter ==>",datacnterObject);
+                        for (const obj of datacnterObject) {
+                            //Adding Datacenter to azure table
+                            let response = await this.utils.addDataCenter(obj);
                         }
-                    }  
+                    }
                 }
             } catch (error) {
                 this.utils.log("datacapture","doCountrySpecificSheets method error" + countryName,error.message);
