@@ -302,10 +302,10 @@ export default class DataCapturingUtils {
                 try {
                     cntryArray[2].filter(y=>y[2]==="DC Vendors").forEach(arr=>{
                         if(arr[0].includes(":")){
-                            if(arr[0].split(':')[0]===dataCenterObject.dcCode)
+                            //if(dataCenterObject.dcCode.includes(arr[0].includes(":")[0].toLowerCase()))
                                 dataCenterObject.dcVendors.push(arr[0].split(':')[1])
                         }else{
-                                dataCenterObject.dcVendors.push(arr[0])
+                            dataCenterObject.dcVendors.push(arr[0])
                         }
                     });
                 } catch (error) {
@@ -313,8 +313,8 @@ export default class DataCapturingUtils {
                 }
 
                 dataCenterObject.telcoVendors = cntryArray[2].filter(y=>y[2]==="Telco vendor").map(x=>x[0]);
-                dataCenterObject.coloready =  cntryArray[3].filter(y=>y[2]===dataCenterObject.coloName)[0][0];
-                dataCenterObject.leaseSigned = cntryArray[3].filter(y=>y[2]===dataCenterObject.leaseName)[0][0];
+                dataCenterObject.coloready =  cntryArray[3].filter(y=>dataCenterObject.coloName.includes(y[2]))[0][0];
+                dataCenterObject.leaseSigned = cntryArray[3].filter(y=>dataCenterObject.leaseName.includes(y[2]))[0][0];
 
                 dataCenterArray.push(dataCenterObject);
 
