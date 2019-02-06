@@ -43,6 +43,7 @@ class Dashboard extends React.Component {
         this.onMapRegionOver = this.onMapRegionOver.bind(this);
         this.onMapRegionout = this.onMapRegionout.bind(this);
         this._onMapMouseOver = this._onMapMouseOver.bind(this)
+        
     }
 
     async componentDidMount() {
@@ -60,7 +61,9 @@ class Dashboard extends React.Component {
             }
         }else{
             console.log("dashboard===> not authenticated");
-            this.props.history.push("/admin");
+            console.log("this.props.history",this.props.history)
+            this.props.history.push('/admin');
+            //this.props.history.goBack();
         }
     }
 

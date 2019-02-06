@@ -14,39 +14,71 @@ import 'react-sliding-pane/dist/react-sliding-pane.css';
 
 const getTableData =(tableData)=>{
     console.log("getTableData==>",tableData)
-    let data =  tableData.map((obj, key) => {
-        return {
-            id:key,
-            category:obj["Workloads"].split(" ")[0] || "No Category",
-            workload:obj["Workloads"],
-            tam:obj["TAM Awarded"]["Status"] || "No Data Available",
-            dockdate:obj["Dock Date (MCIO)"]["Status"] || "No Data Available",
-            rtegdate:obj["RTEG Date (MCIO)"]["Status"] || "No Data Available",
-            notes:obj["Notes"] || "No Data Available",
-            calender:obj["Calendar Months/Days to Deploy"] || "No Data Available",
-            engineering:obj["Engineering Readiness"]|| "No Data Available"
-        };
-    });
+    let data = [];
+    if(tableData){
+        data =  tableData.map((obj, key) => {
+            return {
+                id:key,
+                category:obj["Workloads"].split(" ")[0] || "No Category",
+                workload:obj["Workloads"],
+                tam:obj["TAM Awarded"]["Status"] || "No Data Available",
+                dockdate:obj["Dock Date (MCIO)"]["Status"] || "No Data Available",
+                rtegdate:obj["RTEG Date (MCIO)"]["Status"] || "No Data Available",
+                notes:obj["Notes"] || "No Data Available",
+                calender:obj["Calendar Months/Days to Deploy"] || "No Data Available",
+                engineering:obj["Engineering Readiness"]|| "No Data Available"
+            };
+        });
+    }
+    else{
+        data = [{
+            id:0,
+            category:"N/A",
+            workload:"N/A",
+            tam:"N/A",
+            dockdate:"N/A",
+            rtegdate:"N/A",
+            notes:"N/A",
+            calender:"N/A",
+            engineering:"N/A",
+        }];
+    }
     console.log("getTableData==>",data)
     return {data};
 }
 
 const getWorkLoadData =(tableData)=>{
     
-    let data =  tableData.map((obj, key) => {
-        return {
-            id:key,
-            Phase: obj["Phase"] || "No available data",
-            PlannedDuration: obj["Planned Duration"] || "No available data",
-            PlannedFinish: obj["Planned Finish"] || "No available data",
-            PlannedStart: obj["Planned Start"] || "No available data",
-            Remarks: obj["Remarks"] || "No available data",
-            RevisedDuration: obj["Revised Duration"] || "No available data",
-            RevisedFinish: obj["Revised Finish"] || "No available data",
-            RevisedStart:  obj["Revised Start"] || "No available data",
-            Status: obj["Status"] || "No available data"
-        };
-    });
+    let data =  [];
+    if(tableData){
+        data = tableData.map((obj, key) => {
+            return {
+                id:key,
+                Phase: obj["Phase"] || "No available data",
+                PlannedDuration: obj["Planned Duration"] || "No available data",
+                PlannedFinish: obj["Planned Finish"] || "No available data",
+                PlannedStart: obj["Planned Start"] || "No available data",
+                Remarks: obj["Remarks"] || "No available data",
+                RevisedDuration: obj["Revised Duration"] || "No available data",
+                RevisedFinish: obj["Revised Finish"] || "No available data",
+                RevisedStart:  obj["Revised Start"] || "No available data",
+                Status: obj["Status"] || "No available data"
+            };
+        });
+    }else{
+        data = [{
+            id:0,
+            Phase: "N/A",
+            PlannedDuration: "N/A",
+            PlannedFinish: "N/A",
+            PlannedStart:"N/A",
+            Remarks: "N/A",
+            RevisedDuration: "N/A",
+            RevisedFinish:"N/A",
+            RevisedStart: "N/A",
+            Status: "N/A",
+        }];
+    }
     console.log("getWorkLoadData==>",data)
     return data;
 }

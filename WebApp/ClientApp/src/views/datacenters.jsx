@@ -102,6 +102,7 @@ export default class DataCenterView extends React.Component {
 
     render(){
         let css = `col-sm-5 col-xs-6`;
+        console.log("this.props.dataCenterTimeLineObj===>",this.props.dataCenterTimeLineObj)
         if(this.state.status === "Live"){
             return(<Card>
                 <CardHeader>Move Status</CardHeader>

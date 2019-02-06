@@ -391,6 +391,8 @@ export default class DataCapturingUtils {
                     key = (length===1) ? elementArray[0][0] :key;
                 }
 
+                key = key.replace(/\s/g, '').toLowerCase();
+
                 if (!(key in workloads)) {
                     workloads[key] = [];
                     count = 0;
@@ -422,13 +424,20 @@ export default class DataCapturingUtils {
             let {workloads} = this.getDCWorkLoads(dataCenterRowArr);
             console.log("getDataCenterObject===>getDCWorkLoads",workloads)
             for (const arr of dataCenterArray) {
+                let dcCode = arr.dcCode;
+                dcCode = dcCode.replace(/\s/g, '').toLowerCase();
                 let dObj = JSON.parse(JSON.stringify(DataCenterDetailsObject));
                 dObj.PartionKey = countryName;
                 dObj.RowKey = arr.dcCode;
                 dObj.DataCenterName = arr.name
                 dObj.DataCenterStatus = ""//TODO;
                 dObj.TimeLine = JSON.stringify(TimeLine[countryName]);
-                dObj.WorkLoads = JSON.stringify(workloads[arr.dcCode]);
+                let workloadsStr = JSON.stringify(workloads[dcCode]);
+                if(!workloadsStr){
+                    dcCode = Object.keys(workloads).find(x=>dcCode.includes(x));
+                    if(dcCode) workloadsStr = JSON.stringify(workloads[dcCode]);
+                }
+                dObj.WorkLoads = workloadsStr;
                 temp.push(dObj);
             }
       

@@ -308,6 +308,8 @@ export default class Utils {
             response = this.handleErrors(response) ; 
             let data = await response.text();
             dataCenterTimeLineObject = JSON.parse(data);
+            console.log("getDataCenterObjectWithDCCode===>",dccode)
+            console.log("getDataCenterObjectWithDCCode===>",dataCenterTimeLineObject)
             return dataCenterTimeLineObject;
 
         } catch (error) {

@@ -15,14 +15,16 @@ class DashboardLayout extends React.Component {
         super(props);
         this.auth = new Auth();
         this.auth.clear();
+        this.loadonce = true;
         this.state = {
             backgroundColor: "black",
             activeColor: "info",
             sidebarMini: false,
             authenticated:false,
-            errorMessage:null
+            errorMessage:null,
         };
         this.loginToApp = this.loginToApp.bind(this);
+        
     };
 
     getRoutes = dashboardRoutes => {
@@ -76,6 +78,9 @@ class DashboardLayout extends React.Component {
     };
 
     render() {
+        console.log("dashboard===> not authenticated");
+        console.log("this.props.history",this.props.history)
+        
         return (
             <div className="wrapper">
                 <Sidebar
