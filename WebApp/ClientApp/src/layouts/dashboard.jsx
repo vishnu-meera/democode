@@ -58,9 +58,9 @@ class DashboardLayout extends React.Component {
     loginToApp = async (toggleLogin)=>{
         let authenticated = false;
         if(!toggleLogin){
-            console.log("toggleLogin==>",toggleLogin)
+            //console.log("toggleLogin==>",toggleLogin)
             let {accessToken,errorMessage}  = await this.auth.login();
-            console.log("loginToApp==>",errorMessage);
+            //console.log("loginToApp==>",errorMessage);
 
             if(errorMessage){
                 await this.setState({authenticated,errorMessage});
@@ -71,15 +71,15 @@ class DashboardLayout extends React.Component {
             };
 
         }else{
-            console.log("toggleLogin==>",toggleLogin)
+           // console.log("toggleLogin==>",toggleLogin)
             let token  = await this.auth.logout();
             await this.setState({authenticated});
         }
     };
 
     render() {
-        console.log("dashboard===> not authenticated");
-        console.log("this.props.history",this.props.history)
+        // console.log("dashboard===> not authenticated");
+        // console.log("this.props.history",this.props.history)
         
         return (
             <div className="wrapper">

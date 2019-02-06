@@ -34,8 +34,6 @@ const getTableData =(tableData)=>{
         let gdp = tableData[0][2].split(" ")[0];
         let status = tableData[0][3];
     
-        console.log("Population and gdp", population,gdp)
-    
         return {data,country,population,gdp,status};
     }else{
         return {data:null,country:[],population:[],gdp:[],status:[]}
@@ -63,6 +61,7 @@ class CountryTables extends React.Component {
     }
 
     searchChange = (e)=>{
+        this.utils.log("table","searchChange method enter");
         let flag = true
         let data = JSON.parse(JSON.stringify(this.props.data));
         let countrystatus = this.state.countrystatus;
@@ -71,13 +70,13 @@ class CountryTables extends React.Component {
             if(/^[a-zA-Z]+$/.test(e.target.value)){
                 let searchType = e.target.value;
                 data = data.filter(x=>x[0].toLowerCase().search(searchType.toLowerCase()) !== -1);
-                console.log("searchChange 2==>",data,countrystatus);
+                //console.log("searchChange 2==>",data,countrystatus);
                 if(data.length>0)
                 {
                     if(countrystatus !=="All Countries" & countrystatus !=="") {
                         data = data.filter(x=>x.includes(countrystatus))
                     }
-                    console.log("searchChange 3==>",data);
+                    //console.log("searchChange 3==>",data);
                     flag = false;
                     if(data.length>0) this.setState({ ...getTableData(data),index:0 });
 
@@ -92,19 +91,22 @@ class CountryTables extends React.Component {
             }
             if(data.length>0) this.setState({ ...getTableData(data),index:0 });
         }
+        this.utils.log("table","searchChange method exit");
     };
 
     async submitClick(rowInfo){
-        console.log("onClickDropDown==>",rowInfo)
+        this.utils.log("table","submitClick method enter");
         let country = rowInfo.row.country;
         let population = rowInfo.row.population;
         let gdp = rowInfo.row.gdp
         let status = rowInfo.row.status
         let index =  rowInfo.index
         await this.setState({ country, population, gdp, status,index });
+        this.utils.log("table","submitClick method exit");
     }
 
     async componentDidUpdate(prevProps) {
+        this.utils.log("table","componentDidUpdate method enter");
         if (this.props.data !== prevProps.data) {
             this.data = this.props.data;
             let keys = [...new Set(this.data.map(obj=>obj[3]))];
@@ -113,6 +115,7 @@ class CountryTables extends React.Component {
             await this.setState({ ...getTableData(this.data) });
             await this.setState({ index:0,dropdownItems, countrystatus:dropdownItems[0].value});
         }
+        this.utils.log("table","componentDidUpdate method exit");
     }
 
     async componentDidMount() {
@@ -122,18 +125,19 @@ class CountryTables extends React.Component {
     }
 
     onClickDropDown(e){
-        //console.log("onClickDropDown==>",e)
+        this.utils.log("table","onClickDropDown method enter");
         let countrystatus = e.value;
         if(countrystatus==="All Countries")  this.setState({ ...getTableData(this.data)});
         else  this.setState({ ...getTableData(this.data.filter(x=>x.includes(countrystatus))) });
          this.setState({ index:0,countrystatus});
+        this.utils.log("table","onClickDropDown method exit");
     }
 
     render() {
         let css = {"backgroundColor": "white"};
         const self = this;
         if(this.state.data){
-        console.log("value===>",this.state.countrystatus,this.state.dropdownItems[0].value);
+        
         let currentdropvalue = this.state.countrystatus||this.state.dropdownItems[0].value;
         if(this.state.loading)
             return (

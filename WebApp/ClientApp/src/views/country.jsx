@@ -43,6 +43,7 @@ class Country extends React.Component {
     }
 
     async componentDidMount() {
+        this.utils.log("country","componentDidMount method enter")
         let {authenticated,token} = await this.auth.isAuthenticated();
         if(authenticated){
             if (this.state.loading) {
@@ -63,27 +64,31 @@ class Country extends React.Component {
                 await this.setState({loading: false });
             }
         }else{
-            console.log("dashboard===> not authenticated");
             this.props.history.push("/admin");
         }
+        this.utils.log("country","componentDidMount method exit")
     }
 
     toggleDC = async (dcCode,dataCenterObj)=>{
+        this.utils.log("country","toggleDC method enter")
         let horizontalTabs ="";
         if(this.state.horizontalTabs !== dcCode){
             horizontalTabs = dcCode
         }
         await this.setState({ horizontalTabs,loadingDC: true });
         await this.getDataCenterObject(dataCenterObj);
+        this.utils.log("country","toggleDC method exit")
     }
     
     getDataCenterObject = async(dataCenterObj)=>{
+        this.utils.log("country","getDataCenterObject method enter");
         let dataCenterTimeLineObj = await this.utils.getDataCenterObjectWithDCCode(this.state.country,dataCenterObj.dcCode);
-        console.log("dataCenterTimeLineObj===>",dataCenterTimeLineObj)
         await this.setState({dataCenterTimeLineObj,loadingDC: false});
+        this.utils.log("country","getDataCenterObject method exit");
     }
 
     _renderMoveOrDC(){
+        this.utils.log("country","_renderMoveOrDC method enter");
         if(this.state.status === "Live"){
             return(<>
                 {MoveStatus.call(this)}
@@ -91,6 +96,7 @@ class Country extends React.Component {
         }else{
             return(<>{DataCenter.call(this)}</>);
         }
+        this.utils.log("country","_renderMoveOrDC method exit");
     };
 
     render() {

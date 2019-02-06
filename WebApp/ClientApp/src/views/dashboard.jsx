@@ -10,7 +10,6 @@ import CountryTables from "components/dashboardView/table";
 import Cards from "components/dashboardView/cards";
 import WorldMap from "components/dashboardView/worldmap";
 import Spinner from "components/spinner/spin";
-import { array } from "prop-types";
 
 class Dashboard extends React.Component {
 
@@ -40,16 +39,13 @@ class Dashboard extends React.Component {
             token:null
         };
         this.handleClick = this.handleClick.bind(this);
-        this.onMapRegionOver = this.onMapRegionOver.bind(this);
-        this.onMapRegionout = this.onMapRegionout.bind(this);
-        this._onMapMouseOver = this._onMapMouseOver.bind(this)
-        
+        this._onMapMouseOver = this._onMapMouseOver.bind(this)   
     }
 
     async componentDidMount() {
+        this.utils.log("dashboard","componentDidMount method enter")
         let {authenticated,token} = await this.auth.isAuthenticated();
         if(authenticated){
-            console.log("dashboard===> authenticated",token);
             if (this.state.loading) {
                 //getting data for card tiles
                 let cardsStatus = await this.utils.getCardsData(token);
@@ -60,18 +56,17 @@ class Dashboard extends React.Component {
                 this.setState({ mapFeedData,tableFeedData,cardsStatus, mapData,tableData,loading:false,toolTipObject,CountriesObject,token})
             }
         }else{
-            console.log("dashboard===> not authenticated");
-            console.log("this.props.history",this.props.history)
             this.props.history.push('/admin');
-            //this.props.history.goBack();
         }
+        this.utils.log("dashboard","componentDidMount method exit")
     }
 
     handleClick =  async (event,code,tip)=>{
+
+        this.utils.log("dashboard","handleClick method enter")
+
         event.preventDefault();
-        console.log("REFFFFFFF===>",document.body.getElementsByClassName("jvectormap-tip"));
         let tipObjArr = document.body.getElementsByClassName("jvectormap-tip");
-        console.log("typeof---->", Object.keys(tipObjArr))
         Object.keys(tipObjArr).forEach(x=>tipObjArr[x].style.display="none")
         await this.setState({onMapCountryClicked:true});
 
@@ -93,9 +88,13 @@ class Dashboard extends React.Component {
             }
             await this.setState({mapLoading:false})
         }
+
+        this.utils.log("dashboard","handleClick method exit")
     }
 
     async onCardClick(key){
+        this.utils.log("dashboard","onCardClick method enter")
+
         if(key!==this.state.cardActiveKey){
             await this.setState({mapLoading:true,cardActiveKey:key,activeCountryCode:""});
             let {mapFeedData,tableFeedData,mapColorCode} = this.utils.filterMapAndTableDataOnCard(key,this.state.mapData,this.state.tableData);
@@ -109,16 +108,15 @@ class Dashboard extends React.Component {
             await this.setState({mapFeedData,tableFeedData,mapColorCode});
             await this.setState({mapLoading:false})
         }
+
+        this.utils.log("dashboard","onCardClick method exit")
     }
 
     delay(ms) {
         return new Promise(resolve => setTimeout(resolve, ms));
     }
 
-    //TODO: Will move this code to funcational component
     async showCustomToolTip (event,tip,code){
-        //if(this.state.onMapCountryClicked)
-        //event.preventDefault();
 		if (code in this.state.mapFeedData) {
             if(this.state.toolTipObject[code].Status===this.utils.statusToShowDc){
                 tip.html(`<div className = 'btn btn-none' id="tooptipObject" ref=${this.toolTipRef}>
@@ -142,18 +140,7 @@ class Dashboard extends React.Component {
             event.preventDefault();
 		}
     }
-    //TODO: Will move this code to funcational component
     
-    onMapRegionOver =(event,code)=>{
-        //console.log("onMapRegionOver===>",event.screenY,code,event);
-        //event.preventDefault();
-    };
-
-    onMapRegionout =(event,code)=>{
-        //console.log("onMapRegionOut===>",event.screenX,code);
-        //event.preventDefault();
-    };
-
      _onMapMouseOver = async (event)=>{
         let attributes = event.target.getAttributeNames();
         if(attributes.includes("data-code")){

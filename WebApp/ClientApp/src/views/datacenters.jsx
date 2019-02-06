@@ -54,9 +54,7 @@ export default class DataCenterView extends React.Component {
         const timeLineArray = timeLine.map((obj,key)=>{
             if(length===key+1)
                 lastelementcss = true;
-            console.log("timeline===>",obj)
             let rule = rules.filter(x=>x.ruleName===obj.Name.replace(/\s/g,'').toLocaleLowerCase())[0];
-            console.log("timeline===>",rule)
             return (<PopoverItem 
                             key={key} 
                             id={key} 
@@ -98,11 +96,8 @@ export default class DataCenterView extends React.Component {
         </div>);
     };
 
-    
-
     render(){
         let css = `col-sm-5 col-xs-6`;
-        console.log("this.props.dataCenterTimeLineObj===>",this.props.dataCenterTimeLineObj)
         if(this.state.status === "Live"){
             return(<Card>
                 <CardHeader>Move Status</CardHeader>

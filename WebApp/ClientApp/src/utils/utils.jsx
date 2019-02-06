@@ -6,7 +6,6 @@
 import Auth from 'utils/authhelper';
 const { getCode,getName} = require('country-list');
 
-
 const mapColorCodes = {
     "Live" : "#CC99FF",
     "InProgress":"#FF9933",
@@ -62,6 +61,14 @@ const countryStatusConverterObj2 = {
 export default class Utils {
     constructor(){
         this.auth = new Auth();
+
+    };
+
+    log = (modulename,message,object)=>{
+        if(object)
+            console.log(`${modulename} file : ${message}`, object);
+        else
+            console.log(`${modulename} file : ${message}`);
     };
 
     cardIconCssObj = {
@@ -83,7 +90,9 @@ export default class Utils {
     mapColorCode = Object.values(mapColorCodes);
     mapColorCodes = mapColorCodes;
     statusToShowDc = "Potential";
+
     async getCardsData(token) {
+        this.log("utils","getCardsData method enter");
         try {
             let apiToken = token ||  this.auth.getWebApiToken();
             let requestUrl = 'api/CountriesStatus';
@@ -93,8 +102,10 @@ export default class Utils {
                 method: "GET",headers: { 'authorization': 'Bearer ' + apiToken }
             });
             let data = await (this.handleErrors(response)).json();
+            this.log("utils","getCardsData method exit");
             return data;
         } catch (error) {
+            this.log("utils","getCardsData method error",error.message);
             return null
         } finally {
            //TODO
@@ -102,6 +113,7 @@ export default class Utils {
     };
 
     async getMapData(token) {
+        this.log("utils","getMapData method enter");
         try {
             let apiToken = token ||  this.auth.getWebApiToken();
             let requestUrl = 'api/CountriesStatus/ByCountryCode';
@@ -126,9 +138,10 @@ export default class Utils {
             });
             let obj = await this.getTableData({ ...data.countriesStatusList },toolTipObject,CountriesObject);
             let newToolTipObject = await this.getMicrosoftObject("All",obj.toolTip,CountriesObject,token);
-            //console.log("toolTipObject==>",newToolTipObject);
+            this.log("utils","getMapData method exit");
             return { mapData, tableData:obj.tableObj , toolTipObject:newToolTipObject,CountriesObject};
         } catch (error) {
+            this.log("utils","getMapData method error", error.message);
             return {mapData:null,tableData:null,toolTipObject:null,CountriesObject:null}
         } finally {
             //TODO
@@ -136,6 +149,7 @@ export default class Utils {
     };
 
     async getCountriesObject(token) {
+        this.log("utils","getCountriesObject method enter");
         try {
             let requestUrl = 'api/Country';
             let apitoken  = token ||  this.auth.getWebApiToken();
@@ -146,9 +160,10 @@ export default class Utils {
             });
             let data = await (this.handleErrors(response)).json();
             let CountriesObject = ("countries" in data) ? data.countries : {};
-            //console.log("getCountriesObject==>",CountriesObject);
+            this.log("utils","getCountriesObject method exit");
             return {CountriesObject};
         } catch (error) {
+            this.log("utils","getCountriesObject method error", error.message);
             return {};
         } finally {
             //TODO
@@ -156,6 +171,7 @@ export default class Utils {
     };
 
     async geAlltWorkloadObjects(country,dccode,token){
+        this.log("utils","geAlltWorkloadObjects method enter");
         let workloadObject ;
         let apiToken = token ||  this.auth.getWebApiToken();
         try {
@@ -169,16 +185,17 @@ export default class Utils {
             response = this.handleErrors(response) ; 
             let data = await response.text();
             workloadObject = JSON.parse(data);
-            console.log("geAlltWorkloadObjects==>", workloadObject);
+            this.log("utils","geAlltWorkloadObjects method exit");
             return workloadObject;
 
         } catch (error) {
-            console.log("geAlltWorkloadObjects==> error",error.message)
+            this.log("utils","geAlltWorkloadObjects method error", error.message);
             return workloadObject
         } 
     }
 
     async getTableData(countryObj,toolTipObject,CountriesObject) {
+        this.log("utils","getTableData method enter");
         let keys = Object.keys(countryObj);
         let tableObject = [];
         for (const key of keys) {
@@ -190,10 +207,12 @@ export default class Utils {
             toolTipObject[countryCode]['Gdp'] = Gdp;
             tableObject.push([key, Population, Gdp, status])
         }
+        this.log("utils","getTableData method exit");
         return {tableObj : tableObject,toolTip:toolTipObject};
     };
 
     async getPopulationAndGdp(countryCode) {
+        this.log("utils","getPopulationAndGdp method enter",countryCode);
         let Population = "";
         let Gdp = "";
         try {
@@ -207,9 +226,9 @@ export default class Utils {
 
             Population = data1[1][0].value ? data1[1][0].value : data1[1][1].value;
             Gdp = data2[1][0].value ? data2[1][0].value : data2[1][1].value;
-            //console.log("getPopulationAndGdp===>",Population,Gdp)
+            this.log("utils","getPopulationAndGdp method exit",countryCode);
         } catch (error) {
-            console.log("getPopulationAndGdp==>", error.message);
+            this.log("utils","getPopulationAndGdp method error",error.message);
         }
 
         return { Population, Gdp };
@@ -220,6 +239,7 @@ export default class Utils {
     }
     
     async getMicrosoftObject(country,toolTipObject,CountriesObject,token) {
+        this.log("utils","getMicrosoftObject method enter");
         try {
             let requestUrl = country==="All"?`api/CountryRoadMap`: `api/CountryRoadMap/${country}`;
             let apiToken = token ||  this.auth.getWebApiToken() ;
@@ -236,26 +256,26 @@ export default class Utils {
                     try {
                         let code = await getCode(roadmap.countryName)
                         let microsoft = parseMicrosoftObject(roadmap.roadMapObject);
-                        //console.log("getMicrosoftObjec$$$$$==>",microsoft,toolTipObject)
                         toolTipObject[code]["azureGa"] = microsoft.azureGa || "No Data"
                         toolTipObject[code]["officeGa"] = microsoft.officeGa || "No Data"
                         toolTipObject[code]["publicAnnouncement"] = microsoft.publicAnnouncement || "No Data"
                     } catch (error) {
-                        //console.log("getMicrosoftObjec$$$$$==>",error.message)
+                        this.log("utils","getMicrosoftObject method error", error.message);
                     }
                 }
-                //console.log("getMicrosoftObject==>",toolTipObject)
+                
                 return toolTipObject;
             }
         } catch (error) {
+            this.log("utils","getMicrosoftObject method error", error.message);
             return null
         } finally {
-            //TODO
+            this.log("utils","getMicrosoftObject method exit");
         }
     };
 
     async getOverViewObject(country) {
-
+        this.log("utils","getOverViewObject method enter");
         let overViewObject = {};
         try {
             let countryCode = await getCode(country);
@@ -269,13 +289,14 @@ export default class Utils {
             };
             overViewObject["microsoft"] = microsoft;
         } catch (error) {
-            //TODO 
-            console.log("getOverViewObject==> ", error.message);
+            this.log("utils","getOverViewObject method error",error.message);
         }
+        this.log("utils","getOverViewObject method exit");
         return overViewObject;
     };
 
     async getDataCenterObject(country,token){
+        this.log("Utils","getDataCenterObject method enter");
         let dataCentersObject = [];
         try {
             let apitoken = token ||  this.auth.getWebApiToken();
@@ -288,13 +309,16 @@ export default class Utils {
             let data = await (this.handleErrors(response)).json();
 
             dataCentersObject = JSON.parse(data.dataCenters)
+            this.log("Utils","getDataCenterObject method exit");
             return dataCentersObject;
         } catch (error) {
+            this.log("Utils","getDataCenterObject method error", error.message);
             return null
         } 
     };
 
     async getDataCenterObjectWithDCCode(country,dccode, token){
+        this.log("Utils","getDataCenterObjectWithDCCode method enter");
         let dataCenterTimeLineObject ;
         try {
             let requestUrl = `api/CountryDataCenters/${country}/${dccode}`;
@@ -308,21 +332,20 @@ export default class Utils {
             response = this.handleErrors(response) ; 
             let data = await response.text();
             dataCenterTimeLineObject = JSON.parse(data);
-            console.log("getDataCenterObjectWithDCCode===>",dccode)
-            console.log("getDataCenterObjectWithDCCode===>",dataCenterTimeLineObject)
+            this.log("Utils","getDataCenterObjectWithDCCode method exit");
             return dataCenterTimeLineObject;
 
         } catch (error) {
-            console.log("dataCenterTimeLineObject==> error",error.message)
+            this.log("Utils","getDataCenterObjectWithDCCode method error", error.message);
             return dataCenterTimeLineObject
         } 
     };
 
     async geMoveStatusObject(country){
+        this.log("Utils","geMoveStatusObject method enter");
         let moveStatusObject = {}, moveStatusItems={}
         try {
             let apitoken  =  this.auth.getWebApiToken();
-            console.log("geMoveStatusObject==>", apitoken)
             let requestUrl = `api/MoveStatus/${country}`;
             let response = await fetch(requestUrl, {
                 'Accept': 'application/json',
@@ -330,10 +353,11 @@ export default class Utils {
                 method: "GET",headers: { 'authorization': 'Bearer ' + apitoken }
             });
             let data = await (this.handleErrors(response)).json();
-            console.log("geMoveStatusObject==>",country)
             moveStatusObject = JSON.parse(data.moveStatusPercentageObj);
             moveStatusItems = JSON.parse(data.moveStatusItems);
+            this.log("Utils","geMoveStatusObject method exit");
         } catch (error) {
+            this.log("Utils","geMoveStatusObject method error", error.message);
             return null
         } finally {
            //TODO
@@ -343,6 +367,7 @@ export default class Utils {
     };
 
     async getRuleTable(token){
+        this.log("Utils","getRuleTable method enter");
         let ruleTable ;
         try {
             let apitoken  = token ||  this.auth.getWebApiToken();
@@ -355,8 +380,9 @@ export default class Utils {
             
             let data = await (this.handleErrors(response)).json();
             ruleTable = data.rules
-
+            this.log("Utils","getRuleTable method exit");
         } catch (error) {
+            this.log("Utils","getRuleTable method error",error.message);
             return [];
         } finally {
            //TODO
@@ -365,6 +391,7 @@ export default class Utils {
     };
 
     async getAllTimelineList(token){
+        this.log("Utils","getAllTimelineList method enter");
         let timelineObject ;
         try {
             let requestUrl = `api/CountryDataCenters`;
@@ -378,41 +405,37 @@ export default class Utils {
             response = this.handleErrors(response) ; 
             let data = await response.text();
             timelineObject = JSON.parse(data);
-            console.log("timelineObject==> error",timelineObject)
+            this.log("Utils","getAllTimelineList method exit");
             return timelineObject;
 
         } catch (error) {
-            console.log("timelineObject==> error",error.message)
+            this.log("Utils","getAllTimelineList method error",error.message);
             return timelineObject
         } 
     };
-
-    getToolTipText(code){
-
-    }
 
     cloneObject(obj){
         return JSON.parse(JSON.stringify(obj));
     };
 
     filterMapAndTableDataOnCard(key,mapObj,tableData){
+        this.log("Utils","filterMapAndTableDataOnCard method enter");
         let tableFeedData = tableData.filter(x=>x.includes(key));
         let mapFeedData = {};
         Object.keys(mapObj).forEach(objKy=>{
             if(mapObj[objKy]===countryStatusConverterObj2[key])
                 mapFeedData[objKy]=countryStatusConverterObj2[key]
-            // console.log("filterMapAndTableDataOnCard==>,",mapObj[objKy],countryStatusConverterObj2[key])
         });
-        //console.log("filterMapAndTableDataOnCard==>,",mapFeedData)
         let mapColorCode = [];
         let colorKey = Object.keys(mapColorCodes).filter(x=>x===key);
         mapColorCode.push(mapColorCodes[colorKey]);
+        this.log("Utils","filterMapAndTableDataOnCard method exit");
         return {mapFeedData,tableFeedData,mapColorCode};
 
     }
 
     filterMapAndTable(countryCode,mapObj,tableData){
-        
+        this.log("Utils","filterMapAndTable method enter");
         let mapFeedData = {};
         let mapColorCode = [];
 
@@ -424,15 +447,12 @@ export default class Utils {
         });
         
         mapColorCode.push(mapColorCodes[countryStatusConverterObj[mapFeedData[countryCode]]]);
-
-        console.log("countryCode==>",mapColorCode);
-        console.log("mapFeedData==>",mapFeedData);
-        console.log("tableFeedData==>",tableFeedData);
+        this.log("Utils","filterMapAndTable method exit");
         return {mapFeedData,tableFeedData,mapColorCode};
     }
 
     handleErrors(response) {
-        console.log("handleErrors==>", response);
+        this.log("Utils","handleErrors method : " , response);
         let ok = response.ok;
         if (!ok) {
             let status = response.status;

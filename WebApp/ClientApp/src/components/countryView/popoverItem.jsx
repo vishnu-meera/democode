@@ -25,7 +25,7 @@ class PopoverItem extends React.Component {
   }
 
   render() {
-    console.log("PopoverItem==",this.props.obj.ShowTimeLineDate)
+
     let cssPopColor = {"backgroundColor":"#fbf3f3"};
     let cssNotHide = {"display":"none"};
     let cssToBottomPopOver = this.props.notshowbottombox ? cssNotHide :cssPopColor;

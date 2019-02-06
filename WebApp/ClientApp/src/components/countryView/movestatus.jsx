@@ -10,7 +10,6 @@ import {Card,CardBody} from "reactstrap";
 export default function MoveStatus() {
 
     let movestatusprogress = Object.keys(this.state.moveStatusObject).map(key=>{
-        //console.log(this.state.moveStatusObject[key].toString())
         let progress = {
             width: `${this.state.moveStatusObject[key].toString()}%`
           }

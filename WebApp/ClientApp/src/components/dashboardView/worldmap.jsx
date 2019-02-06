@@ -34,8 +34,6 @@ export default function WorldMap(mapFeedData,mapColorCode){
 
                         onRegionClick={(e,tip,code)=>{this.handleClick(e,tip,code)}} 
                         onRegionTipShow = {(e,tip,code)=>{this.showCustomToolTip(e,tip,code)}}
-                        onRegionOver = {(e,code)=>{this.onMapRegionOver(e,code)}}
-                        onRegionOut	= {(e,code)=>{this.onMapRegionout(e,code)}}
                         zoomAnimate ={true}
                         containerClassName="map"
                         setValues={(e,tip,code)=>{this.setValues(e,tip,code)}} 

@@ -26,9 +26,9 @@ const userAgentApplication = new UserAgentApplication(
     optionsUserAgentApp);
     
 function handleWebApiToken(idToken) {
-    console.log("handleWebApiToken");
+    //console.log("handleWebApiToken");
     if (idToken) {
-        console.log("handleWebApiToken-not empty");
+        //console.log("handleWebApiToken-not empty");
         localStorage.setItem(webApiTokenStoreKey, idToken);
         localStorage.setItem("userAuthenticated", true);
     }
@@ -50,12 +50,12 @@ function handleRemoveWebApiToken() {
 function tokenReceivedCallback(errorMessage, token, error, tokenType) {
 
     localStorage.setItem("loginRedirect", "tokenReceivedCallback");
-    console.log("tokenReceivedCallback===> errorMessage",errorMessage);
-    console.log("tokenReceivedCallback===> token",token);
+    //console.log("tokenReceivedCallback===> errorMessage",errorMessage);
+    //console.log("tokenReceivedCallback===> token",token);
     if (!errorMessage && token) {
         this.acquireTokenSilent(webApiScopes)
             .then(accessToken => {
-                console.log("tokenReceivedCallback===> accessToken",accessToken);
+                //console.log("tokenReceivedCallback===> accessToken",accessToken);
                 handleWebApiToken(accessToken);
             })
             .catch(error => {
@@ -82,15 +82,15 @@ export default class AuthClient {
     };
 
     login = async()=>{
-        console.log("LOGIN CALL");
+        //console.log("LOGIN CALL");
         let accessToken = null;
         let errorMessage = null;
         try {
             
             let token = await this.authClient.loginPopup();
             accessToken = await this.authClient.acquireTokenSilent(webApiScopes, authority);
-            console.log("login started===>amma rakshikane",token);
-            console.log("LOGIN CALL===>token",accessToken);
+            // console.log("login started===>amma rakshikane",token);
+            // console.log("LOGIN CALL===>token",accessToken);
             handleWebApiToken(accessToken);
         } catch (error) {
             errorMessage = error.message;
@@ -109,7 +109,7 @@ export default class AuthClient {
         let authenticated = false;
         let token = this.getWebApiToken();
         if(token) authenticated=true;
-        console.log("isAuthenticated===>",authenticated,token)
+        // console.log("isAuthenticated===>",authenticated,token)
         return {authenticated,token};
     };
 
@@ -117,6 +117,6 @@ export default class AuthClient {
         localStorage.removeItem(webApiTokenStoreKey);
         localStorage.setItem("userAuthenticated", false);
         let logoutresponse = await this.authClient.logout();
-        console.log("logout===>",logoutresponse);
+        // console.log("logout===>",logoutresponse);
     };
 };

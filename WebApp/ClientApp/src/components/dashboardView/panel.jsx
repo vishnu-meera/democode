@@ -49,20 +49,8 @@ class CountryPanel extends React.Component {
         };
     };
 
-    dataCenterNavClicked = async (e,dataCenterObj)=>{
-       //console.log("dataCenterNavClicked==> ",dataCenterObj);
-    }
-
-    toggleDC(dcCode){
-        let horizontalTabs ="";
-        if(this.state.horizontalTabs !== dcCode){
-            horizontalTabs = dcCode
-        }
-        this.setState({ horizontalTabs})
-    }
-    
-
     async componentDidMount() {
+        this.utils.log("panel","componentDidMount method enter");
         if (this.state.loading) {
             if("Live"===this.props.status){
                 let { moveStatusObject} = await this.utils.geMoveStatusObject(this.props.country);
@@ -70,10 +58,11 @@ class CountryPanel extends React.Component {
             }
             await this.setState({loading: false});
         }
+        this.utils.log("panel","componentDidMount method exit");
     }
 
     async componentDidUpdate(prevProps) {
-        
+        this.utils.log("panel","componentDidUpdate method enter");
         if (this.props.country !== prevProps.country) {
             await this.setState({ loading: true});
             if("Live"===this.props.status){
@@ -89,21 +78,8 @@ class CountryPanel extends React.Component {
                 loading:false
             });
         }
+        this.utils.log("panel","componentDidUpdate method exit");
     }
-
-    collapsesToggle = (collapse) => {
-        let openedCollapses = this.state.openedCollapses;
-        if (openedCollapses.includes(collapse)) {
-            this.setState({
-                openedCollapses: openedCollapses.filter(item => item !== collapse)
-            });
-        } else {
-            openedCollapses.push(collapse);
-            this.setState({
-                openedCollapses: openedCollapses
-            });
-        }
-    };
 
     render() {
 

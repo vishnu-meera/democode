@@ -13,7 +13,6 @@ import SlidingPane from 'react-sliding-pane';
 import 'react-sliding-pane/dist/react-sliding-pane.css';
 
 const getTableData =(tableData)=>{
-    console.log("getTableData==>",tableData)
     let data = [];
     if(tableData){
         data =  tableData.map((obj, key) => {
@@ -43,7 +42,6 @@ const getTableData =(tableData)=>{
             engineering:"N/A",
         }];
     }
-    console.log("getTableData==>",data)
     return {data};
 }
 
@@ -79,7 +77,6 @@ const getWorkLoadData =(tableData)=>{
             Status: "N/A",
         }];
     }
-    console.log("getWorkLoadData==>",data)
     return data;
 }
 
@@ -105,10 +102,8 @@ class WorkLoadTable extends React.Component {
     async onCellClick(e){
         let modelKey  =  e.row.category;
         let workloadObj = this.props.workloadobject.countryWorkLoads;
-        console.log("onCellCLick==>", workloadObj)
         let phases  = workloadObj.filter(x=>x.workLoadName===modelKey);
         if(phases.length>0){
-            console.log("onCellCLick==>", getWorkLoadData(JSON.parse(phases[0].phases)))
             let modelData = getWorkLoadData(JSON.parse(phases[0].phases))
             await this.setState({modelData,modelKey});
             await this.setState({isPaneOpen: !this.state.isPaneOpen})

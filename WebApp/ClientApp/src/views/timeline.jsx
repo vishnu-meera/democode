@@ -37,7 +37,6 @@ class Timeline extends React.Component {
             }
             await this.setState({loading: false });
         }else{
-            console.log("timeline===> not authenticated");
             this.props.history.push("/admin");
         }
     }
@@ -47,7 +46,6 @@ class Timeline extends React.Component {
         let length = timeLine.length;
         let lastelementcss = false;
         const timeLineArray = timeLine.map((obj,key)=>{
-            console.log("key====>",++this.counter)
             if(length===key+1)
                 lastelementcss = true;
             let rule = rules.filter(x=>x.ruleName===obj.Name.replace(/\s/g,'').toLocaleLowerCase())[0];
@@ -67,7 +65,6 @@ class Timeline extends React.Component {
         let timelineListArray = this.state.timelinelist.timelineListObject;
     
         const timeLineArray = timelineListArray.map((obj,key)=>{
-            console.log("firstObject===>",obj,key)
             return(<div key={key}>
                     <span className="text-muted font-weight-bold ml-2 mt-3">{obj["countryName"]}</span>
                     <div className='htimeline ml-5'>
