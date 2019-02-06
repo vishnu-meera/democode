@@ -36,6 +36,7 @@ export default class DataCenterView extends React.Component {
     }
 
     async componentDidUpdate(prevProps) {
+        this.utils.log("datacenters","componentDidUpdate method enter");
         if (this.props.dataCenterTimeLineObj !== prevProps.dataCenterTimeLineObj) {
             let status =this.props.status;
             let dataCenterTimeLineObj = this.props.dataCenterTimeLineObj;
@@ -44,46 +45,57 @@ export default class DataCenterView extends React.Component {
         if (this.props.workloadobject !== prevProps.workloadobject) {
             await this.setState({workloadobject:this.props.workloadobject});
         }
+        this.utils.log("datacenters","componentDidUpdate method exit");
     }
 
     timeline = ()=>{
+        this.utils.log("datacenters","timeline method enter");
         let rules = this.props.ruleTable.ruleTable;
-        const timeLine = JSON.parse(this.state.dataCenterTimeLineObj.timeLine);
-        let length = timeLine.length;
+        const timeLine = this.state.dataCenterTimeLineObj ? JSON.parse(this.state.dataCenterTimeLineObj.timeLine): null;
         let lastelementcss = false;
-        const timeLineArray = timeLine.map((obj,key)=>{
-            if(length===key+1)
-                lastelementcss = true;
-            let rule = rules.filter(x=>x.ruleName===obj.Name.replace(/\s/g,'').toLocaleLowerCase())[0];
-            return (<PopoverItem 
-                            key={key} 
-                            id={key} 
-                            keyprop={key} 
-                            obj={obj} 
-                            rules = {rule?JSON.parse(rule.impact):null} 
-                            lastelementcss={lastelementcss}
-                            notshowbottombox={false}/>);   
-              
-        });
+        let timeLineArray = null;
+        if(timeLine){
+            let length = timeLine.length;
+            timeLineArray = timeLine.map((obj,key)=>{
+                if(length===key+1)
+                    lastelementcss = true;
+                let rule = rules.filter(x=>x.ruleName===obj.Name.replace(/\s/g,'').toLocaleLowerCase())[0];
+                return (<PopoverItem 
+                                key={key} 
+                                id={key} 
+                                keyprop={key} 
+                                obj={obj} 
+                                rules = {rule?JSON.parse(rule.impact):null} 
+                                lastelementcss={lastelementcss}
+                                notshowbottombox={false}/>);   
+                  
+            });
+        }
 
+        this.utils.log("datacenters","timeline method exit");
         return timeLineArray;
     }
 
             
     timeLineArrow = () =>{
-        const timeLine = JSON.parse(this.state.dataCenterTimeLineObj.timeLine);
-        const timelineArrowArr = timeLine.map((obj,key)=>{
-            let color = (obj.rgb === "none"?"grey":obj.rgb);
-            return (<div className="col-sm-1" key={key}>
-                        <div className="col"><FaArrowUp size={23} color={color}/></div>
-                        <div className="row">{obj["Actual Date"]}</div>
-                    </div>);    
-        });
-
+        this.utils.log("datacenters","timeLineArrow method enter");
+        const timeLine = this.state.dataCenterTimeLineObj ? JSON.parse(this.state.dataCenterTimeLineObj.timeLine): null;
+        let timelineArrowArr = null;
+        if(timeLine){
+            timelineArrowArr = timeLine.map((obj,key)=>{
+                let color = (obj.rgb === "none"?"grey":obj.rgb);
+                return (<div className="col-sm-1" key={key}>
+                            <div className="col"><FaArrowUp size={23} color={color}/></div>
+                            <div className="row">{obj["Actual Date"]}</div>
+                        </div>);    
+            });
+        }
+        this.utils.log("datacenters","timeLineArrow method exit");
         return timelineArrowArr;
     };
 
     _renderTimeLineAndPopOver(){
+        this.utils.log("datacenters","_renderTimeLineAndPopOver method enter");
         return(<div className="row">
             <div className="col-sm-12">
                 <Card className="stats">
@@ -98,6 +110,8 @@ export default class DataCenterView extends React.Component {
 
     render(){
         let css = `col-sm-5 col-xs-6`;
+        let dcname = this.state.dataCenterTimeLineObj? this.state.dataCenterTimeLineObj.dataCenterName : "N/A";
+        let tabledata = this.props.dataCenterTimeLineObj? JSON.parse(this.props.dataCenterTimeLineObj.workLoads) : null;
         if(this.state.status === "Live"){
             return(<Card>
                 <CardHeader>Move Status</CardHeader>
@@ -117,9 +131,9 @@ export default class DataCenterView extends React.Component {
             </Card>);
         }else{
             return(<>
-                <div className="text-muted font-weight-bold ml-1 mt-1 mb-2">{this.state.dataCenterTimeLineObj.dataCenterName}</div>
+                <div className="text-muted font-weight-bold ml-1 mt-1 mb-2">{dcname}</div>
                 {this._renderTimeLineAndPopOver()}
-                <WorkLoadTable tableData = {JSON.parse(this.props.dataCenterTimeLineObj.workLoads) }workloadobject = {this.props.workloadobject}/>
+                <WorkLoadTable tableData = { tabledata }workloadobject = {this.props.workloadobject}/>
             </>);
         }
     }

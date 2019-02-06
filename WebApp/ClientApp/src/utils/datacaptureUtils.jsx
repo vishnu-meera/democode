@@ -1,14 +1,6 @@
 
 import Utils from './utils';
 import Auth from 'utils/authhelper';
-import {
-        validateDateArray,
-        validateNumber,
-        validateDate,
-        validateString,
-        validateNumberAndString
-    } from './validation';
-
 const convert = require('color-convert');
 
 let roadmapsummaryObjKeys = {    
@@ -119,7 +111,6 @@ const showtimelinedate = (date)=>{
 };
 
 const getTimeLineCellObject = (name,roadMapCell)=>{
-
     let temp = {
         "Name":name,
         "Actual Date":"no data",
@@ -130,14 +121,16 @@ const getTimeLineCellObject = (name,roadMapCell)=>{
         "rgb":"none"
     };
 
-    if(!Array.isArray(roadMapCell)){ 
-        return temp;
-    }
-
-    let values = roadMapCell[0].split("\n");
-    let rgb = "none";
-
     try {
+
+        if(!Array.isArray(roadMapCell)){ 
+            return temp;
+        }
+
+        let values = roadMapCell[0].split("\n");
+        let rgb = "none";
+
+
         if("fgColor" in roadMapCell[1]){
             if("rgb" in roadMapCell[1]["fgColor"]){
                 rgb = roadMapCell[1]["fgColor"]["rgb"];
@@ -147,19 +140,21 @@ const getTimeLineCellObject = (name,roadMapCell)=>{
        
         temp = {
             "Name":name,
-            "Actual Date":validateDate(values.length>1?values[1]:values[0].replace(/[\r\n]/g, "")),
-            "Planned Date":validateDate(values[0].replace(/[\r\n]/g, "")),
+            "Actual Date":(values.length>1?values[1]:values[0].replace(/[\r\n]/g, "")),
+            "Planned Date":(values[0].replace(/[\r\n]/g, "")),
             "Risk Level":"",
             "Notes":{"note1":"Notes not aviable now"},
             "ShowTimeLineDate":showtimelinedate(values.length>1?values[1]:values[0].replace(/[\r\n]/g, "")),
             "rgb":rgb
         };
 
+        return temp;
+
     } catch (error) {
+        //return temp;
         throw new Error(error.message);
     }
 
-    return temp;
 };
 export default class DataCapturingUtils {
     constructor(){
@@ -167,8 +162,18 @@ export default class DataCapturingUtils {
     };
     utils = new Utils();
 
+
+    log = (modulename,message,object)=>{
+        if(object)
+            console.log(`${modulename} file : ${message}`, object);
+        else
+            console.log(`${modulename} file : ${message}`);
+    };
+
     getRoadMapObject(roapMapExcelRows){
        
+        this.log("datacapture","getRoadMapObject method enter");
+
         const roadmapsummarykeys = ['Infrastructure','Azure','Office'];
         const keysNotInTimeLine = ["RTEG","Public Announcement","Preview"];
 
@@ -177,7 +182,7 @@ export default class DataCapturingUtils {
         let CountryRoadMaps = [];
 
         try {
-            //if you add roadmap columns , then you need change below code
+  
             roapMapExcelRows[2].forEach((element,key)=>{
                 if(key>=0 && key<9) RoadMapSummary[roadmapsummarykeys[0]][element[0]] = {};
                 else if(key>8 && key<12) RoadMapSummary[roadmapsummarykeys[1]][element[0]] = {};
@@ -193,7 +198,7 @@ export default class DataCapturingUtils {
                         
                         let objIndex = (index>=1 && index<9) ? 0 : (index>=9 && index<14) ? 1 : 2;
                         let key = roadmapsummarykeys[objIndex];
-                        //console.log("countryRow[index]==>",countryRow[index])
+                        
                         if(roadmapsummaryObjKeys[index].includes("Preview") || roadmapsummaryObjKeys[index].includes("Public Announcement"))
                             RoadMapSummary[key][roadmapsummaryObjKeys[index]] = getRMCellObject(countryRow[index],"YES")
                         else    
@@ -219,107 +224,109 @@ export default class DataCapturingUtils {
                     });
                 }
             }
+            
         } catch (error) {
+            this.log("datacapture","getRoadMapObject method error", error.message);
             throw new Error(error.message);
         }
-
+        this.log("datacapture","getRoadMapObject method exit");
         return {CountryRoadMaps,TimeLine};
     };
 
     getCountriesExcelObj(cntryArray){
+        this.log("datacapture","getCountriesExcelObj method enter");
         let CountriesExcelObj = {};
         try {
             for (let index = 1; index < cntryArray.length; index++) {
                 const element = cntryArray[index];
-                // console.log("element==>",element);
+
                 CountriesExcelObj[element[0][0]] =  {
                     "Status" : element[1][0],
-                    "Revenue Projection 3Y" : validateNumber(element[2][0]),
-                    "Revenue Projection 5Y" : validateNumber(element[3][0]),
-                    "TAM Restricted" : validateNumber(element[4][0]),
-                    "TAM Unrestricted" : validateNumber(element[5][0])
+                    "Revenue Projection 3Y" : (element[2][0]),
+                    "Revenue Projection 5Y" : (element[3][0]),
+                    "TAM Restricted" : (element[4][0]),
+                    "TAM Unrestricted" : (element[5][0])
                 };
             }
-            //console.log("CountriesExcelObj==>",CountriesExcelObj);
+
         } catch (error) {
+            this.log("datacapture","getCountriesExcelObj method error", error.message);
             throw new Error(error.message);
         }
+        this.log("datacapture","getCountriesExcelObj method exit");
         return {CountriesExcelObj};
     };
 
     async getCountryObject(cntryArray,countryExcelObject){
-
+        this.log("datacapture","getCountriesExcelObj method enter");
         let dataCenterArray = [];
         let countryObject = JSON.parse(JSON.stringify(CountryObject));
         try {
-            countryObject.Name = validateString(cntryArray[0][0][0]);
-            countryObject.RowKey = validateString(cntryArray[0][0][0]);
+            countryObject.Name = cntryArray[0][0][0];
+            countryObject.RowKey = cntryArray[0][0][0];
 
-            //console.log("getCountryObject 1===>",countryExcelObject);
-
-            if(countryObject.Name in countryExcelObject){
-                countryObject.Status =  validateString(countryExcelObject[countryObject.Name]["Status"]);
-                countryObject.RevenueProjection3Y =  validateNumberAndString(countryExcelObject[countryObject.Name]["Revenue Projection 3Y"]);
-                countryObject.RevenueProjection5Y =  validateNumberAndString(countryExcelObject[countryObject.Name]["Revenue Projection 5Y"]);
-                countryObject.TAM_Restricted =  validateNumberAndString(countryExcelObject[countryObject.Name]["TAM Restricted"]);
-                countryObject.TAM_UNRestricted =  validateNumberAndString(countryExcelObject[countryObject.Name]["TAM Unrestricted"]);
+            try {
+                if(countryObject.Name in countryExcelObject){
+                    countryObject.Status =  (countryExcelObject[countryObject.Name]["Status"]);
+                    countryObject.RevenueProjection3Y =  (countryExcelObject[countryObject.Name]["Revenue Projection 3Y"]);
+                    countryObject.RevenueProjection5Y =  (countryExcelObject[countryObject.Name]["Revenue Projection 5Y"]);
+                    countryObject.TAM_Restricted =  (countryExcelObject[countryObject.Name]["TAM Restricted"]);
+                    countryObject.TAM_UNRestricted =  (countryExcelObject[countryObject.Name]["TAM Unrestricted"]);
+                }
+            } catch (error) {
+                this.log("datacapture","getCountryObject method error", error.message);
             }
 
-            //console.log("getCountryObject 2===>",cntryArray[2]);
+            try {
+                countryObject.AzureStatus = cntryArray[2].filter(y=>y[2]==="Azure Status")[0][0];
+                countryObject.CAPEX = cntryArray[2].filter(y=>y[2]==="CAPEX")[0][0];
+            } catch (error) {
+                this.log("datacapture","getCountryObject method error", error.message);
+            }
 
-            countryObject.AzureStatus = validateDate(cntryArray[2].filter(y=>y[2]==="Azure Status")[0][0]);
-            countryObject.CAPEX = validateDate(cntryArray[2].filter(y=>y[2]==="CAPEX")[0][0]);
-    
-            //console.log("getCountryObject 2===>",cntryArray);
             let {Population,Gdp} = await this.utils.getPopulationAndGdpByName(countryObject.Name);
             countryObject.Population = Math.trunc(Population/1000000)===0 ? Population :  Math.trunc(Population/1000000) + " million";
             countryObject.GDP = Math.trunc(Gdp/1000000000) + " billion USD";
 
-            //console.log("getCountryObject 2===>",Population,Gdp,countryObject.Name);
-
             for (const arr of cntryArray[2].filter(y=>y[2]==="Lease Signed")) {
                 let dataCenterObject = JSON.parse(JSON.stringify(DataCenterObject));
-                
-                if(arr[0].includes("(") && arr[0].includes(")")){
-                    dataCenterObject.dcCode = validateNumberAndString(arr[0].match(/\((.*)\)/)[1]);
-                    dataCenterObject.name =  arr[0].substr(0,arr[0].indexOf('(')-1);
-                    dataCenterObject.coloName =  arr[0].substr(0,arr[0].indexOf('(')-1);
-                }else{
-                    dataCenterObject.dcCode = validateNumberAndString(arr[0]);
-                    dataCenterObject.name =  validateNumberAndString(arr[0]);
-                    dataCenterObject.coloName =  validateNumberAndString(arr[0]);
-                }
 
-
+                dataCenterObject.dcCode = arr[0].toLowerCase().replace(/\s/g, '');
+                dataCenterObject.name =  arr[0];
+                dataCenterObject.coloName =  arr[0];
                 dataCenterObject.leaseName =  arr[0];
 
-                cntryArray[2].filter(y=>y[2]==="DC Vendors").forEach(arr=>{
-                    if(arr[0].includes(":")){
-                        if(arr[0].split(':')[0]===dataCenterObject.dcCode)
-                            dataCenterObject.dcVendors.push(arr[0].split(':')[1])
-                    }else{
-                            //console.log("dc vendors: ",arr)
-                            dataCenterObject.dcVendors.push(arr[0])
-                    }
-                });
-                //console.log("getCountryObject dataCenterObject===>",dataCenterObject);
+                try {
+                    cntryArray[2].filter(y=>y[2]==="DC Vendors").forEach(arr=>{
+                        if(arr[0].includes(":")){
+                            if(arr[0].split(':')[0]===dataCenterObject.dcCode)
+                                dataCenterObject.dcVendors.push(arr[0].split(':')[1])
+                        }else{
+                                dataCenterObject.dcVendors.push(arr[0])
+                        }
+                    });
+                } catch (error) {
+                    this.log("datacapture","getCountryObject method error", error.message);
+                }
 
                 dataCenterObject.telcoVendors = cntryArray[2].filter(y=>y[2]==="Telco vendor").map(x=>x[0]);
                 dataCenterObject.coloready =  cntryArray[3].filter(y=>y[2]===dataCenterObject.coloName)[0][0];
                 dataCenterObject.leaseSigned = cntryArray[3].filter(y=>y[2]===dataCenterObject.leaseName)[0][0];
 
                 dataCenterArray.push(dataCenterObject);
-                //console.log("getCountryObject dataCenterArray===>",dataCenterArray);
+
             }
             countryObject.DataCenters = JSON.stringify(dataCenterArray);
         } catch (error) {
+            this.log("datacapture","getCountryObject method error", error.message);
             throw new Error(error.message);
         }
-        //console.log("countryObject==>",countryObject);
+        this.log("datacapture","getCountryObject method exit");
         return [countryObject,dataCenterArray];
     };
 
     getPhasesObject(workloadarray){
+        this.log("datacapture","getPhasesObject method enter");
         let phasesObject = {}, key ;
 
         try {
@@ -333,11 +340,11 @@ export default class DataCapturingUtils {
     
                 phasesObject[key].push({
                     "Phase"				:length===10? elementArray[1][0]:elementArray[0][0],
-                    "Planned Start"		:validateDate(length===10? elementArray[2][0]:elementArray[1][0]),
-                    "Planned Finish"	:validateDate(length===10? elementArray[3][0]:elementArray[2][0]),
+                    "Planned Start"		:(length===10? elementArray[2][0]:elementArray[1][0]),
+                    "Planned Finish"	:(length===10? elementArray[3][0]:elementArray[2][0]),
                     "Planned Duration"	:length===10? elementArray[4][0]:elementArray[3][0],
-                    "Revised Start"		:validateDate(length===10? elementArray[5][0]:elementArray[4][0]),
-                    "Revised Finish"	:validateDate(length===10? elementArray[6][0]:elementArray[5][0]),
+                    "Revised Start"		:(length===10? elementArray[5][0]:elementArray[4][0]),
+                    "Revised Finish"	:(length===10? elementArray[6][0]:elementArray[5][0]),
                     "Revised Duration"	:length===10? elementArray[7][0]:elementArray[6][0],
                     "Status"			:length===10? elementArray[8][0]:elementArray[7][0],
                     "Remarks"			:length===10? elementArray[9][0]:elementArray[8][0]
@@ -346,12 +353,15 @@ export default class DataCapturingUtils {
             }
 
         } catch (error) {
+            this.log("datacapture","getCountryObject method error", error.message);
             throw new Error(error.message);
         }
+        this.log("datacapture","getPhasesObject method exit");
         return {phasesObject}
     };
 
     getWorkloadObject(workloadarray,datacenterarray,countryName,workLoadsHeader){
+        this.log("datacapture","getWorkloadObject method enter");
         let cntryName = countryName.replace(/\s/g, '');
         let temp = [];
         try {
@@ -371,13 +381,16 @@ export default class DataCapturingUtils {
             };
 
         } catch (error) {
+            this.log("datacapture","getWorkloadObject method error",error.message);
             throw new Error(error.message);
         }
+        this.log("datacapture","getWorkloadObject method exit");
         return temp;
     };
 
 
     getDCWorkLoads(dataCenterRowArr){
+        this.log("datacapture","getDCWorkLoads method enter");
         let workloads = {}, key ,count=0;
       
         try {
@@ -385,13 +398,13 @@ export default class DataCapturingUtils {
                 const elementArray = dataCenterRowArr[index];
     
                 let length = elementArray.length;
-                if(elementArray[0][0].includes("(") && elementArray[0][0].includes(")")){
-                    key = (length===1) ? elementArray[0][0].match(/\((.*)\)/)[1] :key;
-                }else{
-                    key = (length===1) ? elementArray[0][0] :key;
-                }
-
-                key = key.replace(/\s/g, '').toLowerCase();
+                // if(elementArray[0][0].includes("(") && elementArray[0][0].includes(")")){
+                //     key = (length===1) ? elementArray[0][0].match(/\((.*)\)/)[1] :key;
+                // }else{
+                //     key = (length===1) ? elementArray[0][0] :key;
+                // }
+                key = (length===1) ? elementArray[0][0] :key;
+                key = key.toLowerCase().replace(/\s/g, '');
 
                 if (!(key in workloads)) {
                     workloads[key] = [];
@@ -412,17 +425,18 @@ export default class DataCapturingUtils {
                 count++
             }
         } catch (error) {
+            this.log("datacapture","getDCWorkLoads method error", error.message);
             throw new Error(error.message);
         }
-      
+        this.log("datacapture","getDCWorkLoads method exit");
         return {workloads};
     };
 
     getDataCenterObject(dataCenterRowArr,dataCenterArray,countryName,TimeLine){
+        this.log("datacapture","getDataCenterObject method enter");
         let temp = [];
         try {
             let {workloads} = this.getDCWorkLoads(dataCenterRowArr);
-            console.log("getDataCenterObject===>getDCWorkLoads",workloads)
             for (const arr of dataCenterArray) {
                 let dcCode = arr.dcCode;
                 dcCode = dcCode.replace(/\s/g, '').toLowerCase();
@@ -442,12 +456,15 @@ export default class DataCapturingUtils {
             }
       
         } catch (error) {
+            this.log("datacapture","getDataCenterObject method error",error.message);
             throw new Error(error.message);
         }
+        this.log("datacapture","getDataCenterObject method exit");
         return temp;
     };
 
     getMoveStatusObject(moveStatusArr,countryName){
+        this.log("datacapture","getMoveStatusObject method enter");
         let moveStatusObject = {};
         try {
             moveStatusObject["PartitionKey"] = "Countries"
@@ -467,19 +484,21 @@ export default class DataCapturingUtils {
                 temp[element[0][0]].push(`Move Status Percentage  : ${element[7][0]}`);
     
                 temp1[element[0][0]] = element[7][0];
-                //console.log("getMoveStatusObject==>",temp);
+
             }
-            //console.log("getMoveStatusObject==>",temp,temp1);
+
             moveStatusObject["moveStatusItems"] = JSON.stringify(temp);
             moveStatusObject["moveStatusPercentageObj"] = JSON.stringify(temp1);
         } catch (error) {
+            this.log("datacapture","getMoveStatusObject method error",error.message);
             throw new Error(error.message);
         }
+        this.log("datacapture","getMoveStatusObject method exit");
         return moveStatusObject;
     };
 
     async addRoadMapObject(body){
-        //console.log("addRoadMapObject==>",JSON.stringify(body))
+        this.log("datacapture","addRoadMapObject method enter");
         try {
             let requestUrl = `api/CountryRoadMap`;
             let apiToken = await this.auth.getWebApiToken();
@@ -488,14 +507,15 @@ export default class DataCapturingUtils {
                 "method": "POST",
                 "body":JSON.stringify(body)
             });
-            console.log("response===>",response)
+            this.log("datacapture","addRoadMapObject method exit",response);
         } catch (error) {
+            this.log("datacapture","addRoadMapObject method error",error.message);
             throw new Error(error.message);
         } 
     };
 
     async addCountryObject(body){
-        //console.log("addCountryObject==>",JSON.stringify(body))
+        this.log("datacapture","addCountryObject method enter");
         try {
             let requestUrl = `api/Country`;
             let apiToken = await this.auth.getWebApiToken();
@@ -504,14 +524,15 @@ export default class DataCapturingUtils {
                 "method": "POST",
                 "body":JSON.stringify(body)
             });
-            console.log("response===>",response)
+            this.log("datacapture","addCountryObject method exit",response);
         } catch (error) {
+            this.log("datacapture","addCountryObject method error",error.message);
             throw new Error(error.message);
         } 
     };
 
     async addDataCenter(body){
-        //console.log("addCountryObject==>",JSON.stringify(body))
+        this.log("datacapture","addDataCenter method enter");
         try {
             let requestUrl = `api/CountryDataCenters`;
             let apiToken = await this.auth.getWebApiToken();
@@ -520,14 +541,15 @@ export default class DataCapturingUtils {
                 "method": "POST",
                 "body":JSON.stringify(body)
             });
-            console.log("response===>",response)
+            this.log("datacapture","addDataCenter method exit",response);
         } catch (error) {
+            this.log("datacapture","addDataCenter method error",error.message);
             throw new Error(error.message);
         } 
     };
 
     async addWorkLoads(body){
-        //console.log("addCountryObject==>",JSON.stringify(body))
+        this.log("datacapture","addWorkLoads method enter");
         try {
             let requestUrl = `api/CountryWorkLoad`;
             let apiToken = await this.auth.getWebApiToken();
@@ -536,14 +558,14 @@ export default class DataCapturingUtils {
                 "method": "POST",
                 "body":JSON.stringify(body)
             });
-            console.log("response===>",response)
+            this.log("datacapture","addWorkLoads method exit",response);
         } catch (error) {
-            throw new Error(error.message);
+            this.log("datacapture","addDataCenter method error",error.message);
         } 
     };
 
     async addMoveStatus(body){
-        //console.log("addCountryObject==>",JSON.stringify(body))
+        this.log("datacapture","addMoveStatus method enter");
         try {
             let requestUrl = `api/MoveStatus`;
             let apiToken = await this.auth.getWebApiToken();
@@ -552,29 +574,32 @@ export default class DataCapturingUtils {
                 "method": "POST",
                 "body":JSON.stringify(body)
             });
-            console.log("response===>",response)
+            this.log("datacapture","addMoveStatus method exit", response);
         } catch (error) {
+            this.log("datacapture","addMoveStatus method error", error.message);
             throw new Error(error.message);
         } 
     };
 
     async migrateTables(url){
+        this.log("datacapture","migrateTables method enter");
         try {
             let apiToken = await this.auth.getWebApiToken();
             let response = await fetch(url, {
                 "headers":{"Accept":"application/json","Content-Type":"application/json",'authorization': 'Bearer ' + apiToken},
                 "method": "GET",
             });
-            console.log("response===>",response)
+            this.log("datacapture","migrateTables method exit", response);
             let data = await (this.handleErrors(response)).json();
             return data;
         } catch (error) {
+            this.log("datacapture","migrateTables method error", error.message);
             throw new Error(error.message);
         } 
     };
 
     handleErrors(response) {
-        console.log("handleErrors==>", response);
+        this.log("datacapture","handleErrors method enter",response);
         let ok = response.ok;
         if (!ok) {
             let status = response.status;

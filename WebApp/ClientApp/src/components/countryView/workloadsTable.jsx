@@ -13,6 +13,7 @@ import SlidingPane from 'react-sliding-pane';
 import 'react-sliding-pane/dist/react-sliding-pane.css';
 
 const getTableData =(tableData)=>{
+    console.log("workloadsTable file ","getTableData method enter");
     let data = [];
     if(tableData){
         data =  tableData.map((obj, key) => {
@@ -42,11 +43,12 @@ const getTableData =(tableData)=>{
             engineering:"N/A",
         }];
     }
+    console.log("workloadsTable file ","getTableData method exit" , data);
     return {data};
 }
 
 const getWorkLoadData =(tableData)=>{
-    
+    console.log("workloadsTable file ","getWorkLoadData method exit");
     let data =  [];
     if(tableData){
         data = tableData.map((obj, key) => {
@@ -77,6 +79,7 @@ const getWorkLoadData =(tableData)=>{
             Status: "N/A",
         }];
     }
+    console.log("workloadsTable file ","getWorkLoadData method exit" , data);
     return data;
 }
 
@@ -100,6 +103,7 @@ class WorkLoadTable extends React.Component {
     }
 
     async onCellClick(e){
+        this.utils.log("workloadsTable","onCellClick method enter");
         let modelKey  =  e.row.category;
         let workloadObj = this.props.workloadobject.countryWorkLoads;
         let phases  = workloadObj.filter(x=>x.workLoadName===modelKey);
@@ -108,15 +112,15 @@ class WorkLoadTable extends React.Component {
             await this.setState({modelData,modelKey});
             await this.setState({isPaneOpen: !this.state.isPaneOpen})
         }
+        this.utils.log("workloadsTable","onCellClick method exit");
     }
 
     async componentDidUpdate(prevProps) {
+        this.utils.log("workloadsTable","componentDidUpdate method enter");
         if (this.props.tableData !== prevProps.tableData) {
             await this.setState({ ...getTableData(this.props.tableData) });
         }
-    }
-    async onClickDropDown(status){
-
+        this.utils.log("workloadsTable","componentDidUpdate method exit");
     }
     
     toggleModal = () => {
