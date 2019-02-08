@@ -7,10 +7,10 @@ import React from "react";
 import Utils from 'utils/utils';
 import ReactTable from "react-table";
 import { Card } from "reactstrap";
-
 import Modal from 'react-modal';
 import SlidingPane from 'react-sliding-pane';
 import 'react-sliding-pane/dist/react-sliding-pane.css';
+import {disableWorkloadsColumns} from 'utils/config';
 
 const getTableData =(tableData)=>{
     console.log("workloadsTable file ","getTableData method enter");
@@ -21,9 +21,9 @@ const getTableData =(tableData)=>{
                 id:key,
                 category:obj["Workloads"].split(" ")[0] || "No Category",
                 workload:obj["Workloads"],
-                tam:obj["TAM Awarded"]["Status"] || "No Data Available",
-                dockdate:obj["Dock Date (MCIO)"]["Status"] || "No Data Available",
-                rtegdate:obj["RTEG Date (MCIO)"]["Status"] || "No Data Available",
+                tam:obj["TAM Awarded"] || "No Data Available",
+                dockdate:obj["Dock Date (MCIO)"] || "No Data Available",
+                rtegdate:obj["RTEG Date (MCIO)"] || "No Data Available",
                 notes:obj["Notes"] || "No Data Available",
                 calender:obj["Calendar Months/Days to Deploy"] || "No Data Available",
                 engineering:obj["Engineering Readiness"]|| "No Data Available"
@@ -52,32 +52,54 @@ const getWorkLoadData =(tableData)=>{
     let data =  [];
     if(tableData){
         data = tableData.map((obj, key) => {
-            return {
-                id:key,
-                Phase: obj["Phase"] || "No available data",
-                PlannedDuration: obj["Planned Duration"] || "No available data",
-                PlannedFinish: obj["Planned Finish"] || "No available data",
-                PlannedStart: obj["Planned Start"] || "No available data",
-                Remarks: obj["Remarks"] || "No available data",
-                RevisedDuration: obj["Revised Duration"] || "No available data",
-                RevisedFinish: obj["Revised Finish"] || "No available data",
-                RevisedStart:  obj["Revised Start"] || "No available data",
-                Status: obj["Status"] || "No available data"
-            };
+            if(disableWorkloadsColumns){
+                return {
+                    id:key,
+                    Phase: obj["Phase"] || "No available data",
+                    PlannedDuration: obj["Planned Duration"] || "No available data",
+                    PlannedFinish: obj["Planned Finish"] || "No available data",
+                    PlannedStart: obj["Planned Start"] || "No available data"
+                };
+            }
+            else{
+                return {
+                    id:key,
+                    Phase: obj["Phase"] || "No available data",
+                    PlannedDuration: obj["Planned Duration"] || "No available data",
+                    PlannedFinish: obj["Planned Finish"] || "No available data",
+                    PlannedStart: obj["Planned Start"] || "No available data",
+                    Remarks: obj["Remarks"] || "No available data",
+                    RevisedDuration: obj["Revised Duration"] || "No available data",
+                    RevisedFinish: obj["Revised Finish"] || "No available data",
+                    RevisedStart:  obj["Revised Start"] || "No available data",
+                    Status: obj["Status"] || "No available data"
+                };
+            }
         });
     }else{
-        data = [{
-            id:0,
-            Phase: "N/A",
-            PlannedDuration: "N/A",
-            PlannedFinish: "N/A",
-            PlannedStart:"N/A",
-            Remarks: "N/A",
-            RevisedDuration: "N/A",
-            RevisedFinish:"N/A",
-            RevisedStart: "N/A",
-            Status: "N/A",
-        }];
+        if(disableWorkloadsColumns){
+            data = [{
+                id:0,
+                Phase: "N/A",
+                PlannedDuration: "N/A",
+                PlannedFinish: "N/A",
+                PlannedStart:"N/A"
+            }];
+        }else{
+            data = [{
+                id:0,
+                Phase: "N/A",
+                PlannedDuration: "N/A",
+                PlannedFinish: "N/A",
+                PlannedStart:"N/A",
+                Remarks: "N/A",
+                RevisedDuration: "N/A",
+                RevisedFinish:"N/A",
+                RevisedStart: "N/A",
+                Status: "N/A",
+            }];
+        }
+
     }
     console.log("workloadsTable file ","getWorkLoadData method exit" , data);
     return data;
@@ -96,6 +118,87 @@ class WorkLoadTable extends React.Component {
             isPaneOpenLeft: false
         };
         this.onCellClick = this.onCellClick.bind(this);
+
+        this.columns =  (disableWorkloadsColumns)? ([
+            {
+                Header: "Phase",
+                accessor: "Phase", 
+                filterable:false,
+                sortable:false,
+            },
+            {
+                Header: "Planned Duration",
+                accessor: "PlannedDuration",
+                filterable:false,
+                sortable:false
+            },
+            {
+                Header: "Planned Finish",
+                accessor: "PlannedFinish",
+                filterable:false,
+                sortable:false,
+            },
+            {
+                Header: "Planned Start",
+                accessor: "PlannedStart",
+                filterable:false,
+                sortable:false,
+            }]):([
+                {
+                    Header: "Phase",
+                    accessor: "Phase", 
+                    filterable:false,
+                    sortable:false,
+                },
+                {
+                    Header: "Planned Duration",
+                    accessor: "PlannedDuration",
+                    filterable:false,
+                    sortable:false
+                },
+                {
+                    Header: "Planned Finish",
+                    accessor: "PlannedFinish",
+                    filterable:false,
+                    sortable:false,
+                },
+                {
+                    Header: "Planned Start",
+                    accessor: "PlannedStart",
+                    filterable:false,
+                    sortable:false,
+                },
+                {
+                    Header: 'Remarks',
+                    accessor: 'Remarks',
+                    filterable:false,
+                    sortable:false
+                },
+                {
+                    Header: 'Revised Duration',
+                    accessor: 'RevisedDuration',
+                    filterable:false,
+                    sortable:false
+                },
+                {
+                    Header: 'Revised Finish',
+                    accessor: 'RevisedFinish',
+                    filterable:false,
+                    sortable:false
+                },
+                {
+                    Header: 'Revised Start',
+                    accessor: 'RevisedStart',
+                    filterable:false,
+                    sortable:false
+                },
+                {
+                    Header: 'Status',
+                    accessor: 'Status',
+                    filterable:false,
+                    sortable:false
+                }
+                ])
     }
 
     componentDidMount() {
@@ -220,62 +323,7 @@ class WorkLoadTable extends React.Component {
                             <ReactTable
                                         data={this.state.modelData}
                                         filterable
-                                        columns={[
-                                            {
-                                                Header: "Phase",
-                                                accessor: "Phase", 
-                                                filterable:false,
-                                                sortable:false,
-                                            },
-                                            {
-                                                Header: "Planned Duration",
-                                                accessor: "PlannedDuration",
-                                                filterable:false,
-                                                sortable:false
-                                            },
-                                            {
-                                                Header: "Planned Finish",
-                                                accessor: "PlannedFinish",
-                                                filterable:false,
-                                                sortable:false,
-                                            },
-                                            {
-                                                Header: "Planned Start",
-                                                accessor: "PlannedStart",
-                                                filterable:false,
-                                                sortable:false,
-                                            },
-                                            {
-                                                Header: 'Remarks',
-                                                accessor: 'Remarks',
-                                                filterable:false,
-                                                sortable:false
-                                            },
-                                            {
-                                                Header: 'Revised Duration',
-                                                accessor: 'RevisedDuration',
-                                                filterable:false,
-                                                sortable:false
-                                            },
-                                            {
-                                                Header: 'Revised Finish',
-                                                accessor: 'RevisedFinish',
-                                                filterable:false,
-                                                sortable:false
-                                            },
-                                            {
-                                                Header: 'Revised Start',
-                                                accessor: 'RevisedStart',
-                                                filterable:false,
-                                                sortable:false
-                                            },
-                                            {
-                                                Header: 'Status',
-                                                accessor: 'Status',
-                                                filterable:false,
-                                                sortable:false
-                                            }
-                                            ]}
+                                        columns={this.columns}
                                         showPageSizeOptions = {false}
                                         defaultPageSize={10}
                                         showPaginationBottom
