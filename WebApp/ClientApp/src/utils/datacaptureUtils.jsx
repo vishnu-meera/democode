@@ -14,12 +14,12 @@ let roadmapsummaryObjKeys = {
     7:"Dock Date",
     8:"RTEG Network",
     9:"RTEG Server",
-    10:"RTEG",
-    11:"Preview",
-    12:"O365 Services",
-    13:"GA",
-    14:"Engineering Readiness", 
-    15:"GA"
+    //10:"RTEG",
+    //11:"Preview",
+    //12:"O365 Services",
+    10:"GA",
+    11:"Engineering Readiness", 
+    12:"GA"
 };
 
 const CountryObject = {
@@ -188,8 +188,8 @@ export default class DataCapturingUtils {
   
             roapMapExcelRows[2].forEach((element,key)=>{
                 if(key>=0 && key<9) RoadMapSummary[roadmapsummarykeys[0]][element[0]] = {};
-                else if(key>8 && key<12) RoadMapSummary[roadmapsummarykeys[1]][element[0]] = {};
-                else if(key>12) RoadMapSummary[roadmapsummarykeys[2]][element[0]] = {}; 
+                else if(key === 9) RoadMapSummary[roadmapsummarykeys[1]][element[0]] = {};
+                else if(key>9) RoadMapSummary[roadmapsummarykeys[2]][element[0]] = {}; 
             });
 
             for (let index = 3; index < roapMapExcelRows.length; index++) {
@@ -199,7 +199,7 @@ export default class DataCapturingUtils {
                     
                     for (let index = 1; index <= Object.keys(roadmapsummaryObjKeys).length; index++) {
                         
-                        let objIndex = (index>=1 && index<9) ? 0 : (index>=9 && index<14) ? 1 : 2;
+                        let objIndex = (index>=1 && index<10) ? 0 : (index===10) ? 1 : 2;
                         let key = roadmapsummarykeys[objIndex];
                         
                         if(roadmapsummaryObjKeys[index].includes("Preview") || roadmapsummaryObjKeys[index].includes("Public Announcement"))

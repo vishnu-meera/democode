@@ -127,22 +127,21 @@ class WorkLoadTable extends React.Component {
                 sortable:false,
             },
             {
-                Header: "Planned Duration",
-                accessor: "PlannedDuration",
+                Header: "Planned Start",
+                accessor: "PlannedStart",
                 filterable:false,
-                sortable:false
-            },
+                sortable:false,
+            },           
             {
                 Header: "Planned Finish",
                 accessor: "PlannedFinish",
                 filterable:false,
                 sortable:false,
-            },
-            {
-                Header: "Planned Start",
-                accessor: "PlannedStart",
+            },{
+                Header: "Planned Duration",
+                accessor: "PlannedDuration",
                 filterable:false,
-                sortable:false,
+                sortable:false
             }]):([
                 {
                     Header: "Phase",
