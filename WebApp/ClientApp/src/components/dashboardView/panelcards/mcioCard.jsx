@@ -5,7 +5,7 @@
 
 import React from "react";
 export default function MCIO(){
-
+    //New changes in the Dashboard : Date 03/25/2019
     let mcio = this.props.CountriesObject.filter(x=>x.name === this.state.country)[0]
     let mcio_2 = this.props.toolTipObject[this.props.countryCode]
     let css = {
@@ -17,7 +17,7 @@ export default function MCIO(){
     return (
         <div className="ml-3 mt-2">
             <span className="text-muted font-weight-bold"  style={css}>Microsoft</span><br/>
-            <span>CAPEX Status: Approved (Date) {mcio.capex}</span><br/>
+            <span>CAPEX Status: Approved (Date) {mcio_2.capex}</span><br/>
             <span>Public Announcement: {mcio_2.publicAnnouncement}</span><br/>
             <span>Azure GA:{mcio_2.azureGa}</span><br/>
             <span>Office GA: {mcio_2.officeGa}</span><br/>

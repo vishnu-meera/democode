@@ -4,22 +4,21 @@ import Auth from 'utils/authhelper';
 import {enableLogging} from 'utils/config';
 const convert = require('color-convert');
 
+//New changes in the Dashboard : Date 03/25/2019
 let roadmapsummaryObjKeys = {    
     1:"Public Announcement",
     2:"CAPEX Approved",
     3:"Lease Signed",
     4:"TAM Award",
-    5:"WhiteSpace Ready",
+    5:"DC Ready",
     6:"Colo Ready",
     7:"Dock Date",
-    8:"RTEG Network",
-    9:"RTEG Server",
-    //10:"RTEG",
-    //11:"Preview",
-    //12:"O365 Services",
+    8:"Network Complete",
+    9:"First Foot Print",
     10:"GA",
     11:"Engineering Readiness", 
-    12:"GA"
+    12:"Current Target GA",
+    13:"External Public GA",
 };
 
 const CountryObject = {
@@ -117,7 +116,7 @@ const getTimeLineCellObject = (name,roadMapCell)=>{
         "Actual Date":"no data",
         "Planned Date":"no data",
         "Risk Level":"no data",
-        "Notes":{"note1":"Notes not aviable now"},
+        "Notes":{"note1":"No notes available now"},
         "ShowTimeLineDate":false,
         "rgb":"none"
     };
@@ -141,8 +140,8 @@ const getTimeLineCellObject = (name,roadMapCell)=>{
        
         temp = {
             "Name":name,
-            "Actual Date":(values.length>1?values[1]:values[0].replace(/[\r\n]/g, "")),
-            "Planned Date":(values[0].replace(/[\r\n]/g, "")),
+            "Actual Date":(values[0].replace(/[\r\n]/g, "")),
+            "Planned Date":(values.length>1?values[1]:values[0].replace(/[\r\n]/g, "")),
             "Risk Level":"",
             "Notes":{"note1":"Notes not aviable now"},
             "ShowTimeLineDate":showtimelinedate(values.length>1?values[1]:values[0].replace(/[\r\n]/g, "")),
@@ -177,25 +176,26 @@ export default class DataCapturingUtils {
        
         this.log("datacapture","getRoadMapObject method enter");
 
-        const roadmapsummarykeys = ['Infrastructure','Azure','Office'];
+        const roadmapsummarykeys = ['Office_1','Azure','Office_2'];
         const keysNotInTimeLine = ["RTEG","Public Announcement","Preview"];
 
-        let RoadMapSummary = {"Infrastructure":{},"Azure":{},"Office":{}};
+        let RoadMapSummary = {"Office_1":{},"Azure":{},"Office_2":{}};
         let TimeLine ={};
         let CountryRoadMaps = [];
 
         try {
   
+            //New changes in the Dashboard : Date 03/25/2019
             roapMapExcelRows[2].forEach((element,key)=>{
-                if(key>=0 && key<9) RoadMapSummary[roadmapsummarykeys[0]][element[0]] = {};
-                else if(key === 9) RoadMapSummary[roadmapsummarykeys[1]][element[0]] = {};
-                else if(key>9) RoadMapSummary[roadmapsummarykeys[2]][element[0]] = {}; 
+                if(key>=0 && key<10) RoadMapSummary[roadmapsummarykeys[0]][element[0]] = {};
+                else if(key === 10) RoadMapSummary[roadmapsummarykeys[1]][element[0]] = {};
+                else if(key>10) RoadMapSummary[roadmapsummarykeys[2]][element[0]] = {}; 
             });
 
             for (let index = 3; index < roapMapExcelRows.length; index++) {
                 const countryRow = roapMapExcelRows[index];
                 if(countryRow.length >1){
-                    if(!(countryRow[0][0] in TimeLine)) TimeLine[countryRow[0][0]]=[];
+                    if(!(countryRow[0][0] in TimeLine)) TimeLine[countryRow[0][0]]=[];  //countryRow[0][0]==Japan
                     
                     for (let index = 1; index <= Object.keys(roadmapsummaryObjKeys).length; index++) {
                         
@@ -209,16 +209,14 @@ export default class DataCapturingUtils {
                             
                         if(!keysNotInTimeLine.includes(roadmapsummaryObjKeys[index]))  {
                             let timeLineIndex = roadmapsummaryObjKeys[index];
-                            if(timeLineIndex==="GA")timeLineIndex = key + " " + timeLineIndex;
-                            if("O365 Services"===timeLineIndex)timeLineIndex="O365 deployment";
-                            if("Engineering Readiness"===timeLineIndex)timeLineIndex="O365 readiness";
     
+                            //New changes in the Dashboard : Date 03/25/2019
                             TimeLine[countryRow[0][0]].push(getTimeLineCellObject(timeLineIndex,countryRow[index]));
                         }
                     }
                     
-                    [TimeLine[countryRow[0][0]][7], TimeLine[countryRow[0][0]][8]] = [TimeLine[countryRow[0][0]][8], TimeLine[countryRow[0][0]][7]];
-        
+                    //New changes in the Dashboard : Date 03/25/2019
+
                     CountryRoadMaps.push({
                         "PartitionKey": "Countries",
                         "RowKey": countryRow[0][0],
@@ -286,7 +284,7 @@ export default class DataCapturingUtils {
             } catch (error) {
                 this.log("datacapture","getCountryObject method error", error.message);
             }
-
+            
             let {Population,Gdp} = await this.utils.getPopulationAndGdpByName(countryObject.Name);
             countryObject.Population = Math.trunc(Population/1000000)===0 ? Population :  Math.trunc(Population/1000000) + " million";
             countryObject.GDP = Math.trunc(Gdp/1000000000) + " billion USD";

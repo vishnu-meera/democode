@@ -6,11 +6,12 @@
 import React from "react";
 import Utils from 'utils/utils';
 import ReactTable from "react-table";
-import { Card } from "reactstrap";
+import { Card ,Row} from "reactstrap";
 import Modal from 'react-modal';
 import SlidingPane from 'react-sliding-pane';
 import 'react-sliding-pane/dist/react-sliding-pane.css';
 import {disableWorkloadsColumns} from 'utils/config';
+import {Tooltip} from 'react-lightweight-tooltip';
 
 const getTableData =(tableData)=>{
     console.log("workloadsTable file ","getTableData method enter");
@@ -205,15 +206,19 @@ class WorkLoadTable extends React.Component {
     }
 
     async onCellClick(e){
-        this.utils.log("workloadsTable","onCellClick method enter");
-        let modelKey  =  e.row.category;
-        let workloadObj = this.props.workloadobject.countryWorkLoads;
-        let phases  = workloadObj.filter(x=>x.workLoadName===modelKey);
-        if(phases.length>0){
-            let modelData = getWorkLoadData(JSON.parse(phases[0].phases))
-            await this.setState({modelData,modelKey});
-            await this.setState({isPaneOpen: !this.state.isPaneOpen})
+        let wrkLoad = e.row.workload ? e.row.workload.split(" ")[0] : "";
+        this.utils.log("workloadsTable","onCellClick method enter : ",wrkLoad);
+
+        if(wrkLoad){
+            let workloadObj = this.props.workloadobject.countryWorkLoads;
+            let phases  = workloadObj.filter(x=>x.workLoadName===wrkLoad);
+            if(phases.length>0){
+                let modelData = getWorkLoadData(JSON.parse(phases[0].phases))
+                await this.setState({modelData,wrkLoad});
+                await this.setState({isPaneOpen: !this.state.isPaneOpen})
+            }
         }
+
         this.utils.log("workloadsTable","onCellClick method exit");
     }
 
@@ -243,9 +248,10 @@ class WorkLoadTable extends React.Component {
                                         filterable
                                         columns={[
                                             {
-                                                Header: "Worload Category",
-                                                accessor: "category", 
+                                                Header: "Workloads",
+                                                accessor: "workload", 
                                                 filterable:false,
+                                                headerStyle:{fontSize:12,fontWeight:'bold'},
                                                 sortable:false,
                                                 Cell: row => (
                                                     <span
@@ -256,46 +262,52 @@ class WorkLoadTable extends React.Component {
                                                 )
                                             },
                                             {
-                                                Header: "Workloads",
-                                                accessor: "workload", 
-                                                filterable:false,
-                                                sortable:false
-                                            },
-                                            {
                                                 Header: "TAM Awarded",
+                                                headerStyle:{fontSize:12,fontWeight:'bold'},
                                                 accessor: "tam",
                                                 filterable:false,
-                                                sortable:false
+                                                sortable:false,
+                                                Cell: row => <div><span title={row.value}>{row.value}</span></div>
                                             },
                                             {
                                                 Header: "Dock Date (MCIO)",
+                                                headerStyle:{fontSize:12,fontWeight:'bold'},
                                                 accessor: "dockdate",
                                                 filterable:false,
                                                 sortable:false,
+                                                Cell: row => <div><span title={row.value}>{row.value}</span></div>
                                             },
                                             {
                                                 Header: "RTEG Date (MCIO)",
+                                                headerStyle:{fontSize:12,fontWeight:'bold'},
                                                 accessor: "rtegdate",
                                                 filterable:false,
                                                 sortable:false,
+                                                Cell: row => <div><span title={row.value}>{row.value}</span></div>
                                             },
                                             {
                                                 Header: 'Notes',
                                                 accessor: 'notes',
+                                                headerStyle:{fontSize:12,fontWeight:'bold'},
                                                 filterable:false,
-                                                sortable:false
+                                                sortable:false,
+                                                Cell: row => <div><span title={row.value}>{row.value}</span></div>
                                             },
                                             {
                                                 Header: 'Calender Months/Days to Deploy (in Months)',
+                                                headerStyle:{fontSize:12,fontWeight:'bold'},
                                                 accessor: 'calender',
                                                 filterable:false,
-                                                sortable:false
+                                                sortable:false,
+                                                Cell: row => <div><span title={row.value}>{row.value}</span></div>
                                             },
                                             {
                                                 Header: 'Engineering readiness',
+                                                headerStyle:{fontSize:12,fontWeight:'bold'},
                                                 accessor: 'engineering',
                                                 filterable:false,
-                                                sortable:false
+                                                sortable:false,
+                                                Cell: row => <div><span title={row.value}>{row.value}</span></div>
                                             }
                                             ]}
                                         showPageSizeOptions = {false}

@@ -56,4 +56,4 @@
 .htimeline .step.red::before {border-color:#FF6565; background-color: #FF6565; color: #ffffff }
 .htimeline .step.yellow::before {border-color:#FFA177; background-color: #FFA177; color: #ffffff }
 
-.htimeline .step::after { content: attr(data-date); position: absolute; top: -8px; left: 7px; font-size: 11px; color: #382b2b}
+.htimeline .step::after { position: absolute; top: -8px; left: 7px; font-size: 11px; color: #382b2b}

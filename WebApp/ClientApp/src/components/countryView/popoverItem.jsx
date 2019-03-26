@@ -5,7 +5,7 @@
 
 
 import React from 'react';
-import { Popover, PopoverHeader, PopoverBody} from 'reactstrap';
+import { Popover, PopoverHeader, PopoverBody, Row} from 'reactstrap';
 
 class PopoverItem extends React.Component {
   constructor(props) {
@@ -23,7 +23,7 @@ class PopoverItem extends React.Component {
       popoverOpen: !this.state.popoverOpen
     });
   }
-
+//New changes in the Dashboard : Date 03/25/2019
   render() {
 
     let cssPopColor = {"backgroundColor":"#fbf3f3"};
@@ -44,16 +44,16 @@ class PopoverItem extends React.Component {
             key ={this.props.keyprop}data-date={num.toString()} 
             className={css}
             style={stylecss}>
-            <div>
-                <div>
+
+                <Row>
                     {this.props.obj.Name}
                     <span 
                         className = "font-italic font-weight-bold"
                         style={this.props.obj.ShowTimeLineDate?displayBlock:displayNone}>
                             {this.props.obj["Actual Date"].replace("**","")}
                     </span>
-                </div>
-            </div>
+                </Row>
+
         </li>
         <Popover placement={'top'} isOpen={this.state.popoverOpen} target={'Popover-' + this.props.id} toggle={this.toggle} style={cssPopColor}>
             <PopoverHeader className="text-center"><span className="text-muted font-weight-bold">{this.props.obj.Name}</span><br/></PopoverHeader>

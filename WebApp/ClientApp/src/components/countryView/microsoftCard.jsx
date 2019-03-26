@@ -19,7 +19,7 @@ export default function Microsoft(){
             <div className="text-muted font-weight-bold mb-1">Microsoft</div>
             <div className="row">
                     <div className="col-md-8"><span>CAPEX Approved:</span></div>
-                    <div className="col-md-4"><span className="float-right">{mcio.capex}</span></div>
+                    <div className="col-md-4"><span className="float-right">{mcio_2.capex}</span></div>
             </div>
             <div className="row">
                     <div className="col-md-8"><span>Public Announcement:</span></div>

@@ -29,10 +29,10 @@ const parseMicrosoftObject = (data) => {
         if (data) {
             if (data.length > 0) {
                 let roadMap = JSON.parse(data);
-                microsoft.capex = (((roadMap || {}).Infrastructure || {})["CAPEX Approved"] || {}).actualdate;
-                microsoft.publicAnnouncement = ((roadMap || {}).Infrastructure || {})["Public Announcement"];
+                microsoft.capex = (((roadMap || {}).Office_1 || {})["CAPEX Approved"] || {}).actualdate;
+                microsoft.publicAnnouncement = ((roadMap || {}).Office_1 || {})["Public Announcement"];
                 microsoft.azureGa = (((roadMap || {}).Azure || {}).GA || {}).actualdate;
-                microsoft.officeGa = (((roadMap || {}).Office || {}).GA || {}).actualdate;;
+                microsoft.officeGa = (((roadMap || {}).Office_2 || {})["External Public GA"] || {}).actualdate;;
                 microsoft.revenue3Y = "";
                 microsoft.revenue5Y = "";
                 microsoft.dcxCustomers = "";
@@ -129,6 +129,7 @@ export default class Utils {
             let keys = Object.keys(data.countriesStatusList);
             let {CountriesObject} = await this.getCountriesObject(token);
             let mapData = {} , toolTipObject = {};
+            //New changes in the Dashboard : Date 03/25/2019
             keys.forEach(element => {
                 mapData[getCode(element)] = data.countriesStatusList[element];
                 toolTipObject[getCode(element)] = {
@@ -136,7 +137,8 @@ export default class Utils {
                     'Name' :element,
                     'azureGa':"No Data",
                     'officeGa':"No Data",
-                    'publicAnnouncement':"No Data"
+                    'publicAnnouncement':"No Data",
+                    'capex':"No Data"
                 };
             });
             let obj = await this.getTableData({ ...data.countriesStatusList },toolTipObject,CountriesObject);
@@ -262,6 +264,12 @@ export default class Utils {
                         toolTipObject[code]["azureGa"] = microsoft.azureGa || "No Data"
                         toolTipObject[code]["officeGa"] = microsoft.officeGa || "No Data"
                         toolTipObject[code]["publicAnnouncement"] = microsoft.publicAnnouncement || "No Data"
+                        //New changes in the Dashboard : Date 03/25/2019
+                        try {
+                            toolTipObject[code]["capex"] = microsoft.capex.toString().replace("**","") || "No Data";
+                        } catch (error) {
+                            toolTipObject[code]["capex"] = "No Data";
+                        }
                     } catch (error) {
                         this.log("utils","getMicrosoftObject method error", error.message);
                     }
