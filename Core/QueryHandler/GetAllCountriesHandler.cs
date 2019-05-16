@@ -11,6 +11,7 @@ using Core.Models;
 using Core.Interfaces;
 using Core.Queries;
 using Core.Exceptions;
+
 namespace Core.QueryHandler
 {
     public class GetAllCountriesHandler : MediatR.IRequestHandler<GetAllCountries, CountryListModel>

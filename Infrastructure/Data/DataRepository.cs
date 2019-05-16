@@ -88,21 +88,29 @@ namespace Infrastructure.Data
         public async Task<IEnumerable<T>> GetAll<T>(string tableName, string partionkey) where T : BaseEntity, new()
         {
 
-            var range = new List<T>();
-            var query = new TableQuery<T> ().Where(TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, partionkey));
-            TableContinuationToken token = null;
-            do
+            try
             {
-                TableQuerySegment<T> resultSegment = await tableList[tableName].ExecuteQuerySegmentedAsync(query, token);
-                token = resultSegment.ContinuationToken;
-
-                foreach (var t in resultSegment.Results)
+                var range = new List<T>();
+                var query = new TableQuery<T>().Where(TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, partionkey));
+                TableContinuationToken token = null;
+                do
                 {
-                    range.Add(t);
-                }
-            } while (token != null);
+                    TableQuerySegment<T> resultSegment = await tableList[tableName].ExecuteQuerySegmentedAsync(query, token);
+                    token = resultSegment.ContinuationToken;
 
-            return range;
+                    foreach (var t in resultSegment.Results)
+                    {
+                        range.Add(t);
+                    }
+                } while (token != null);
+
+                return range;
+            }
+            catch(Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+         
         }
 
         public Task<string> Update<T>(T entity, string tableName) where T : BaseEntity, new()

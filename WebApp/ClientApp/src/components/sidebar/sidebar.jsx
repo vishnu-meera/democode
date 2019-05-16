@@ -14,7 +14,7 @@ class Sidebar extends React.Component {
             if(prop.path !=='/country'){
                 return (
                     <li className={this.activeRoute(prop.layout + prop.path)} key={key}>
-                        <NavLink to={prop.layout + prop.path} activeClassName="">
+                        <NavLink to={"#"} activeClassName="">
                             {prop.icon !== undefined ? (
                                 <>
                                     <i className={prop.icon} />
@@ -42,8 +42,8 @@ class Sidebar extends React.Component {
         return (
             <div className="sidebar" data-color={this.props.bgColor} data-active-color={this.props.activeColor}>
                 <div className="logo">
-                        <a href="/admin/dashboard" className="simple-text logo-mini">GL</a>
-                        <a href="/admin/dashboard" className="simple-text logo-normal"> GOLOCAL </a>
+                        <a href="/admin/generalmap" className="simple-text logo-mini">hvac</a>
+                        <a href="/admin/generalmap" className="simple-text logo-normal"> HVAC </a>
                     </div>
                 <div className="sidebar-wrapper">
                     <Nav>{this.createLinks(this.props.routes)}</Nav>

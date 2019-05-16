@@ -17,34 +17,25 @@ import {
 } from "reactstrap";
 
 import defaultavatar from "assests/img/defaultavatar.png"; //default picture
-import Auth from 'utils/authhelper';
 
 class DashBoardNav extends React.Component {
     constructor(props) {
         super(props);
-        this.auth = new Auth();
+
         this.state = {
             collapseOpen: false,
             color: "navbar-transparent",
             openAvatar: false,
             userName: props.userName || "defaultName",
-            avatar: props.avatar || defaultavatar,
-            authenticated:false
+            avatar: props.avatar || defaultavatar
         };
     };
 
     async componentDidMount() {
-        let {authenticated} = await this.auth.isAuthenticated();
 
-        await this.setState({authenticated});
     }
     async componentDidUpdate(prevProps) {
-        if (this.props.authenticated !== prevProps.authenticated) {
-            //console.log("NAVBAR AUTHENTICATED===>",this.props.authenticated)
-            if(this.props.authenticated){
-                await this.setState({authenticated:this.props.authenticated});
-            }
-        }
+
     };
 
     toggleSidebar = () => {
@@ -127,10 +118,8 @@ class DashBoardNav extends React.Component {
                                         <p><span className="d-lg-none d-md-block">User Account</span></p>
                                     </DropdownToggle>
                                     <DropdownMenu aria-labelledby="navbarDropdownMenuLink" right>
-                                        <DropdownItem  
-                                            onClick={()=>{this.props.loginToApp(this.state.authenticated)}}
-                                        >
-                                            {(this.state.authenticated)?"Log Off": "Log in"}
+                                        <DropdownItem>
+                                            {"Log in"}
                                         </DropdownItem>
                                     </DropdownMenu>
                                 </UncontrolledDropdown>

@@ -22,7 +22,7 @@ namespace Infrastructure.Config
         {
             _tableConfig = tableConfig.CurrentValue;
             instance = GetTableInstance(_tableConfig.ConnectionStringMainTable, _tableConfig.CountryList);
-            backupinstance = GetTableInstance(_tableConfig.ConnectionStringBkupTable, _tableConfig.CountryList);
+            
         }
 
         private Dictionary<string, CloudTable> GetTableInstance(string connectionStringMainTable, string countryList)

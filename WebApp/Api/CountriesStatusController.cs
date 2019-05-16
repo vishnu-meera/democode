@@ -12,7 +12,6 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace WebApp.Api
 {
-    [Authorize(AuthenticationSchemes = "AzureAdBearer")]
     [Route("api/[controller]")]
     [ApiController]
     public class CountriesStatusController : BaseController

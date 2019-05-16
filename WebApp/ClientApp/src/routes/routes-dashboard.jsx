@@ -3,39 +3,40 @@
 *  See LICENSE in the source repository root for complete license information. 
 */
 
-import Dashboard from "views/dashboard";
-import Country from "views/country";
-import DataCapture from "views/datacapture";
-import Timeline from "views/timeline";
+import DASHBOARD from "views/generalmap";
+import STATEMAP from "views/statemap";
+import MODULES from "views/hvacmodules";
+import CHARTS from "views/hvacmodulechart";
 
 const layout = "/admin";
+
 var dashboardRoutes = [
     {
-        path: "/dashboard",
-        name: "Dashboard",
-        icon: "nc-icon nc-bank",
-        component: Dashboard,
+        path: "/generalmap",
+        name: "DASHBOARD",
+        icon: "nc-icon nc-bullet",
+        component: DASHBOARD,
         layout: layout
     },
     {
-        path: "/country",
-        name: "Country",
-        icon: "nc-icon nc-chart-bar-32",
-        component: Country,
+        path: "/state",
+        name: "STATEMAP",
+        icon: "nc-icon nc-grid",
+        component: STATEMAP,
         layout: layout
     },
     {
-        path: "/enterdata",
-        name: "DataCapture",
-        icon: "nc-icon nc-chart-bar-32",
-        component: DataCapture,
+        path: "/modules",
+        name: "MODULES",
+        icon: "nc-icon nc-grid",
+        component: MODULES,
         layout: layout
     },
     {
-        path: "/Timeline",
-        name: "Timeline",
-        icon: "nc-icon nc-chart-bar-32",
-        component: Timeline,
+        path: "/charts",
+        name: "CHARTS",
+        icon: "nc-icon nc-grid",
+        component: CHARTS,
         layout: layout
     }
 ];
